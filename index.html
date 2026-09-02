@@ -33,7 +33,7 @@
         document.querySelector('meta[name="theme-color"]').content = theme === 'light' ? '#f5f2ea' : '#0b1020';
       })();
     </script>
-    <link rel="stylesheet" href="assets/css/style.css?v=5">
+    <link rel="stylesheet" href="assets/css/style.css?v=6">
     <script src="assets/js/main.js?v=4" defer></script>
   </head>
   <body>
@@ -94,7 +94,7 @@
       <section class="section work-section" id="work" aria-labelledby="work-title">
         <div class="shell">
           <div class="section-intro reveal"><p class="eyebrow">02 / Selected work</p><h2 id="work-title">Evidence beyond the job title.</h2><p>Open-source contributions and independent projects that show how I explore, ship, and extend AI systems.</p></div>
-          <div class="featured-work">
+          <div class="featured-work" tabindex="0" aria-label="Scrollable selected projects">
             <article class="project-card project-open-source reveal"><div class="project-kicker">Open source</div><h3>Contributions to Lighteval &amp; LlamaIndex</h3><p>Extended documentation, data-ingestion workflows, and advanced storage backends, including knowledge-graph integrations.</p><div class="project-links"><a href="https://github.com/huggingface/lighteval/pull/1060" target="_blank" rel="noopener">Lighteval contribution <span aria-hidden="true">↗</span></a><a href="https://github.com/run-llama/llama_index/pull/10629" target="_blank" rel="noopener">LlamaIndex #10629 <span aria-hidden="true">↗</span></a><a href="https://github.com/run-llama/llama_index/pull/11640" target="_blank" rel="noopener">LlamaIndex #11640 <span aria-hidden="true">↗</span></a></div></article>
             <article class="project-card project-image reveal"><img src="assets/img/VISUAL NOVEL GAME GENERATOR HACKATHON PROJECT.png?v=2" width="2048" height="2048" alt="Stylized orange Genesis character emblem on a dark blue background" loading="lazy"><div class="project-image-content"><div class="project-kicker">Hackathon winner</div><h3>Genesis: text-to-visual game experiences</h3><p>Transformed plain-text narratives into interactive visual games using open-source generative AI models.</p><a href="https://peerlist.io/abhiram/project/genesis" target="_blank" rel="noopener">View project <span aria-hidden="true">↗</span></a></div></article>
             <article class="project-card project-agent reveal"><div class="project-kicker">Open-source framework</div><p class="code-statement">tool_call(<br><span>quantized_llm,</span><br><span>cpu_only=true</span><br>)</p><h3>Low-cost agentic AI workflows</h3><p>Built a framework enabling quantized LLMs to execute tool-calling workflows on CPU-only systems with multithreaded inference.</p><a href="https://github.com/abhiram1809/Quant_AgentTools" target="_blank" rel="noopener">View on GitHub <span aria-hidden="true">↗</span></a></article>
@@ -104,7 +104,7 @@
       <section class="section services-section" id="services" aria-labelledby="services-title">
         <div class="shell">
           <div class="section-intro reveal"><p class="eyebrow">03 / Freelance services</p><h2 id="services-title">An engineering partner for AI work that needs to ship.</h2><p>Available for focused freelance engagements where practical AI systems, not prototypes, are the goal.</p></div>
-          <div class="service-grid">
+          <div class="service-grid" tabindex="0" aria-label="Scrollable freelance services">
             <article class="service-card reveal"><p class="service-number">01</p><h3>Production LLM &amp; inference systems</h3><p>Model routing, unified inference, vLLM serving, cost controls, observability, and operational control.</p></article>
             <article class="service-card reveal"><p class="service-number">02</p><h3>Agentic AI platforms &amp; automation</h3><p>Production-grade agents, developer workflows, guardrails, and lifecycle systems that teams can operate with confidence.</p></article>
             <article class="service-card reveal"><p class="service-number">03</p><h3>RAG &amp; document intelligence</h3><p>RAG, Text2SQL, OCR, translation, and structured extraction for information trapped in unstructured documents.</p></article>
