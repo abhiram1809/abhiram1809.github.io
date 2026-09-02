@@ -52,7 +52,7 @@
   const copyStatus = document.querySelector('[data-copy-status]');
   copyButton?.addEventListener('click', async () => {
     try { await navigator.clipboard.writeText(copyButton.dataset.email); copyStatus.textContent = 'Email address copied.'; }
-    catch { copyStatus.textContent = 'Copy unavailable—use the email link above.'; }
+    catch { copyStatus.textContent = 'Copy unavailable. Use the email link above.'; }
   });
   const year = document.querySelector('[data-current-year]');
   if (year) year.textContent = new Date().getFullYear();
