@@ -1,1 +1,30 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex"><title>Page not found — Abhiram Sharma</title><link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="assets/css/style.css"></head><body class="not-found-page"><main class="not-found-card"><p class="eyebrow">404 / Not found</p><h1>This page moved.</h1><p>The portfolio is now a focused single-page experience.</p><a class="button button-primary" href="index.html">Return to portfolio <span aria-hidden="true">→</span></a></main></body></html>
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0b1020">
+    <meta name="robots" content="noindex">
+    <title>Page not found — Abhiram Sharma</title>
+    <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+    <script>
+      (() => {
+        let theme = 'dark';
+        try {
+          if (localStorage.getItem('portfolio-theme') === 'light') theme = 'light';
+        } catch {}
+        document.documentElement.dataset.theme = theme;
+        document.querySelector('meta[name="theme-color"]').content = theme === 'light' ? '#f5f2ea' : '#0b1020';
+      })();
+    </script>
+    <link rel="stylesheet" href="assets/css/style.css?v=5">
+  </head>
+  <body class="not-found-page">
+    <main class="not-found-card">
+      <p class="eyebrow">404 / Not found</p>
+      <h1>This page moved.</h1>
+      <p>The portfolio is now a focused single-page experience.</p>
+      <a class="button button-primary" href="index.html">Return to portfolio <span aria-hidden="true">→</span></a>
+    </main>
+  </body>
+</html>

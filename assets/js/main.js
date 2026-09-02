@@ -1,5 +1,23 @@
 (() => {
   document.documentElement.classList.add('js');
+  const themeButton = document.querySelector('[data-theme-toggle]');
+  const themeMeta = document.querySelector('meta[name="theme-color"]');
+  const updateThemeControl = (theme) => {
+    const nextTheme = theme === 'dark' ? 'light' : 'dark';
+    const actionLabel = `Switch to ${nextTheme} theme`;
+    document.documentElement.dataset.theme = theme;
+    if (themeMeta) themeMeta.content = theme === 'light' ? '#f5f2ea' : '#0b1020';
+    if (!themeButton) return;
+    themeButton.setAttribute('aria-label', actionLabel);
+    themeButton.setAttribute('title', actionLabel);
+    themeButton.querySelector('.sr-only').textContent = actionLabel;
+  };
+  updateThemeControl(document.documentElement.dataset.theme === 'light' ? 'light' : 'dark');
+  themeButton?.addEventListener('click', () => {
+    const theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+    updateThemeControl(theme);
+    try { localStorage.setItem('portfolio-theme', theme); } catch {}
+  });
   const menuButton = document.querySelector('[data-menu-toggle]');
   const nav = document.querySelector('[data-nav]');
   const navLinks = [...document.querySelectorAll('[data-nav] a')];

@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Abhiram Sharma is a Machine Learning Engineer II and freelance AI engineer building production LLM platforms, agentic systems, and scalable inference infrastructure.">
-    <meta name="theme-color" content="#f5f2ea">
+    <meta name="theme-color" content="#0b1020">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://abhiram1809.github.io/">
     <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
@@ -21,8 +21,20 @@
     <meta name="twitter:title" content="Abhiram Sharma — Production AI Systems">
     <meta name="twitter:description" content="Machine Learning Engineer II and freelance AI engineer building reliable LLM platforms, agentic systems, and scalable inference infrastructure.">
     <meta name="twitter:image" content="https://abhiram1809.github.io/assets/img/og-portfolio.png">
-    <link rel="stylesheet" href="assets/css/style.css?v=4">
-    <script src="assets/js/main.js?v=3" defer></script>
+    <script>
+      (() => {
+        const root = document.documentElement;
+        root.classList.add('js');
+        let theme = 'dark';
+        try {
+          if (localStorage.getItem('portfolio-theme') === 'light') theme = 'light';
+        } catch {}
+        root.dataset.theme = theme;
+        document.querySelector('meta[name="theme-color"]').content = theme === 'light' ? '#f5f2ea' : '#0b1020';
+      })();
+    </script>
+    <link rel="stylesheet" href="assets/css/style.css?v=5">
+    <script src="assets/js/main.js?v=4" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
@@ -35,6 +47,15 @@
         <nav class="primary-nav" id="primary-nav" aria-label="Primary navigation" data-nav>
           <a href="#experience">Experience</a><a href="#work">Work</a><a href="#services">Services</a><a href="#skills">Skills</a><a href="#about">About</a><a href="#contact">Contact</a>
         </nav>
+        <button class="theme-toggle" type="button" aria-label="Switch to light theme" title="Switch to light theme" data-theme-toggle>
+          <span class="sr-only">Switch to light theme</span>
+          <svg class="theme-icon theme-icon-sun" aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <circle cx="12" cy="12" r="3.5"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"></path>
+          </svg>
+          <svg class="theme-icon theme-icon-moon" aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7Z"></path>
+          </svg>
+        </button>
         <a class="nav-cv" href="assets/Abhiram-Sharma-CV.pdf" target="_blank" rel="noopener">View CV <span aria-hidden="true">↗</span></a>
       </div>
     </header>
@@ -53,7 +74,7 @@
             <dl class="hero-facts" aria-label="Career focus"><div><dt>Now</dt><dd>ML Engineer II</dd></div><div><dt>Focus</dt><dd>LLM platforms &amp; agents</dd></div><div><dt>Based</dt><dd>Pune, India</dd></div></dl>
           </div>
           <aside class="hero-evidence reveal" aria-label="Selected impact">
-            <div class="portrait-frame"><img src="assets/img/profile.jpg" width="867" height="870" alt="Abhiram Sharma" fetchpriority="high"><p>Building systems<br>behind intelligent products.</p></div>
+            <div class="portrait-frame"><img src="assets/img/profile.jpg?v=2" width="1370" height="1371" alt="Abhiram Sharma" fetchpriority="high"><p>Building systems<br>behind intelligent products.</p></div>
             <div class="impact-card"><p class="eyebrow">Selected impact</p><div class="impact-list"><div><strong>4×</strong><span>better LLM-routing cost utilization</span></div><div><strong>60%</strong><span>productivity uplift from a unified inference platform</span></div><div><strong>&lt;10 min</strong><span>to create a production-grade agent, down from days</span></div><div><strong>90%</strong><span>less debugging and incident-resolution time</span></div></div></div>
           </aside>
         </div>
@@ -75,7 +96,7 @@
           <div class="section-intro reveal"><p class="eyebrow">02 / Selected work</p><h2 id="work-title">Evidence beyond the job title.</h2><p>Open-source contributions and independent projects that show how I explore, ship, and extend AI systems.</p></div>
           <div class="featured-work">
             <article class="project-card project-open-source reveal"><div class="project-kicker">Open source</div><h3>Contributions to Lighteval &amp; LlamaIndex</h3><p>Extended documentation, data-ingestion workflows, and advanced storage backends, including knowledge-graph integrations.</p><div class="project-links"><a href="https://github.com/huggingface/lighteval/pull/1060" target="_blank" rel="noopener">Lighteval contribution <span aria-hidden="true">↗</span></a><a href="https://github.com/run-llama/llama_index/pull/10629" target="_blank" rel="noopener">LlamaIndex #10629 <span aria-hidden="true">↗</span></a><a href="https://github.com/run-llama/llama_index/pull/11640" target="_blank" rel="noopener">LlamaIndex #11640 <span aria-hidden="true">↗</span></a></div></article>
-            <article class="project-card project-image reveal"><img src="assets/img/VISUAL NOVEL GAME GENERATOR HACKATHON PROJECT.png" width="800" height="800" alt="A colorful visual game scene from the Genesis generative AI hackathon project" loading="lazy"><div class="project-image-content"><div class="project-kicker">Hackathon winner</div><h3>Genesis: text-to-visual game experiences</h3><p>Transformed plain-text narratives into interactive visual games using open-source generative AI models.</p><a href="https://peerlist.io/abhiram/project/genesis" target="_blank" rel="noopener">View project <span aria-hidden="true">↗</span></a></div></article>
+            <article class="project-card project-image reveal"><img src="assets/img/VISUAL NOVEL GAME GENERATOR HACKATHON PROJECT.png?v=2" width="2048" height="2048" alt="Stylized orange Genesis character emblem on a dark blue background" loading="lazy"><div class="project-image-content"><div class="project-kicker">Hackathon winner</div><h3>Genesis: text-to-visual game experiences</h3><p>Transformed plain-text narratives into interactive visual games using open-source generative AI models.</p><a href="https://peerlist.io/abhiram/project/genesis" target="_blank" rel="noopener">View project <span aria-hidden="true">↗</span></a></div></article>
             <article class="project-card project-agent reveal"><div class="project-kicker">Open-source framework</div><p class="code-statement">tool_call(<br><span>quantized_llm,</span><br><span>cpu_only=true</span><br>)</p><h3>Low-cost agentic AI workflows</h3><p>Built a framework enabling quantized LLMs to execute tool-calling workflows on CPU-only systems with multithreaded inference.</p><a href="https://github.com/abhiram1809/Quant_AgentTools" target="_blank" rel="noopener">View on GitHub <span aria-hidden="true">↗</span></a></article>
           </div>
         </div>
