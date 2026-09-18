@@ -148,10 +148,6 @@ cd unsloth-finetuning-vllm-skill
         <p>It can also install for one harness or into the current project. Claude Code users can install it as a plugin. Any agent without a skill loader can read the markdown directly.</p>
         <p>The skill triggers on planning, debugging, and evaluation questions—not only at the start of a run. A request such as “the loss went down but the model is not better” should lead the agent to inspect the label mask, compare base and fine-tuned generations, and locate the gap before recommending more training.</p>
 
-        <h2>The boundary is deliberate</h2>
-        <p>The repository does not attempt to own cluster orchestration, autoscaling, storage, or a universal training script. Those choices age quickly and depend on the environment. It stays focused on decisions that remain useful across stacks: where knowledge belongs, how data and loss must line up, how to prove the hardware path, how to evaluate honestly, and how the artifact reaches vLLM without changing underneath you.</p>
-        <p>That is the part I wanted the next agent session to inherit: not just the successful command, but the reasons the other paths failed.</p>
-
         <div class="article-end-actions">
           <a class="button button-primary" href="https://github.com/abhiram1809/unsloth-finetuning-vllm-skill" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="../../assets/img/toolkit-icons.svg?v=3#github"></use></svg> Open the repository</a>
           <a class="button-link" href="../">More engineering notes <span aria-hidden="true">↗</span></a>
