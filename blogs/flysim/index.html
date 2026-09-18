@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="How FlySim models fruit-fly smell, sparse memory, learned avoidance, and compass drift in a dependency-free browser simulation.">
+    <meta name="theme-color" content="#0b1020">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://abhiram1809.github.io/blogs/flysim/">
+    <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="../../assets/img/R.png">
+    <title>Building FlySim: a Small Fruit-Fly Brain in the Browser | Abhiram Sharma</title>
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://abhiram1809.github.io/blogs/flysim/">
+    <meta property="og:title" content="Building FlySim: a Small Fruit-Fly Brain in the Browser">
+    <meta property="og:description" content="The circuit model behind FlySim: smell normalization, sparse memory, learned avoidance, and a drifting internal compass.">
+    <meta property="og:image" content="https://abhiram1809.github.io/assets/img/og-portfolio.png">
+    <meta property="article:published_time" content="2026-09-19">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Building FlySim: a Small Fruit-Fly Brain in the Browser">
+    <meta name="twitter:description" content="The circuit model behind FlySim: smell normalization, sparse memory, learned avoidance, and a drifting internal compass.">
+    <meta name="twitter:image" content="https://abhiram1809.github.io/assets/img/og-portfolio.png">
+    <script>
+      (() => {
+        const root = document.documentElement;
+        root.classList.add('js');
+        let theme = 'dark';
+        try {
+          if (localStorage.getItem('portfolio-theme') === 'light') theme = 'light';
+        } catch {}
+        root.dataset.theme = theme;
+        document.querySelector('meta[name="theme-color"]').content = theme === 'light' ? '#f5f2ea' : '#0b1020';
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/css/style.css?v=9">
+    <script src="../../assets/js/main.js?v=5" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#article-content">Skip to article</a>
+    <header class="site-header" data-header>
+      <div class="shell nav-shell">
+        <a class="wordmark" href="../../" aria-label="Abhiram Sharma home">AS<span>.</span></a>
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" data-menu-toggle>
+          <span class="sr-only">Open navigation</span><span aria-hidden="true"></span><span aria-hidden="true"></span>
+        </button>
+        <nav class="primary-nav" id="primary-nav" aria-label="Primary navigation" data-nav>
+          <a href="../../#experience">Experience</a><a href="../../#work">Work</a><a href="../../#skills">Toolkit</a><a href="../" aria-current="page">Writing</a><a href="../../#about">About</a><a href="../../#contact">Contact</a>
+        </nav>
+        <button class="theme-toggle" type="button" aria-label="Switch to light theme" title="Switch to light theme" data-theme-toggle>
+          <span class="sr-only">Switch to light theme</span>
+          <svg class="theme-icon theme-icon-sun" aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <circle cx="12" cy="12" r="3.5"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"></path>
+          </svg>
+          <svg class="theme-icon theme-icon-moon" aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7Z"></path>
+          </svg>
+        </button>
+        <a class="nav-cv" href="../../assets/Abhiram-Sharma-CV.pdf" target="_blank" rel="noopener">View CV <span aria-hidden="true">↗</span></a>
+      </div>
+    </header>
+    <main id="article-content" class="article-main">
+      <header class="article-hero">
+        <div class="article-shell reveal">
+          <a class="button-link article-back" href="../"><span aria-hidden="true">←</span> All notes</a>
+          <p class="eyebrow">Neuro-inspired systems</p>
+          <h1>Building a small fruit-fly brain in the browser.</h1>
+          <p class="article-dek">FlySim is a foraging simulation where smell, memory, and an internal compass decide what the fly does next. The learning is in the circuit, not in a scripted list of good and bad flowers.</p>
+          <div class="article-meta"><time datetime="2026-09-19">September 19, 2026</time><span>8 min read</span></div>
+          <div class="article-actions">
+            <a class="button button-primary" href="../../flysim_project/" target="_blank" rel="noopener">Run FlySim <span aria-hidden="true">↗</span></a>
+            <a class="button button-secondary" href="https://github.com/abhiram1809/flysim" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="../../assets/img/toolkit-icons.svg?v=3#github"></use></svg> View source</a>
+          </div>
+        </div>
+      </header>
+
+      <article class="article-body article-shell">
+        <p class="article-lead">I wanted to build something between a toy animation and a full neuroscience simulator. The result is FlySim: a small, deterministic model based on three recognizable parts of the <em>Drosophila</em> nervous system. It runs entirely in JavaScript and exposes enough internal state to show why the fly turns, lands, or refuses a flower.</p>
+
+        <aside class="article-callout">
+          <strong>What it is—and what it is not.</strong>
+          <p>FlySim is a connectome-inspired circuit model. It borrows known motifs from the antennal lobe, mushroom body, and central complex, but it is not a neuron-by-neuron reconstruction of a fly brain.</p>
+        </aside>
+
+        <h2>One world, four smells</h2>
+        <p>The world contains four flower species. Each one produces a different pattern across 16 odor channels. Two species contain nectar and two are toxic. The fly starts without that information. It has to approach flowers, experience the result, and change its response to that odor.</p>
+        <p>This keeps the task small enough to inspect. The interesting part is not whether the fly eventually finds nectar. It is whether a bad landing changes the next decision in a way that can be traced through the model.</p>
+
+        <div class="article-system-map" aria-label="FlySim circuit map">
+          <div><span>01</span><strong>Antennal lobe</strong><p>Turns raw odor concentration into a stable identity signal.</p></div>
+          <div><span>02</span><strong>Mushroom body</strong><p>Creates a sparse odor code and learns value from reward or punishment.</p></div>
+          <div><span>03</span><strong>Central complex</strong><p>Maintains an internal heading using angular velocity alone.</p></div>
+          <div><span>04</span><strong>Behavior loop</strong><p>Chooses search, track, feed, or avoid from the circuit outputs.</p></div>
+        </div>
+
+        <h2>Keeping odor identity stable</h2>
+        <p>A fly moving toward a flower sees the same odor at very different concentrations. If the input is used directly, getting closer can swamp the pattern that identifies the flower. FlySim uses divisive normalization in the antennal lobe:</p>
+        <pre class="article-code" aria-label="Antennal lobe normalization equation"><code>PNᵢ = ORNᵢ¹·⁵ / (σ¹·⁵ + (Σ ORN)¹·⁵)</code></pre>
+        <p>The shared denominator suppresses overall magnitude while preserving the relative pattern across glomeruli. The steering loop can still use the difference between the left and right antennae, while the mushroom body receives a more stable odor identity.</p>
+
+        <h2>Sparse memory, then depression-only learning</h2>
+        <p>The mushroom body maps 16 projection-neuron values into 800 Kenyon cells. Each Kenyon cell samples four inputs. An APL-style global inhibition step keeps only the strongest 40 responses, so each odor activates a small subset of the population.</p>
+        <p>That sparse code feeds two opposing outputs: approach and avoid. Both start with equal weights, which makes the fly naive rather than optimistic or fearful. A reward depresses the avoid pathway for the active Kenyon cells. A toxic landing depresses the approach pathway. There is no separate strengthening rule.</p>
+        <p>The behavioral effect matters more than the weight update. Once the learned valence for an odor becomes negative, the fly does not merely report a lower score in the HUD. It steers down the gradient and can refuse to land.</p>
+
+        <h2>A compass that is allowed to be wrong</h2>
+        <p>The central-complex model is a 32-unit ring attractor. It moves its activity bump from angular velocity and never receives the fly&apos;s true heading. This produces dead reckoning, including accumulated error.</p>
+        <p>I left that drift visible. The HUD shows body heading, compass heading, and the difference between them. Hiding the mismatch would make the demo cleaner, but it would also remove one of the most useful signs that the compass is an internal estimate rather than a value copied from the renderer.</p>
+
+        <h2>The renderer cannot change the experiment</h2>
+        <p>The brain and world advance at a fixed 200 Hz. Rendering runs independently. A slow frame can change how smooth the motion looks, but it does not change the time step used by the circuits.</p>
+        <p>The renderer is also read-only. It does not call the simulation&apos;s random-number generator. That detail prevents a camera or graphics change from silently moving every flower and changing the fly&apos;s experience. The same simulation state drives the map, chase, and point-of-view modes.</p>
+
+        <h2>What to watch in the demo</h2>
+        <ol>
+          <li>Start at 4× or 16× speed and watch the behavior label switch between <code>SEARCH</code> and <code>TRACK</code>.</li>
+          <li>After a toxic landing, look at the learned-value row for that flower species.</li>
+          <li>Watch for <code>AVOID</code> and the refused counter as the fly encounters the odor again.</li>
+          <li>Use <code>V</code> to move between map, chase, and fly point-of-view modes.</li>
+          <li>Press <code>F</code> to swap nectar and toxin. The old policy is now wrong, so the circuit has to adapt.</li>
+        </ol>
+
+        <p>The portfolio route uses the standalone build: one HTML file, no framework, no WebGL dependency, and no network calls after the page loads. The 3D view is a small software renderer drawn onto a 240-pixel canvas.</p>
+
+        <h2>Why I built it</h2>
+        <p>The project started from the question behind the <a href="https://www.fruitflybrain.org/" target="_blank" rel="noopener">Fruit Fly Brain Observatory</a>: what becomes easier to understand when neural structure is something you can run rather than only read about?</p>
+        <p>FlySim is deliberately smaller. Its value is that the entire path from odor to action fits in a browser tab, and every number shown in the interface belongs to the same running model.</p>
+
+        <div class="article-end-actions">
+          <a class="button button-primary" href="../../flysim_project/" target="_blank" rel="noopener">Run the simulation <span aria-hidden="true">↗</span></a>
+          <a class="button-link" href="https://github.com/abhiram1809/flysim" target="_blank" rel="noopener">Read the code on GitHub <span aria-hidden="true">↗</span></a>
+        </div>
+      </article>
+    </main>
+    <footer class="site-footer"><div class="shell"><span>© <span data-current-year>2026</span> Abhiram Sharma</span><a href="../">More writing</a></div></footer>
+  </body>
+</html>

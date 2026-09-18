@@ -33,7 +33,7 @@
         document.querySelector('meta[name="theme-color"]').content = theme === 'light' ? '#f5f2ea' : '#0b1020';
       })();
     </script>
-    <link rel="stylesheet" href="../assets/css/style.css?v=7">
+    <link rel="stylesheet" href="../assets/css/style.css?v=9">
     <script src="../assets/js/main.js?v=5" defer></script>
   </head>
   <body>
@@ -70,12 +70,13 @@
       </section>
       <section class="blog-index" aria-labelledby="archive-title">
         <div class="shell">
-          <div class="blog-list" data-blog-list></div>
-          <div class="blog-empty reveal">
-            <p class="eyebrow">Archive</p>
-            <h2 id="archive-title">No posts yet.</h2>
-            <p>I&apos;m working on the first one.</p>
-            <p class="blog-topics">Inference <span>·</span> Model serving <span>·</span> Agent systems <span>·</span> ML infrastructure</p>
+          <div class="blog-list" data-blog-list>
+            <article class="blog-card reveal">
+              <p class="blog-card-meta"><time datetime="2026-09-19">September 19, 2026</time><span>Neuro-inspired systems</span></p>
+              <h2 id="archive-title"><a href="flysim/">Building a small fruit-fly brain in the browser</a></h2>
+              <p>How FlySim handles odor identity, sparse memory, learned avoidance, compass drift, and a fixed 200 Hz brain loop.</p>
+              <a class="blog-card-link" href="flysim/">Read article <span aria-hidden="true">↗</span></a>
+            </article>
           </div>
           <template id="blog-card-template">
             <article class="blog-card">

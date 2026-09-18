@@ -33,7 +33,7 @@
         document.querySelector('meta[name="theme-color"]').content = theme === 'light' ? '#f5f2ea' : '#0b1020';
       })();
     </script>
-    <link rel="stylesheet" href="assets/css/style.css?v=7">
+    <link rel="stylesheet" href="assets/css/style.css?v=9">
     <script src="assets/js/main.js?v=5" defer></script>
   </head>
   <body>
@@ -96,6 +96,7 @@
           <div class="section-intro reveal"><p class="eyebrow">02 / Work</p><h2 id="work-title">Selected work.</h2><p>Open-source contributions and projects I have built outside my day job.</p></div>
           <div class="featured-work" tabindex="0" aria-label="Scrollable selected projects">
             <article class="project-card project-vllm reveal"><div class="project-kicker">Inference engineering</div><p class="code-statement">SM 12.0a<br><span>NVFP4 / vLLM</span></p><h3>MiniMax-M3 NVFP4 on RTX PRO 6000</h3><p>Built and tested a custom vLLM branch with SM 12.0a backend support and parser fixes after a community report of Chinese and nonsensical output. The upstream PR remains open and unmerged; review raised concerns about broad parser-side normalization.</p><div class="project-links"><a href="https://github.com/vllm-project/vllm/pull/47001" target="_blank" rel="noopener">vLLM PR #47001 <span aria-hidden="true">↗</span></a><a href="https://huggingface.co/nvidia/MiniMax-M3-NVFP4/discussions/1" target="_blank" rel="noopener">Community report <span aria-hidden="true">↗</span></a></div></article>
+            <article class="project-card project-flysim reveal"><div class="project-kicker">Neuro-inspired simulation</div><p class="code-statement">200 Hz<br><span>16 PN → 800 KC → 32 CX</span></p><h3>FlySim</h3><p>A browser simulation where a small fruit-fly circuit smells four flower species, learns from good and bad landings, and changes its foraging behavior.</p><div class="project-actions"><a href="https://github.com/abhiram1809/flysim" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="assets/img/toolkit-icons.svg?v=3#github"></use></svg> Repository</a><a class="project-action-live" href="flysim_project/" target="_blank" rel="noopener">Run simulation <span aria-hidden="true">↗</span></a></div></article>
             <article class="project-card project-open-source reveal"><div class="project-kicker">Open source</div><h3>Contributions to Lighteval &amp; LlamaIndex</h3><p>Contributed documentation, ingestion workflows, and knowledge-graph storage integrations to Lighteval and LlamaIndex.</p><div class="project-links"><a href="https://github.com/huggingface/lighteval/pull/1060" target="_blank" rel="noopener">Lighteval contribution <span aria-hidden="true">↗</span></a><a href="https://github.com/run-llama/llama_index/pull/10629" target="_blank" rel="noopener">LlamaIndex #10629 <span aria-hidden="true">↗</span></a><a href="https://github.com/run-llama/llama_index/pull/11640" target="_blank" rel="noopener">LlamaIndex #11640 <span aria-hidden="true">↗</span></a></div></article>
             <article class="project-card project-image reveal"><img src="assets/img/VISUAL NOVEL GAME GENERATOR HACKATHON PROJECT.png?v=2" width="2048" height="2048" alt="Stylized orange Genesis character emblem on a dark blue background" loading="lazy"><div class="project-image-content"><div class="project-kicker">Hackathon winner</div><h3>Genesis: text-to-visual game experiences</h3><p>Turned plain-text stories into interactive visual games with open-source generative models.</p><a href="https://peerlist.io/abhiram/project/genesis" target="_blank" rel="noopener">View project <span aria-hidden="true">↗</span></a></div></article>
             <article class="project-card project-agent reveal"><div class="project-kicker">Open-source framework</div><p class="code-statement">tool_call(<br><span>quantized_llm,</span><br><span>cpu_only=true</span><br>)</p><h3>Tool-calling on CPU-only systems</h3><p>Built a framework for tool-calling with quantized LLMs on CPU-only machines, using multithreaded inference.</p><a href="https://github.com/abhiram1809/Quant_AgentTools" target="_blank" rel="noopener">View on GitHub <span aria-hidden="true">↗</span></a></article>
@@ -130,46 +131,46 @@
             <article class="stack-layer reveal">
               <div class="stack-label"><span>01</span><h3>Compute</h3><p>Hardware and operating environments</p></div>
               <div class="tool-list">
-                <div class="tool-node"><svg aria-hidden="true"><use href="assets/img/toolkit-icons.svg#nvidia"></use></svg><span>NVIDIA GPUs</span></div>
-                <div class="tool-node tool-node-text"><span class="tool-mark" aria-hidden="true">CPU</span><span>CPU / Linux</span></div>
+                <div class="tool-node tool-node-logo" style="--brand:#76b900"><svg aria-hidden="true"><use href="assets/img/toolkit-icons.svg?v=2#nvidia"></use></svg><span>NVIDIA GPUs</span></div>
+                <div class="tool-node tool-node-text" style="--brand:#fcc624"><span class="tool-mark" aria-hidden="true">CPU</span><span>CPU / Linux</span></div>
               </div>
             </article>
             <article class="stack-layer reveal">
               <div class="stack-label"><span>02</span><h3>Inference runtime</h3><p>Execution, quantization, and parallelism</p></div>
               <div class="tool-list">
-                <div class="tool-node tool-node-text"><span class="tool-mark" aria-hidden="true">CUDA</span><span>CUDA</span></div>
-                <div class="tool-node"><svg aria-hidden="true"><use href="assets/img/toolkit-icons.svg#pytorch"></use></svg><span>PyTorch</span></div>
-                <div class="tool-node tool-node-text"><span class="tool-mark" aria-hidden="true">vLLM</span><span>vLLM</span></div>
-                <div class="tool-node"><svg aria-hidden="true"><use href="assets/img/toolkit-icons.svg#ray"></use></svg><span>Ray</span></div>
+                <div class="tool-node tool-node-text" style="--brand:#76b900"><span class="tool-mark" aria-hidden="true">CUDA</span><span>CUDA</span></div>
+                <div class="tool-node tool-node-logo" style="--brand:#ee4c2c"><svg aria-hidden="true"><use href="assets/img/toolkit-icons.svg?v=2#pytorch"></use></svg><span>PyTorch</span></div>
+                <div class="tool-node tool-node-logo" style="--brand:#6366f1"><svg aria-hidden="true"><use href="assets/img/toolkit-icons.svg?v=2#vllm"></use></svg><span>vLLM</span></div>
+                <div class="tool-node tool-node-logo" style="--brand:#028cf0"><svg aria-hidden="true"><use href="assets/img/toolkit-icons.svg?v=2#ray"></use></svg><span>Ray</span></div>
               </div>
             </article>
             <article class="stack-layer reveal">
               <div class="stack-label"><span>03</span><h3>Platform</h3><p>Deployment, control, and operations</p></div>
               <div class="tool-list">
-                <div class="tool-node"><svg aria-hidden="true"><use href="assets/img/toolkit-icons.svg#kubernetes"></use></svg><span>Kubernetes</span></div>
-                <div class="tool-node"><svg aria-hidden="true"><use href="assets/img/toolkit-icons.svg#docker"></use></svg><span>Docker</span></div>
-                <div class="tool-node tool-node-text"><span class="tool-mark" aria-hidden="true">CI</span><span>CI/CD</span></div>
-                <div class="tool-node tool-node-text"><span class="tool-mark" aria-hidden="true">OBS</span><span>Observability</span></div>
+                <div class="tool-node tool-node-logo" style="--brand:#326ce5"><svg aria-hidden="true"><use href="assets/img/toolkit-icons.svg?v=2#kubernetes"></use></svg><span>Kubernetes</span></div>
+                <div class="tool-node tool-node-logo" style="--brand:#2496ed"><svg aria-hidden="true"><use href="assets/img/toolkit-icons.svg?v=2#docker"></use></svg><span>Docker</span></div>
+                <div class="tool-node tool-node-plain"><span>CI/CD</span></div>
+                <div class="tool-node tool-node-plain"><span>Observability</span></div>
               </div>
             </article>
             <article class="stack-layer reveal">
-              <div class="stack-label"><span>04</span><h3>AI systems</h3><p>Services and application patterns</p></div>
+              <div class="stack-label"><span>04</span><h3>Agent and retrieval stack</h3><p>Routing, orchestration, RAG, and guardrails</p></div>
               <div class="tool-list">
-                <div class="tool-node tool-node-text"><span class="tool-mark" aria-hidden="true">ROUTE</span><span>LLM routing</span></div>
-                <div class="tool-node tool-node-text"><span class="tool-mark" aria-hidden="true">AGENT</span><span>Agentic AI</span></div>
-                <div class="tool-node tool-node-text"><span class="tool-mark" aria-hidden="true">RAG</span><span>RAG</span></div>
-                <div class="tool-node tool-node-text"><span class="tool-mark" aria-hidden="true">SAFE</span><span>Guardrails</span></div>
+                <div class="tool-node tool-node-logo" style="--brand:#79c7e3"><span class="tool-emoji" aria-hidden="true">🚄</span><span>LiteLLM</span></div>
+                <div class="tool-node tool-node-logo" style="--brand:#5bc0eb"><svg aria-hidden="true"><use href="assets/img/toolkit-icons.svg?v=2#langgraph"></use></svg><span>LangGraph</span></div>
+                <div class="tool-node tool-node-logo" style="--brand:#ff5a50"><svg aria-hidden="true"><use href="assets/img/toolkit-icons.svg?v=2#crewai"></use></svg><span>CrewAI</span></div>
+                <div class="tool-node tool-node-logo tool-node-image" style="--brand:#d469e6"><img src="https://raw.githubusercontent.com/run-llama/llama_index/main/docs/src/content/docs/framework/_static/assets/LlamaLogoBrowserTab.png" alt="" aria-hidden="true" width="500" height="500" loading="lazy"><span>LlamaIndex</span></div>
+                <div class="tool-node tool-node-logo" style="--brand:#3aa981"><svg aria-hidden="true"><use href="assets/img/toolkit-icons.svg?v=2#langchain"></use></svg><span>LangChain</span></div>
+                <div class="tool-node tool-node-logo" style="--brand:#76b900"><svg aria-hidden="true"><use href="assets/img/toolkit-icons.svg?v=2#nvidia"></use></svg><span>NeMo Guardrails</span></div>
               </div>
             </article>
             <article class="stack-layer stack-layer-support reveal">
-              <div class="stack-label"><span>05</span><h3>Supporting tools</h3><p>Languages, cloud, and libraries</p></div>
+              <div class="stack-label"><span>05</span><h3>Supporting tools</h3><p>Language, cloud, and version control</p></div>
               <div class="tool-list">
-                <div class="tool-node"><svg aria-hidden="true"><use href="assets/img/toolkit-icons.svg#python"></use></svg><span>Python</span></div>
-                <div class="tool-node"><svg aria-hidden="true"><use href="assets/img/toolkit-icons.svg#aws"></use></svg><span>AWS</span></div>
-                <div class="tool-node"><svg aria-hidden="true"><use href="assets/img/toolkit-icons.svg#azure"></use></svg><span>Azure</span></div>
-                <div class="tool-node tool-node-text"><span class="tool-mark" aria-hidden="true">LI</span><span>LlamaIndex</span></div>
-                <div class="tool-node"><svg aria-hidden="true"><use href="assets/img/toolkit-icons.svg#langchain"></use></svg><span>LangChain</span></div>
-                <div class="tool-node"><svg aria-hidden="true"><use href="assets/img/toolkit-icons.svg#git"></use></svg><span>Git</span></div>
+                <div class="tool-node tool-node-logo" style="--brand:#3776ab"><svg aria-hidden="true"><use href="assets/img/toolkit-icons.svg?v=2#python"></use></svg><span>Python</span></div>
+                <div class="tool-node tool-node-logo" style="--brand:#ff9900"><svg aria-hidden="true"><use href="assets/img/toolkit-icons.svg?v=2#aws"></use></svg><span>AWS</span></div>
+                <div class="tool-node tool-node-logo" style="--brand:#0078d4"><svg aria-hidden="true"><use href="assets/img/toolkit-icons.svg?v=2#azure"></use></svg><span>Azure</span></div>
+                <div class="tool-node tool-node-logo" style="--brand:#f05032"><svg aria-hidden="true"><use href="assets/img/toolkit-icons.svg?v=2#git"></use></svg><span>Git</span></div>
               </div>
             </article>
           </div>
@@ -177,8 +178,8 @@
       </section>
       <section class="section writing-section" id="writing" aria-labelledby="writing-title">
         <div class="shell writing-grid">
-          <div class="section-intro reveal"><p class="eyebrow">06 / Writing</p><h2 id="writing-title">Engineering notes.</h2><p>I&apos;ll write about inference, model serving, agent systems, and ML infrastructure. The first post is in progress.</p></div>
-          <a class="writing-card reveal" href="blogs/"><span class="writing-card-label">Blog</span><strong>Read the notes</strong><span>Open the blog <b aria-hidden="true">↗</b></span></a>
+          <div class="section-intro reveal"><p class="eyebrow">06 / Writing</p><h2 id="writing-title">Engineering notes.</h2><p>Notes on systems I build, how they work, and the tradeoffs behind them.</p></div>
+          <a class="writing-card reveal" href="blogs/flysim/"><span class="writing-card-label">New · FlySim</span><strong>A small fruit-fly brain in the browser</strong><span>Read the article <b aria-hidden="true">↗</b></span></a>
         </div>
       </section>
       <section class="section about-section" id="about" aria-labelledby="about-title"><div class="shell about-grid"><div class="section-intro reveal"><p class="eyebrow">07 / About</p><h2 id="about-title">About me.</h2><p>My work has moved from computer vision and document AI into LLM inference and agent systems.</p></div><div class="about-details reveal"><div><p class="detail-label">Mentorship</p><p>I mentored an intern in AWS and AI engineering, helping her learn and troubleshoot independently.</p></div><div><p class="detail-label">Education</p><p><strong>B.Tech, Computer Science</strong><br>Amity University · 2024</p></div><div><p class="detail-label">Outside work</p><p>Strength training, mixed martial arts, and chess.</p></div></div></div></section>

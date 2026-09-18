@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Run FlySim, Abhiram Sharma's browser simulation of a fruit fly learning to forage with connectome-inspired olfactory, memory, and compass circuits.">
+<meta name="theme-color" content="#140c1c">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://abhiram1809.github.io/flysim_project/">
+<link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+<title>FlySim | Interactive Fruit Fly Brain Simulation</title>
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://abhiram1809.github.io/flysim_project/">
+<meta property="og:title" content="FlySim | Interactive Fruit Fly Brain Simulation">
+<meta property="og:description" content="Watch a connectome-inspired fly brain smell, navigate, and learn which flowers to avoid.">
+<meta property="og:image" content="https://abhiram1809.github.io/assets/img/og-portfolio.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="FlySim | Interactive Fruit Fly Brain Simulation">
+<meta name="twitter:description" content="Watch a connectome-inspired fly brain smell, navigate, and learn which flowers to avoid.">
+<meta name="twitter:image" content="https://abhiram1809.github.io/assets/img/og-portfolio.png">
+<!--
+  Self-contained: no server, no modules, no three.js. Double-click to run.
+  Everything below the render section is the same circuit math as brain.js /
+  sim.js; only the view is different (Canvas 2D top-down instead of WebGL).
+  A classic <script> is deliberate -- ES modules are blocked over file://.
+-->
+<style>
+  html, body { margin: 0; min-height: 100%; background: #140c1c;
+    font: 11px/1.45 ui-monospace, Menlo, Consolas, monospace; color: #deeed6; }
+  body { padding-top: 58px; }
+  .sim-nav { position: fixed; z-index: 10; inset: 0 0 auto; display: flex;
+    min-height: 50px; align-items: center; gap: 8px; padding: 4px 10px;
+    border-bottom: 1px solid #43344f; background: rgba(20, 12, 28, .94);
+    backdrop-filter: blur(10px); }
+  .sim-brand { margin-right: auto; color: #f0c040; font-weight: 800;
+    letter-spacing: .08em; text-transform: uppercase; }
+  .sim-nav a, .sim-nav button { min-height: 34px; padding: 0 10px;
+    border: 1px solid #5a4968; border-radius: 6px; background: #241a33;
+    color: #deeed6; font: inherit; font-weight: 700; cursor: pointer; }
+  .sim-nav a { display: inline-flex; align-items: center; text-decoration: none; }
+  .sim-nav a:hover, .sim-nav button:hover, .sim-nav a:focus-visible,
+  .sim-nav button:focus-visible { border-color: #6dc2ca; color: #6dc2ca; outline: none; }
+  .sim-nav .sim-run { border-color: #6daa2c; color: #8fd04a; }
+  .sim-sr { position: absolute; width: 1px; height: 1px; padding: 0;
+    overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+  /* Wraps the readout under the map when the window is too narrow for two
+     columns, instead of clipping it off the right edge. */
+  #wrap { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 4px 14px; }
+  #view { image-rendering: pixelated; display: block; flex: 0 0 auto; }
+  #hud { min-width: 0; max-width: 100%; overflow-x: auto; white-space: pre;
+    padding: 8px 8px 8px 0; margin: 0; flex: 1 1 auto; }
+  .dim { color: #8595a1; } .gold { color: #dad45e; } .grn { color: #6daa2c; }
+  .red { color: #d04648; } .cyn { color: #6dc2ca; } .blu { color: #597dce; }
+  @media (max-width: 720px) {
+    body { padding-top: 100px; }
+    .sim-nav { flex-wrap: wrap; }
+    .sim-brand { flex-basis: 100%; }
+    .sim-nav a, .sim-nav button { flex: 1 1 auto; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+<nav class="sim-nav" aria-label="FlySim controls">
+  <span class="sim-brand">FlySim / live</span>
+  <a href="../">Portfolio</a>
+  <a href="../blogs/flysim/">How it works</a>
+  <a href="https://github.com/abhiram1809/flysim" target="_blank" rel="noopener">GitHub ↗</a>
+  <button class="sim-run" type="button" data-sim-key="space" aria-pressed="false">Pause</button>
+  <button type="button" data-sim-key="v">Change view</button>
+  <button type="button" data-sim-speed>Speed: 4×</button>
+</nav>
+<main id="wrap">
+  <h1 class="sim-sr">FlySim fruit-fly brain simulation</h1>
+  <canvas id="view" role="img" aria-label="Animated view of a simulated fruit fly foraging among four flower species">FlySim requires a browser with Canvas support.</canvas>
+  <pre id="hud" aria-label="Live simulation telemetry"></pre>
+</main>
+<script>
+"use strict";
+(function () {
+
+// ------------------------------------------------------------------ utilities
+const DT = 0.005;
+function rng(seed) {
+  let s = seed >>> 0;
+  return () => { s ^= s << 13; s >>>= 0; s ^= s >>> 17; s ^= s << 5; s >>>= 0; return s / 4294967296; };
+}
+const wrapPi = (a) => { let x = (a + Math.PI) % (2 * Math.PI); if (x < 0) x += 2 * Math.PI; return x - Math.PI; };
+
+// ------------------------------------------------------------- antennal lobe
+const N_GLOM = 16, AL_SIGMA = 0.45, AL_EXP = 1.5;
+
+// PN_i = ORN_i^1.5 / (sigma^1.5 + ORN_total^1.5). The shared denominator
+// divides out absolute concentration, so odor IDENTITY survives while the fly
+// climbs the gradient and the input magnitude changes by 100x.
+function antennalLobe(orn, out) {
+  let total = 0;
+  for (let i = 0; i < N_GLOM; i++) total += orn[i];
+  const denom = Math.pow(AL_SIGMA, AL_EXP) + Math.pow(total, AL_EXP);
+  for (let i = 0; i < N_GLOM; i++) out[i] = Math.pow(orn[i], AL_EXP) / denom;
+  return out;
+}
+
+// ------------------------------------------------------------- mushroom body
+// 4 claws out of 16 glomeruli = 25%. If each KC sampled most of odor space,
+// every KC code would overlap and one punishment would poison every odor.
+const N_KC = 800, KC_CLAWS = 4, N_WINNERS = 40, W_FLOOR = 0.05;
+
+class MushroomBody {
+  constructor(seed, learnRate = 0.4, forgetRate = 8e-5) {
+    const rand = rng(seed);
+    this.learnRate = learnRate; this.forgetRate = forgetRate;
+    this.claw = new Int32Array(N_KC * KC_CLAWS);
+    this.clawW = new Float32Array(N_KC * KC_CLAWS);
+    for (let k = 0; k < N_KC; k++) {
+      const picked = new Set();
+      for (let c = 0; c < KC_CLAWS; c++) {
+        let g;
+        do { g = Math.floor(rand() * N_GLOM); } while (picked.has(g) && picked.size < N_GLOM);
+        picked.add(g);
+        this.claw[k * KC_CLAWS + c] = g;
+        this.clawW[k * KC_CLAWS + c] = 0.6 + 0.8 * rand();
+      }
+    }
+    this.kcRaw = new Float32Array(N_KC);
+    this.kc = new Float32Array(N_KC);
+    this._scratch = new Float32Array(N_KC);
+    // Both channels start at 1, so a naive fly is exactly indifferent.
+    this.wApproach = new Float32Array(N_KC).fill(1);
+    this.wAvoid = new Float32Array(N_KC).fill(1);
+    this.mbonApproach = 0; this.mbonAvoid = 0; this.valence = 0; this.nActive = 0;
+  }
+
+  forward(pn) {
+    const { kcRaw, kc, claw, clawW } = this;
+    for (let k = 0; k < N_KC; k++) {
+      let s = 0; const base = k * KC_CLAWS;
+      for (let c = 0; c < KC_CLAWS; c++) s += clawW[base + c] * pn[claw[base + c]];
+      kcRaw[k] = s;
+    }
+    // APL global inhibition as keep-top-N. This sparsening is what makes
+    // odors linearly separable downstream.
+    this._scratch.set(kcRaw);
+    this._scratch.sort();
+    const thresh = this._scratch[N_KC - N_WINNERS];
+    let sum = 0, n = 0;
+    for (let k = 0; k < N_KC; k++) {
+      const v = kcRaw[k] - thresh;
+      kc[k] = v > 0 ? v : 0;
+      if (v > 0) { sum += kc[k]; n++; }
+    }
+    this.nActive = n;
+    if (sum <= 1e-9) { this.mbonApproach = this.mbonAvoid = this.valence = 0; return 0; }
+    let a = 0, v = 0;
+    for (let k = 0; k < N_KC; k++) {
+      if (kc[k] > 0) { a += kc[k] * this.wApproach[k]; v += kc[k] * this.wAvoid[k]; }
+    }
+    this.mbonApproach = a / sum;
+    this.mbonAvoid = v / sum;
+    this.valence = this.mbonApproach - this.mbonAvoid;
+    return this.valence;
+  }
+
+  // Reward depresses the AVOID channel, punishment depresses APPROACH.
+  // Depression-only, as in the real circuit -- there is no potentiation.
+  teach(reinforcement) {
+    const w = reinforcement > 0 ? this.wAvoid : this.wApproach;
+    const lr = this.learnRate * Math.min(1, Math.abs(reinforcement));
+    const { kc } = this;
+    let peak = 0;
+    for (let k = 0; k < N_KC; k++) if (kc[k] > peak) peak = kc[k];
+    if (peak <= 0) return;
+    for (let k = 0; k < N_KC; k++) {
+      if (kc[k] > 0) w[k] = Math.max(W_FLOOR, w[k] * (1 - lr * (kc[k] / peak)));
+    }
+  }
+
+  forget() {
+    const f = this.forgetRate;
+    for (let k = 0; k < N_KC; k++) {
+      this.wApproach[k] += f * (1 - this.wApproach[k]);
+      this.wAvoid[k] += f * (1 - this.wAvoid[k]);
+    }
+  }
+
+  probe(pn) {
+    const saveKc = Float32Array.from(this.kc), saveN = this.nActive;
+    const a = this.mbonApproach, v = this.mbonAvoid, val = this.valence;
+    const out = this.forward(pn);
+    this.kc.set(saveKc); this.nActive = saveN;
+    this.mbonApproach = a; this.mbonAvoid = v; this.valence = val;
+    return out;
+  }
+}
+
+// -------------------------------------------------------- central complex CX
+const N_CX = 32, W_EXC = 2.5, W_INH = 0.12, SIGMA = 1.0, TONIC = 0.2, TAU = 0.05, CAP = 60;
+const CX_ANG = new Float32Array(N_CX);
+for (let i = 0; i < N_CX; i++) CX_ANG[i] = (2 * Math.PI * i) / N_CX;
+const CX_W = new Float32Array(N_CX * N_CX);
+for (let i = 0; i < N_CX; i++) for (let j = 0; j < N_CX; j++) {
+  const raw = Math.abs(i - j), d = Math.min(raw, N_CX - raw);
+  CX_W[i * N_CX + j] = W_EXC * Math.exp(-(d * d) / (2 * SIGMA * SIGMA)) - W_INH;
+}
+
+class HeadingCircuit {
+  constructor(gain) {
+    this.gain = gain;
+    this.r = new Float32Array(N_CX); this.r[0] = 1;
+    this._next = new Float32Array(N_CX);
+  }
+  step(angVel) {
+    const { r, _next } = this;
+    let sum = 0;
+    for (let i = 0; i < N_CX; i++) {
+      let rec = 0; const row = i * N_CX;
+      for (let j = 0; j < N_CX; j++) rec += CX_W[row + j] * r[j];
+      // PEN derivative shift: the +/-1 anatomical column offset is what turns
+      // angular velocity into bump motion.
+      const shift = this.gain * angVel * (r[(i - 1 + N_CX) % N_CX] - r[(i + 1) % N_CX]);
+      const drive = rec + shift + TONIC;
+      const v = r[i] + (DT / TAU) * (-r[i] + (drive > 0 ? drive : 0));
+      _next[i] = v; sum += v;
+    }
+    const scale = sum > CAP ? CAP / sum : 1;
+    for (let i = 0; i < N_CX; i++) r[i] = _next[i] * scale;
+    return r;
+  }
+  settle(n = 300) { for (let i = 0; i < n; i++) this.step(0); return this; }
+  get heading() {
+    let s = 0, c = 0;
+    for (let i = 0; i < N_CX; i++) { s += this.r[i] * Math.sin(CX_ANG[i]); c += this.r[i] * Math.cos(CX_ANG[i]); }
+    const h = Math.atan2(s, c) % (2 * Math.PI);
+    return h < 0 ? h + 2 * Math.PI : h;
+  }
+  get sharpness() {
+    let mx = 0, sum = 0;
+    for (let i = 0; i < N_CX; i++) { if (this.r[i] > mx) mx = this.r[i]; sum += this.r[i]; }
+    return mx / Math.max(sum / N_CX, 1e-9);
+  }
+}
+
+// Bump velocity is linear in (gain x angular velocity), so calibration is one
+// probe run and one division. Bisection is a trap: an unlucky bracket has no
+// solution inside it.
+function calibrateGain() {
+  const probeGain = 0.5, probeAv = Math.PI / 2;
+  const cx = new HeadingCircuit(probeGain).settle();
+  let prev = cx.heading, total = 0, at200 = 0;
+  for (let k = 0; k < 700; k++) {
+    cx.step(probeAv);
+    const h = cx.heading;
+    total += wrapPi(h - prev); prev = h;
+    if (k === 199) at200 = total;
+  }
+  return probeGain * (probeAv / ((total - at200) / (500 * DT)));
+}
+
+// ----------------------------------------------------------------- the brain
+class FlyBrain {
+  constructor(seed) {
+    this.gain = calibrateGain();
+    this.cx = new HeadingCircuit(this.gain).settle();
+    this.mb = new MushroomBody(seed);
+    this.pnL = new Float32Array(N_GLOM);
+    this.pnR = new Float32Array(N_GLOM);
+    this.pnMean = new Float32Array(N_GLOM);
+    this.valence = 0; this.lateral = 0; this.odor = 0; this.behavior = 'SEARCH';
+  }
+  sense(ornL, ornR) {
+    antennalLobe(ornL, this.pnL);
+    antennalLobe(ornR, this.pnR);
+    for (let i = 0; i < N_GLOM; i++) this.pnMean[i] = 0.5 * (this.pnL[i] + this.pnR[i]);
+    let magL = 0, magR = 0;
+    for (let i = 0; i < N_GLOM; i++) { magL += ornL[i]; magR += ornR[i]; }
+    this.odor = 0.5 * (magL + magR);
+    // One MB pass gives identity -> valence. Direction comes from the L/R
+    // comparison, normalized so steering gain does not explode up close.
+    this.valence = this.mb.forward(this.pnMean);
+    this.lateral = (magL - magR) / (magL + magR + 1e-6);
+    this.mb.forget();
+    return { valence: this.valence, lateral: this.lateral, odor: this.odor };
+  }
+  get heading() { return this.cx.heading; }
+}
+
+// ------------------------------------------------------------------ the world
+const WORLD = 40, PLUME_R = 4.0, DETECT = 0.04, FEED_RADIUS = 1.25;
+const CRUISE = 6.0, SURGE = 9.5, FLEE = 11.0, MAX_ANGVEL = 4.2;
+const K_GRAD = 26.0, K_MENO = 2.6, AVOID_VALENCE = -0.08, CURIOSITY = 0.3;
+
+// Each species has a private strong triple plus weak shared channels, so the
+// MB has real discrimination work rather than a one-hot lookup.
+const SPECIES = [
+  { name: 'bluebell', hex: '#4878d0', odor: [1.0, .8, .5, 0, 0, 0, 0, 0, 0, .3, 0, 0, 0, 0, 0, .2] },
+  { name: 'goldstar', hex: '#f0c040', odor: [.2, 0, 0, 1.0, .8, .5, 0, 0, 0, .3, 0, 0, 0, 0, 0, 0] },
+  { name: 'redcap',   hex: '#d04648', odor: [0, 0, 0, .2, 0, 0, 1.0, .8, .5, 0, .3, 0, 0, 0, 0, .2] },
+  { name: 'violet',   hex: '#9050c8', odor: [0, 0, .2, 0, 0, 0, .2, 0, 0, 0, 0, .3, 1.0, .8, .5, 0] },
+];
+
+class Sim {
+  constructor(seed = 11, nFlowers = 22, brainSeed = 7) {
+    this.rand = rng(seed);
+    this.t = 0;
+    this.brain = new FlyBrain(brainSeed);
+    this.payoff = [1, -1, 1, -1];
+    this.flowers = [];
+    for (let i = 0; i < nFlowers; i++) {
+      let x = 0, z = 0, ok = false, tries = 0;
+      while (!ok && tries++ < 200) {
+        x = (this.rand() * 2 - 1) * (WORLD - 4);
+        z = (this.rand() * 2 - 1) * (WORLD - 4);
+        ok = this.flowers.every((f) => (f.x - x) ** 2 + (f.z - z) ** 2 > 81);
+      }
+      this.flowers.push({ x, z, species: i % SPECIES.length, nectar: 1, cooldown: 0 });
+    }
+    this.fly = { x: 0, z: 0, yaw: this.rand() * Math.PI * 2, speed: CRUISE, angVel: 0 };
+    // Record the bump's arbitrary starting column once; later growth in the
+    // difference is genuine dead-reckoning drift.
+    this.headingOffset = wrapPi(this.brain.heading - this.fly.yaw);
+    this.goalHeading = this.brain.heading;
+    this.saccadeIn = 1.5; this.escapeIn = 0; this.rejectDebounce = 0; this.trackTime = 0;
+    this.ornL = new Float32Array(N_GLOM);
+    this.ornR = new Float32Array(N_GLOM);
+    this.stats = { nectar: 0, toxin: 0, rejections: 0 };
+    this.events = [];
+  }
+
+  sampleOdor(x, z, out) {
+    out.fill(0);
+    for (const f of this.flowers) {
+      const dx = x - f.x, dz = z - f.z, d2 = dx * dx + dz * dz;
+      if (d2 > (PLUME_R * 3) ** 2) continue;
+      const g = Math.exp(-d2 / (2 * PLUME_R * PLUME_R)) * (0.35 + 0.65 * f.nectar);
+      const vec = SPECIES[f.species].odor;
+      for (let i = 0; i < N_GLOM; i++) out[i] += g * vec[i];
+    }
+    for (let i = 0; i < N_GLOM; i++) out[i] = Math.max(0, out[i] + (this.rand() - 0.5) * 0.004);
+    return out;
+  }
+
+  nearestFlower() {
+    let best = -1, bd = Infinity;
+    for (let i = 0; i < this.flowers.length; i++) {
+      const f = this.flowers[i];
+      const d2 = (f.x - this.fly.x) ** 2 + (f.z - this.fly.z) ** 2;
+      if (d2 < bd) { bd = d2; best = i; }
+    }
+    return { idx: best, dist: Math.sqrt(bd) };
+  }
+
+  step() {
+    const { fly, brain } = this;
+    const fwdX = Math.sin(fly.yaw), fwdZ = Math.cos(fly.yaw);
+    const leftX = fwdZ, leftZ = -fwdX;
+    const hx = fly.x + fwdX * 0.4, hz = fly.z + fwdZ * 0.4;
+    this.sampleOdor(hx + leftX * 0.6, hz + leftZ * 0.6, this.ornL);
+    this.sampleOdor(hx - leftX * 0.6, hz - leftZ * 0.6, this.ornR);
+
+    const { valence, lateral, odor } = brain.sense(this.ornL, this.ornR);
+    // A naive fly explores (CURIOSITY); one that has learned an odor is bad
+    // gets a negative drive and steers DOWN the gradient instead of up.
+    const drive = valence < AVOID_VALENCE ? valence : Math.max(valence, CURIOSITY);
+    const gradient = drive * lateral;
+
+    for (const f of this.flowers) {
+      if (f.nectar < 1) f.nectar = Math.min(1, f.nectar + 0.06 * DT);
+      if (f.cooldown > 0) f.cooldown -= DT;
+    }
+    if (this.escapeIn > 0) this.escapeIn -= DT;
+    if (this.rejectDebounce > 0) this.rejectDebounce -= DT;
+
+    const near = this.nearestFlower(), nf = this.flowers[near.idx];
+    let angVel = 0, targetSpeed = CRUISE, behavior;
+
+    // The valence gate is what turns learning into behavior. Without it the
+    // fly eats whatever it collides with and the MB output never reaches the
+    // motor system, so learning cannot express itself.
+    const willLand = valence > AVOID_VALENCE;
+
+    if (near.dist < FEED_RADIUS && nf.cooldown <= 0 && this.escapeIn <= 0 && willLand) {
+      behavior = 'FEED'; targetSpeed = 0.6; this.trackTime = 0;
+      const r = this.payoff[nf.species];
+      brain.mb.teach(r);
+      nf.nectar = 0; nf.cooldown = 6; this.escapeIn = 0.9;
+      if (r > 0) this.stats.nectar++; else this.stats.toxin++;
+      this.events.push({ kind: r > 0 ? 'nectar' : 'toxin', x: nf.x, z: nf.z });
+    } else if (odor > DETECT && valence < AVOID_VALENCE && this.escapeIn <= 0) {
+      if (near.dist < FEED_RADIUS * 2 && nf.cooldown <= 0 && this.rejectDebounce <= 0) {
+        this.stats.rejections++; this.rejectDebounce = 2.0;
+        this.events.push({ kind: 'reject', x: nf.x, z: nf.z });
+      }
+      behavior = 'AVOID'; targetSpeed = FLEE;
+      angVel = -K_GRAD * gradient + (gradient >= 0 ? -1.1 : 1.1);
+    } else if (odor > DETECT && this.escapeIn <= 0) {
+      behavior = 'TRACK'; targetSpeed = SURGE;
+      angVel = K_GRAD * gradient;
+      // Two overlapping plumes form a saddle the surge controller can orbit
+      // forever, closing to ~1.9 units but never to the feed radius. Without a
+      // give-up timer the fly stays in TRACK and never disperses again.
+      this.trackTime += DT;
+      if (this.trackTime > 12) { this.trackTime = 0; this.escapeIn = 2.5; }
+    } else {
+      behavior = 'SEARCH'; targetSpeed = CRUISE; this.trackTime = 0;
+      // Menotaxis: hold a remembered compass heading. This is the CX earning
+      // its keep -- straight dispersal flights instead of a random walk.
+      this.saccadeIn -= DT;
+      if (this.saccadeIn <= 0) {
+        this.saccadeIn = 1.2 + this.rand() * 2.5;
+        this.goalHeading = wrapPi(this.goalHeading + (this.rand() * 2 - 1) * 2.0);
+      }
+      angVel = K_MENO * wrapPi(this.goalHeading - brain.heading);
+    }
+
+    const edge = 6;
+    if (Math.abs(fly.x) > WORLD - edge || Math.abs(fly.z) > WORLD - edge) {
+      const inward = Math.atan2(-fly.x, -fly.z);
+      angVel += 3.0 * wrapPi(inward - fly.yaw);
+      // goalHeading is compared against the compass, so it lives in compass
+      // frame; inward is a body-frame bearing and needs the offset added.
+      this.goalHeading = wrapPi(inward + this.headingOffset);
+    }
+
+    angVel = Math.max(-MAX_ANGVEL, Math.min(MAX_ANGVEL, angVel));
+    fly.angVel = angVel;
+    fly.speed += (targetSpeed - fly.speed) * Math.min(1, 6 * DT);
+    fly.yaw = wrapPi(fly.yaw + angVel * DT);
+    fly.x = Math.max(-WORLD, Math.min(WORLD, fly.x + Math.sin(fly.yaw) * fly.speed * DT));
+    fly.z = Math.max(-WORLD, Math.min(WORLD, fly.z + Math.cos(fly.yaw) * fly.speed * DT));
+
+    // The compass only ever sees the fly's own angular velocity, never true
+    // yaw. The drift you see in the HUD is therefore real and accumulates.
+    brain.cx.step(angVel);
+    brain.behavior = behavior;
+    this.t += DT;
+    return behavior;
+  }
+
+  speciesValence() {
+    const tmp = new Float32Array(N_GLOM), pn = new Float32Array(N_GLOM);
+    return SPECIES.map((s, i) => {
+      for (let g = 0; g < N_GLOM; g++) tmp[g] = s.odor[g] * 0.8;
+      antennalLobe(tmp, pn);
+      return { name: s.name, hex: s.hex, payoff: this.payoff[i], valence: this.brain.mb.probe(pn) };
+    });
+  }
+
+  resetBrain() {
+    this.brain = new FlyBrain((this.rand() * 1e6) | 0);
+    this.headingOffset = wrapPi(this.brain.heading - this.fly.yaw);
+    this.stats = { nectar: 0, toxin: 0, rejections: 0 };
+  }
+  flip() { this.payoff = this.payoff.map((p) => -p); }
+  get compassYaw() { return wrapPi(this.brain.heading - this.headingOffset); }
+  get compassError() { return wrapPi(this.compassYaw - this.fly.yaw); }
+}
+
+// --------------------------------------------------------------------- render
+const PIX = 240;                      // internal pixel grid; upscaled nearest
+const P = { grass: '#3f7a28', dark: '#2c5a1e', lite: '#5ea832', high: '#8fd04a',
+            ink: '#101018', white: '#f0f4e0', grey: '#a8b0b8', gold: '#f0c040',
+            red: '#d04648', cyan: '#6dc2ca',
+            skyHi: '#241a33', skyLo: '#4a3a5e', haze: '#6b5a7e' };
+const BEH_HEX = { SEARCH: P.grey, TRACK: P.high, AVOID: P.red, FEED: P.gold };
+
+const view = document.getElementById('view');
+const hud = document.getElementById('hud');
+const g = view.getContext('2d');
+view.width = PIX; view.height = PIX;
+
+const w2p = (v) => ((v + WORLD) / (2 * WORLD)) * PIX;
+
+// Static ground baked once: redrawing speckles every frame is pointless work.
+const ground = document.createElement('canvas');
+ground.width = ground.height = PIX;
+(function bakeGround() {
+  const c = ground.getContext('2d');
+  const r = rng(5);
+  c.fillStyle = P.grass; c.fillRect(0, 0, PIX, PIX);
+  for (let i = 0; i < 420; i++) {
+    c.fillStyle = r() > 0.5 ? P.lite : P.dark;
+    c.fillRect((r() * PIX) | 0, (r() * PIX) | 0, 2, 1);
+  }
+})();
+
+let scale = 1;
+function fit() {
+  // Below ~640px the readout wraps under the map, so the map gets the whole
+  // width instead of sharing it with a column that is no longer beside it.
+  const stacked = window.innerWidth < 640;
+  const avail = stacked
+    ? Math.min(window.innerWidth - 10, (window.innerHeight - 108) * 0.6)
+    : Math.min(window.innerWidth - 330, window.innerHeight - 68);
+  scale = Math.max(1, Math.floor(avail / PIX));
+  view.style.width = PIX * scale + 'px';
+  view.style.height = PIX * scale + 'px';
+}
+addEventListener('resize', fit); fit();
+
+const sim = new Sim();
+const trail = [];      // {x,z,b}
+const markers = [];     // {x,z,kind}
+let showPlumes = true, paused = false, hudOn = true;
+const SPEEDS = [1, 4, 16, 50];
+let speedIdx = 1;
+const VIEWS = ['MAP', 'CHASE', 'POV'];
+let viewMode = 0;
+
+// Height lives in the render layer, not in Sim. Sim is a 2D world on purpose,
+// and adding rand() calls to it would shift its RNG stream and rearrange every
+// flower -- which is how the TRACK limit-cycle bug got found in the first place.
+const flyY = () => 1.6 + 0.35 * Math.sin(sim.t * 9);
+const fScale = (() => { const r = rng(31); return sim.flowers.map(() => 0.85 + r() * 0.5); })();
+
+function drawMap() {
+  g.drawImage(ground, 0, 0);
+
+  if (showPlumes) {
+    g.globalAlpha = 0.16;
+    for (const f of sim.flowers) {
+      g.fillStyle = SPECIES[f.species].hex;
+      g.beginPath();
+      g.arc(w2p(f.x), w2p(f.z), (PLUME_R * 1.7 * PIX) / (2 * WORLD), 0, 7);
+      g.fill();
+    }
+    g.globalAlpha = 1;
+  }
+
+  for (const s of trail) { g.fillStyle = BEH_HEX[s.b]; g.fillRect(w2p(s.x) | 0, w2p(s.z) | 0, 1, 1); }
+
+  for (const m of markers) {
+    g.fillStyle = m.kind === 'nectar' ? P.high : m.kind === 'toxin' ? P.red : P.gold;
+    g.fillRect((w2p(m.x) | 0) - 1, (w2p(m.z) | 0) - 1, 2, 2);
+  }
+
+  for (const f of sim.flowers) {
+    const x = w2p(f.x) | 0, y = w2p(f.z) | 0;
+    g.fillStyle = SPECIES[f.species].hex;
+    g.fillRect(x - 2, y - 1, 5, 3);
+    g.fillRect(x - 1, y - 2, 3, 5);
+    if (f.nectar > 0.5) { g.fillStyle = P.gold; g.fillRect(x, y, 1, 1); }
+  }
+
+  const fx = w2p(sim.fly.x) | 0, fy = w2p(sim.fly.z) | 0;
+  g.fillStyle = BEH_HEX[sim.brain.behavior];
+  g.fillRect(fx + (Math.sin(sim.fly.yaw) * 4 | 0), fy + (Math.cos(sim.fly.yaw) * 4 | 0), 2, 2);
+  g.fillStyle = P.ink; g.fillRect(fx - 2, fy - 2, 4, 4);
+  g.fillStyle = P.white; g.fillRect(fx - 1, fy - 1, 2, 2);
+}
+
+// ----------------------------------------------------------- 3d / pov render
+// A pinhole projection onto the same 240px grid. No WebGL and no depth buffer:
+// the ground is shaded per scanline and the 22 flowers are sorted back to
+// front, which is all a fly-height view actually needs.
+const FOCAL = 120;                    // 90 deg horizontal fov at PIX = 240
+const cam = { x: 0, y: 2.4, z: 0, yaw: 0, s: 0, c: 1, horizon: PIX / 2 };
+const pr = { x: 0, y: 0, d: 0 };      // shared projection result, no per-point alloc
+
+function camUpdate() {
+  const f = sim.fly, fy = flyY();
+  let pitch;
+  if (viewMode === 2) {
+    // POV rides the head with no smoothing at all -- the saccades are the point.
+    cam.yaw = f.yaw; pitch = 0.05;
+    cam.x = f.x + Math.sin(f.yaw) * 0.4;
+    cam.z = f.z + Math.cos(f.yaw) * 0.4;
+    cam.y = fy;
+  } else {
+    // Smooth the heading and derive the position from it, rather than lerping
+    // the camera as a free world point: the fly saccades hard enough that a
+    // position lerp cuts the corner and ends up in front of it.
+    cam.yaw += wrapPi(f.yaw - cam.yaw) * 0.07; pitch = 0.2;
+    cam.x = f.x - Math.sin(cam.yaw) * 6.5;
+    cam.z = f.z - Math.cos(cam.yaw) * 6.5;
+    cam.y = fy + 2.2;
+  }
+  cam.s = Math.sin(cam.yaw); cam.c = Math.cos(cam.yaw);
+  cam.horizon = PIX / 2 - FOCAL * Math.tan(pitch);
+}
+
+// Writes into the shared `pr`. False means behind the near plane.
+function project(x, y, z) {
+  const dx = x - cam.x, dz = z - cam.z;
+  const d = dx * cam.s + dz * cam.c;
+  if (d < 0.4) return false;
+  pr.d = d;
+  pr.x = PIX / 2 + (FOCAL * (dz * cam.s - dx * cam.c)) / d;
+  pr.y = cam.horizon + (FOCAL * (cam.y - y)) / d;
+  return true;
+}
+
+// Sky and ground are rasterized per pixel into one ImageData. Shading the
+// ground by depth alone (one colour per scanline) looks fine from the chase
+// camera but collapses into a flat green field in POV, where the whole lower
+// half of the screen maps to depths of 1.5-4 units. Sampling world position
+// per pixel instead keeps the texture readable at any camera height, and is
+// what makes a turn visible at all -- depth bands only encode forward motion.
+const gimg = g.createImageData(PIX, PIX);
+const gbuf = new Uint32Array(gimg.data.buffer);
+// ImageData is little-endian RGBA, so a Uint32 word is 0xAABBGGRR.
+const abgr = (hex) => {
+  const n = parseInt(hex.slice(1), 16);
+  return (0xff000000 | ((n & 255) << 16) | (((n >> 8) & 255) << 8) | (n >> 16)) >>> 0;
+};
+const C_GRASS = abgr(P.grass), C_DARK = abgr(P.dark), C_LITE = abgr(P.lite),
+      C_SKYHI = abgr(P.skyHi), C_SKYLO = abgr(P.skyLo), C_HAZE = abgr(P.haze);
+
+const hash2 = (a, b) => {
+  let x = Math.imul(a, 73856093) ^ Math.imul(b, 19349663);
+  x = Math.imul(x ^ (x >>> 13), 1274126177);
+  return (x ^ (x >>> 16)) >>> 0;
+};
+
+function drawGround() {
+  const h = Math.max(0, Math.min(PIX, Math.ceil(cam.horizon)));
+  gbuf.fill(C_SKYHI, 0, h * PIX);
+  gbuf.fill(C_SKYLO, Math.max(0, h - 26) * PIX, h * PIX);
+  gbuf.fill(C_HAZE, Math.max(0, h - 1) * PIX, h * PIX);
+
+  for (let y = h; y < PIX; y++) {
+    const d = (FOCAL * cam.y) / (y - cam.horizon);
+    const row = y * PIX;
+    // Written as !(d < 34) so Infinity at the horizon row lands here too.
+    if (!(d < 34)) { gbuf.fill(C_DARK, row, row + PIX); continue; }
+    // Cell size tracks depth so cells stay ~4px on screen, snapped to a power
+    // of two: an unsnapped size makes the whole pattern swim as the fly moves.
+    const inv = 1 / Math.pow(2, Math.ceil(Math.log2((4 * d) / FOCAL)));
+    const k = d / FOCAL;
+    const stepX = -cam.c * k, stepZ = cam.s * k;
+    let wx = cam.x + cam.s * d - stepX * (PIX / 2);
+    let wz = cam.z + cam.c * d - stepZ * (PIX / 2);
+    const near = d < 22;
+    for (let px = 0; px < PIX; px++, wx += stepX, wz += stepZ) {
+      // +1024 biases the coords positive so | 0 floors instead of truncating
+      // toward zero, which would otherwise double the cell width at the origin.
+      const t = hash2(((wx + 1024) * inv) | 0, ((wz + 1024) * inv) | 0) & 15;
+      gbuf[row + px] = near
+        ? t < 2 ? C_DARK : t < 5 ? C_LITE : C_GRASS
+        : t < 3 ? C_GRASS : C_DARK;
+    }
+  }
+  g.putImageData(gimg, 0, 0);
+}
+
+// The world edge the fly steers away from, as posts every 2.5 units.
+const POSTS = (() => {
+  const a = [];
+  for (let v = -WORLD; v <= WORLD; v += 2.5) a.push([v, -WORLD], [v, WORLD], [-WORLD, v], [WORLD, v]);
+  return a;
+})();
+
+function drawPosts() {
+  g.fillStyle = P.ink;
+  for (const [x, z] of POSTS) {
+    if (!project(x, 0, z) || pr.x < -1 || pr.x > PIX + 1) continue;
+    const top = (cam.horizon + (FOCAL * (cam.y - 1.4)) / pr.d) | 0;
+    g.fillRect(pr.x | 0, top, 1, Math.max(1, (pr.y | 0) - top));
+  }
+}
+
+function drawPlumes3() {
+  // Clipped to below the horizon. A plume the camera is sitting inside
+  // projects to an ellipse hundreds of pixels tall, and without the clip it
+  // paints straight over the sky and the treeline.
+  g.save();
+  g.beginPath();
+  g.rect(0, Math.max(0, cam.horizon), PIX, PIX);
+  g.clip();
+  g.globalAlpha = 0.18;
+  for (const f of sim.flowers) {
+    if (!project(f.x, 0, f.z) || pr.d > 45) continue;
+    // A ground circle of radius R at depth d is foreshortened vertically by
+    // roughly camY/d. Wrong once the camera is inside the plume, hence the clamp.
+    const rx = Math.min(400, (FOCAL * PLUME_R * 1.7) / pr.d);
+    g.fillStyle = SPECIES[f.species].hex;
+    g.beginPath(); g.ellipse(pr.x, pr.y, rx, Math.max(1, (rx * cam.y) / pr.d), 0, 0, 7); g.fill();
+  }
+  g.globalAlpha = 1;
+  g.restore();
+}
+
+function drawGroundDots() {
+  for (const s of trail) {
+    if (!project(s.x, 0.02, s.z) || pr.d > 35) continue;
+    g.fillStyle = BEH_HEX[s.b];
+    g.fillRect(pr.x | 0, pr.y | 0, 1, 1);
+  }
+  for (const m of markers) {
+    if (!project(m.x, 0.03, m.z) || pr.d > 45) continue;
+    g.fillStyle = m.kind === 'nectar' ? P.high : m.kind === 'toxin' ? P.red : P.gold;
+    g.fillRect((pr.x | 0) - 1, (pr.y | 0) - 1, 3, 2);
+  }
+}
+
+function drawFlowers3() {
+  const vis = [];
+  for (let i = 0; i < sim.flowers.length; i++)
+    if (project(sim.flowers[i].x, 0, sim.flowers[i].z)) vis.push({ i, x: pr.x, y: pr.y, d: pr.d });
+  vis.sort((a, b) => b.d - a.d);
+  for (const v of vis) {
+    const f = sim.flowers[v.i], sc = fScale[v.i];
+    const px = v.x | 0, base = v.y | 0;
+    const head = (cam.horizon + (FOCAL * (cam.y - 1.15 * sc)) / v.d) | 0;
+    // Capped at 26px. A flower the fly is hovering over is only ~1 unit from
+    // the POV camera and projects wider than the screen, which reads as an
+    // opaque wall rather than as a flower.
+    const r = Math.max(1, Math.min(26, Math.round((FOCAL * 0.42 * sc) / v.d))), hw = Math.max(1, r >> 1);
+    g.fillStyle = P.dark;
+    g.fillRect(px, head, 1, Math.max(1, base - head));
+    g.fillStyle = SPECIES[f.species].hex;
+    g.fillRect(px - r, head - hw, 2 * r + 1, 2 * hw + 1);
+    g.fillRect(px - hw, head - r, 2 * hw + 1, 2 * r + 1);
+    if (f.nectar > 0.5) { g.fillStyle = P.gold; g.fillRect(px, head, 1, 1); }
+  }
+}
+
+function drawFly3() {
+  const f = sim.fly;
+  // Shadow first: it is the only cue for how high the fly is bobbing.
+  if (project(f.x, 0.02, f.z)) {
+    const sr = Math.max(1, Math.round((FOCAL * 0.25) / pr.d));
+    g.fillStyle = P.ink; g.fillRect((pr.x | 0) - sr, pr.y | 0, 2 * sr, 1);
+  }
+  if (!project(f.x, flyY(), f.z)) return;
+  const r = Math.max(1, Math.round((FOCAL * 0.3) / pr.d));
+  const x = pr.x | 0, y = pr.y | 0;
+  g.fillStyle = P.ink; g.fillRect(x - r, y - r, 2 * r, 2 * r);
+  g.fillStyle = BEH_HEX[sim.brain.behavior];
+  g.fillRect(x - (r >> 1), y - (r >> 1), Math.max(1, r), Math.max(1, r));
+  g.fillStyle = P.grey;
+  const wob = Math.sin(sim.t * 60) > 0 ? -r : 0;
+  g.fillRect(x - 2 * r, y - r + wob, r, 1);
+  g.fillRect(x + r, y - r + wob, r, 1);
+}
+
+// POV has no fly on screen, so the two antennae stand in for it: these are the
+// raw ORN totals whose difference is the steering signal.
+function drawAntennae() {
+  let l = 0, r = 0;
+  for (let i = 0; i < N_GLOM; i++) { l += sim.ornL[i]; r += sim.ornR[i]; }
+  const m = Math.max(0.35, l, r), h = 34;
+  g.fillStyle = P.ink;
+  g.fillRect(8, PIX - h - 8, 4, h); g.fillRect(PIX - 12, PIX - h - 8, 4, h);
+  g.fillStyle = P.cyan;
+  const lh = Math.round((l / m) * h), rh = Math.round((r / m) * h);
+  g.fillRect(8, PIX - 8 - lh, 4, lh); g.fillRect(PIX - 12, PIX - 8 - rh, 4, rh);
+}
+
+function draw() {
+  if (viewMode === 0) { drawMap(); return; }
+  camUpdate();
+  drawGround();
+  if (showPlumes) drawPlumes3();
+  drawGroundDots();
+  drawPosts();
+  drawFlowers3();
+  if (viewMode === 1) drawFly3(); else drawAntennae();
+}
+
+// --------------------------------------------------------------- text readout
+const RAMP = ' ▁▂▃▄▅▆▇█';
+const ramp = (v) => RAMP[Math.max(0, Math.min(8, Math.round(v * 8)))];
+
+function rampRow(arr, mx) {
+  let s = '';
+  for (let i = 0; i < arr.length; i++) s += ramp(arr[i] / Math.max(mx, 1e-9));
+  return s;
+}
+
+// Signed bar: fills left of centre for negative, right for positive.
+function sbar(v, half) {
+  const k = Math.min(half, Math.round(Math.abs(v) * half));
+  const n = v < 0 ? k : 0, p = v > 0 ? k : 0;
+  return '·'.repeat(half - n) + '█'.repeat(n) + '|' + '█'.repeat(p) + '·'.repeat(half - p);
+}
+
+const deg = (r) => ((r * 180) / Math.PI).toFixed(0).padStart(4);
+
+function drawHud() {
+  if (!hudOn) { hud.innerHTML = ''; return; }
+  const b = sim.brain, st = sim.stats;
+  let cxMax = 0;
+  for (let i = 0; i < N_CX; i++) cxMax = Math.max(cxMax, b.cx.r[i]);
+  let alMax = 0;
+  for (let i = 0; i < N_GLOM; i++) alMax = Math.max(alMax, b.pnL[i], b.pnR[i]);
+  const err = (sim.compassError * 180) / Math.PI;
+  const good = st.nectar + st.toxin > 0 ? Math.round((100 * st.nectar) / (st.nectar + st.toxin)) : 0;
+
+  const rows = sim.speciesValence().map((s) => {
+    const ok = Math.sign(s.valence) === Math.sign(s.payoff) && Math.abs(s.valence) > 0.03;
+    return `  <span style="color:${s.hex}">█</span> ${s.name.padEnd(9)}`
+      + `<span class="${s.payoff > 0 ? 'grn' : 'red'}">${(s.payoff > 0 ? 'nectar' : 'toxin').padEnd(7)}</span>`
+      + `<span class="${s.valence >= 0 ? 'grn' : 'red'}">${sbar(s.valence, 8)}</span>`
+      + ` ${s.valence >= 0 ? '+' : ''}${s.valence.toFixed(3)} <span class="${ok ? 'grn' : 'dim'}">${ok ? '✓' : '?'}</span>`;
+  }).join('\n');
+
+  hud.innerHTML =
+`<span class="gold">FLY BRAIN</span>  <span style="color:${BEH_HEX[sim.brain.behavior]}">${sim.brain.behavior.padEnd(7)}</span>`
++ `<span class="dim">${SPEEDS[speedIdx]}x  ${VIEWS[viewMode]}${paused ? '  PAUSED' : ''}</span>
+<span class="dim">t=${sim.t.toFixed(0)}s  ${sim.fly.speed.toFixed(1)} u/s  odor ${b.odor.toFixed(3)}</span>
+
+<span class="dim">CENTRAL COMPLEX</span>  <span class="dim">ring attractor, 32 E-PG</span>
+ <span class="cyn">${rampRow(b.cx.r, cxMax)}</span>
+ <span class="dim">body ${deg(sim.fly.yaw)}°   compass <span class="gold">${deg(sim.compassYaw)}°</span>   drift <span class="${Math.abs(err) > 25 ? 'red' : 'dim'}">${(err >= 0 ? '+' : '') + err.toFixed(1)}°</span></span>
+ <span class="dim">sharpness ${b.cx.sharpness.toFixed(1)}   ω ${deg(sim.fly.angVel)}°/s   dead reckoning only</span>
+
+<span class="dim">ANTENNAL LOBE</span>  <span class="dim">16 PN, divisive normalization</span>
+ L <span class="blu">${rampRow(b.pnL, alMax)}</span>
+ R <span class="blu">${rampRow(b.pnR, alMax)}</span>
+
+<span class="dim">MUSHROOM BODY</span>  <span class="dim">${b.mb.nActive}/${N_KC} KC active (APL)</span>
+ <span class="dim">approach ${b.mb.mbonApproach.toFixed(2)}  avoid ${b.mb.mbonAvoid.toFixed(2)}</span>
+ valence <span class="${b.valence >= 0 ? 'grn' : 'red'}">${sbar(b.valence, 12)} ${(b.valence >= 0 ? '+' : '') + b.valence.toFixed(3)}</span>
+
+<span class="dim">LEARNED VALUE</span>  <span class="dim">KC→MBON weights</span>
+${rows}
+
+ <span class="grn">nectar ${st.nectar}</span>   <span class="red">toxin ${st.toxin}</span>   <span class="gold">refused ${st.rejections}</span>   <span class="dim">${good}% good</span>
+
+<span class="dim">[v] map / chase / pov   [space] pause   [1-4] speed
+[p] plumes   [f] flip world   [r] reset brain   [h] hud</span>`;
+}
+
+// ----------------------------------------------------------------- main loop
+addEventListener('keydown', (e) => {
+  if (e.target instanceof Element && e.target.closest('button, a')) return;
+  const k = e.key.toLowerCase();
+  if (k === ' ') { paused = !paused; e.preventDefault(); }
+  else if (k >= '1' && k <= '4') speedIdx = +k - 1;
+  else if (k === 'v') viewMode = (viewMode + 1) % VIEWS.length;
+  else if (k === 'p') showPlumes = !showPlumes;
+  else if (k === 'h') hudOn = !hudOn;
+  else if (k === 'f') { sim.flip(); markers.length = 0; }
+  else if (k === 'r') { sim.resetBrain(); markers.length = 0; trail.length = 0; }
+});
+
+window.__fly = { sim, SPECIES, step: () => sim.step(), cam, view: (m) => (viewMode = m) };
+
+let last = performance.now(), acc = 0, tick = 0;
+function frame(now) {
+  const dtReal = Math.min(0.05, (now - last) / 1000);
+  last = now;
+  if (!paused) {
+    acc += dtReal * SPEEDS[speedIdx];
+    // Fixed 200 Hz step. The circuits are calibrated for DT, so a variable
+    // step would change the fly's behavior with the framerate.
+    let n = 0;
+    while (acc >= DT && n < 400) {
+      sim.step(); acc -= DT; n++;
+      if (++tick % 8 === 0) {
+        trail.push({ x: sim.fly.x, z: sim.fly.z, b: sim.brain.behavior });
+        if (trail.length > 900) trail.shift();
+      }
+    }
+    if (n >= 400) acc = 0;
+  }
+  for (const ev of sim.events) { markers.push(ev); if (markers.length > 240) markers.shift(); }
+  sim.events.length = 0;
+  draw();
+  drawHud();
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+
+})();
+
+document.querySelectorAll('[data-sim-key]').forEach((button) => {
+  button.addEventListener('click', () => {
+    const key = button.dataset.simKey === 'space' ? ' ' : button.dataset.simKey;
+    window.dispatchEvent(new KeyboardEvent('keydown', { key }));
+    if (button.dataset.simKey === 'space') {
+      button.textContent = button.textContent === 'Pause' ? 'Resume' : 'Pause';
+      button.setAttribute('aria-pressed', button.textContent === 'Resume' ? 'true' : 'false');
+    }
+  });
+});
+
+const speedButton = document.querySelector('[data-sim-speed]');
+let toolbarSpeed = 2;
+speedButton.addEventListener('click', () => {
+  toolbarSpeed = toolbarSpeed % 4 + 1;
+  window.dispatchEvent(new KeyboardEvent('keydown', { key: String(toolbarSpeed) }));
+  speedButton.textContent = `Speed: ${[1, 4, 16, 50][toolbarSpeed - 1]}×`;
+});
+</script>
+</body>
+</html>
