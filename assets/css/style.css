@@ -28,6 +28,11 @@ h1{max-width:760px;font-size:clamp(2.75rem,5.1vw,5.4rem);font-weight:700;letter-
 .project-vllm>*{position:relative;z-index:1}
 .project-vllm .code-statement{color:#aab8ff}
 .project-vllm .code-statement span{color:white}
+.project-finetune{background:linear-gradient(145deg,#111827,#24264b 55%,#6d3f24)}
+.project-finetune::before{content:"LoRA / CPT";position:absolute;right:20px;top:16px;color:rgba(255,255,255,.08);font:800 clamp(2.1rem,5vw,5rem)/1 var(--mono);letter-spacing:-.09em}
+.project-finetune>*{position:relative;z-index:1}
+.project-finetune .code-statement{color:#ffb86b;font-size:clamp(1.05rem,2vw,1.55rem)}
+.project-finetune .code-statement span{color:#91a3ff}
 .project-flysim{background:linear-gradient(145deg,#160d20,#302044 55%,#33572c)}
 .project-flysim::before{content:"200 Hz";position:absolute;right:20px;top:16px;color:rgba(255,255,255,.08);font:800 clamp(2.5rem,6vw,5.8rem)/1 var(--mono);letter-spacing:-.09em}
 .project-flysim>*{position:relative;z-index:1}
@@ -37,6 +42,7 @@ h1{max-width:760px;font-size:clamp(2.75rem,5.1vw,5.4rem);font-weight:700;letter-
 .project-actions a{min-height:42px;margin:0;padding:0 13px;border:1px solid rgba(255,255,255,.25);border-radius:8px;background:rgba(8,13,24,.2);font-size:.84rem}
 .project-actions svg{width:18px;height:18px;fill:currentColor}
 .project-actions .project-action-live{border-color:#8fd04a;color:#b9ef82}
+.project-actions .project-action-read{border-color:#ffb86b;color:#ffd09b}
 .skills-section{background:var(--accent-soft)}
 .stack-map{display:grid;gap:14px}
 .stack-layer{position:relative;display:grid;grid-template-columns:minmax(170px,.48fr) minmax(0,1.52fr);gap:28px;align-items:center;min-height:132px;padding:24px;border:1px solid var(--soft-line);border-radius:var(--radius);background:color-mix(in srgb,var(--surface) 80%,transparent);box-shadow:var(--card-shadow)}
@@ -111,9 +117,12 @@ h1{max-width:760px;font-size:clamp(2.75rem,5.1vw,5.4rem);font-weight:700;letter-
 .article-system-map p{margin:7px 0 0;color:var(--muted);font-size:.9rem;line-height:1.5}
 .article-code{overflow-x:auto;margin:30px 0;padding:20px;border:1px solid var(--line);border-radius:12px;background:var(--dark);color:#b9ef82;font:700 clamp(.82rem,2.2vw,1rem)/1.6 var(--mono)}
 .article-body ol{display:grid;gap:12px;padding-left:24px}
+.article-bullets{display:grid;gap:14px;margin:0 0 28px;padding-left:23px}
+.article-system-map-eval>div:last-child{grid-column:span 2}
 .article-body code:not(.article-code code){padding:.1em .35em;border-radius:4px;background:var(--accent-soft);color:var(--ink);font-family:var(--mono);font-size:.88em}
 .article-end-actions{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-top:72px;padding-top:28px;border-top:1px solid var(--line)}
-@media(max-width:690px){.article-shell{width:min(100% - 30px,560px)}.article-hero{padding-top:54px}.article-back{margin-bottom:34px}.article-system-map{grid-template-columns:1fr}.article-body{font-size:1rem}.article-body h2{margin-top:56px}.article-actions .button,.article-end-actions .button{width:100%;justify-content:center}}
+.article-end-actions svg{width:18px;height:18px;fill:currentColor}
+@media(max-width:690px){.article-shell{width:min(100% - 30px,560px)}.article-hero{padding-top:54px}.article-back{margin-bottom:34px}.article-system-map{grid-template-columns:1fr}.article-system-map-eval>div:last-child{grid-column:auto}.article-body{font-size:1rem}.article-body h2{margin-top:56px}.article-actions .button,.article-end-actions .button{width:100%;justify-content:center}}
 @media(max-width:900px){.stack-layer{grid-template-columns:1fr;gap:18px}.writing-grid{grid-template-columns:1fr}.writing-card{min-height:210px}}
 @media(max-width:690px){h1{font-size:clamp(2.55rem,12vw,3.9rem)}.availability{margin-top:-8px}.featured-work{grid-template-columns:none}.project-card{min-height:410px}.stack-layer{padding:20px}.stack-layer:not(:last-child)::after{right:22px}.tool-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.tool-node{min-width:0;padding:9px 10px;font-size:.82rem}.tool-node svg{width:22px;height:22px}.writing-card{min-height:190px}.blog-hero{padding-top:74px}.blog-topics span{padding-inline:3px}}
 @media(max-width:390px){.tool-list{grid-template-columns:1fr}.tool-node{min-height:48px}}

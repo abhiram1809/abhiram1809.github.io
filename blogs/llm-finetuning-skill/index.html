@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Why I turned practical Unsloth, LoRA, quantization, evaluation, and vLLM field notes into an agent skill for Claude Code, OpenCode, and Codex.">
+    <meta name="theme-color" content="#0b1020">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://abhiram1809.github.io/blogs/llm-finetuning-skill/">
+    <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="../../assets/img/R.png">
+    <title>Fine-Tuning Starts Before Training | Abhiram Sharma</title>
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://abhiram1809.github.io/blogs/llm-finetuning-skill/">
+    <meta property="og:title" content="Fine-Tuning Starts Before Training">
+    <meta property="og:description" content="Inside an agent skill that plans local LLM fine-tuning, catches expensive mistakes, evaluates honestly, and prepares the result for vLLM.">
+    <meta property="article:published_time" content="2026-09-19">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Fine-Tuning Starts Before Training">
+    <meta name="twitter:description" content="Inside an agent skill for planning local LLM fine-tuning and serving the result with vLLM.">
+    <script>
+      (() => {
+        const root = document.documentElement;
+        root.classList.add('js');
+        let theme = 'dark';
+        try {
+          if (localStorage.getItem('portfolio-theme') === 'light') theme = 'light';
+        } catch {}
+        root.dataset.theme = theme;
+        document.querySelector('meta[name="theme-color"]').content = theme === 'light' ? '#f5f2ea' : '#0b1020';
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/css/style.css?v=10">
+    <script src="../../assets/js/main.js?v=5" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#article-content">Skip to article</a>
+    <header class="site-header" data-header>
+      <div class="shell nav-shell">
+        <a class="wordmark" href="../../" aria-label="Abhiram Sharma home">AS<span>.</span></a>
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" data-menu-toggle>
+          <span class="sr-only">Open navigation</span><span aria-hidden="true"></span><span aria-hidden="true"></span>
+        </button>
+        <nav class="primary-nav" id="primary-nav" aria-label="Primary navigation" data-nav>
+          <a href="../../#experience">Experience</a><a href="../../#work">Work</a><a href="../../#skills">Toolkit</a><a href="../" aria-current="page">Writing</a><a href="../../#about">About</a><a href="../../#contact">Contact</a>
+        </nav>
+        <button class="theme-toggle" type="button" aria-label="Switch to light theme" title="Switch to light theme" data-theme-toggle>
+          <span class="sr-only">Switch to light theme</span>
+          <svg class="theme-icon theme-icon-sun" aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <circle cx="12" cy="12" r="3.5"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"></path>
+          </svg>
+          <svg class="theme-icon theme-icon-moon" aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7Z"></path>
+          </svg>
+        </button>
+        <a class="nav-cv" href="../../assets/Abhiram-Sharma-CV.pdf" target="_blank" rel="noopener">View CV <span aria-hidden="true">↗</span></a>
+      </div>
+    </header>
+    <main id="article-content" class="article-main">
+      <header class="article-hero">
+        <div class="article-shell reveal">
+          <a class="button-link article-back" href="../"><span aria-hidden="true">←</span> All notes</a>
+          <p class="eyebrow">Agent skills · Local LLMs</p>
+          <h1>Fine-tuning starts before training.</h1>
+          <p class="article-dek">I turned my field notes on LoRA, Unsloth, quantized weights, evaluation, and vLLM into an agent skill for Claude Code, OpenCode, and Codex.</p>
+          <div class="article-meta"><time datetime="2026-09-19">September 19, 2026</time><span>10 min read</span></div>
+          <div class="article-actions">
+            <a class="button button-primary" href="https://github.com/abhiram1809/unsloth-finetuning-vllm-skill" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="../../assets/img/toolkit-icons.svg?v=3#github"></use></svg> View repository</a>
+          </div>
+        </div>
+      </header>
+
+      <article class="article-body article-shell">
+        <p class="article-lead">Most fine-tuning requests start one decision too late. Someone has a folder of documents, a GPU, and a plan to run LoRA. The unanswered question is whether those facts should be trained into the model at all.</p>
+        <p>I built the LLM fine-tuning skill to make coding agents stop at that fork. It gives Claude Code, OpenCode, Codex, or any markdown-capable agent a practical playbook for deciding what to train, preparing the data, proving the run fits, measuring the result, and serving the artifact with vLLM.</p>
+
+        <aside class="article-callout">
+          <strong>This is judgment and procedure, not a training library.</strong>
+          <p>The skill does not ship a fixed trainer or a table of fashionable hyperparameters. It tells the agent what to decide, what to verify, and which failure modes to rule out in the stack already being used.</p>
+        </aside>
+
+        <h2>The first question is where the knowledge should live</h2>
+        <p>A request such as “train this model on our documentation” can describe several different goals. Exact product codes and changing API names belong in retrieval. Output format, domain style, task framing, and tool behavior are better candidates for weights. Most domain assistants need both.</p>
+        <p>The skill therefore starts with three choices:</p>
+        <div class="article-system-map" aria-label="Knowledge location choices">
+          <div><span>IN CONTEXT</span><strong>Prompt or retrieval</strong><p>For exact, editable, changing, or long-tail facts.</p></div>
+          <div><span>IN WEIGHTS</span><strong>LoRA, SFT, CPT</strong><p>For behavior, format, domain language, and generalizable patterns.</p></div>
+          <div><span>HYBRID</span><strong>Train behavior, retrieve facts</strong><p>The usual answer for a domain assistant that must stay current.</p></div>
+          <div><span>BASELINE</span><strong>Measure before training</strong><p>The trained model has to beat both the base model and retrieval-only path.</p></div>
+        </div>
+        <p>The opinionated part is simple: a low-rank adapter is a poor database. If the success metric is exact recall, the agent should say that before it spends hours encoding unstable facts into weights.</p>
+
+        <h2>A method ladder instead of a default recipe</h2>
+        <p>Once training is justified, the skill climbs only as high as the goal requires:</p>
+        <ol>
+          <li><strong>Prompt, RAG, or long context.</strong> The baseline and often the complete solution for factual work.</li>
+          <li><strong>LoRA SFT.</strong> The default for teaching behavior, output shape, workflow, and style with a small detachable adapter.</li>
+          <li><strong>Continued pretraining.</strong> Useful when the domain&apos;s language and distribution are genuinely unusual, not as an automatic prelude to SFT.</li>
+          <li><strong>More adapter capacity.</strong> Higher rank, more exposure, or trainable embeddings when the earlier stage has clearly plateaued.</li>
+          <li><strong>Full fine-tuning or distillation.</strong> The expensive end of the ladder, used only when lighter stages cannot reach the target.</li>
+        </ol>
+        <p>Each stage has an exit. If continued pretraining beats the later SFT checkpoint on the metric that matters, the earlier checkpoint ships. More stages are not automatically more progress.</p>
+
+        <h2>Why this lives as an agent skill</h2>
+        <p>Fine-tuning work spreads across the repository, the dataset, the machine, and the serving target. A static checklist cannot inspect those pieces. A coding agent can.</p>
+        <p>The main <code>SKILL.md</code> holds the decision process. Six references are loaded only when needed: data preparation, teacher–student generation, evaluation, training operations, serving, and troubleshooting. An evaluation question does not spend context on vLLM startup flags; a serving failure does not reload the entire data guide.</p>
+        <p>The content is model- and domain-agnostic. Unsloth with a PEFT/TRL-style loop is the reference path for single-GPU LoRA and QLoRA because that is where the field notes came from. A different trainer does not invalidate the decisions.</p>
+
+        <h2>The mistakes I wanted the agent to remember</h2>
+        <p>The useful parts are the failures that look reasonable until they waste a day.</p>
+        <ul class="article-bullets">
+          <li><strong>Loading is not training.</strong> A checkpoint can fit during inference and fail on the first backward pass. The skill requires one forward and backward pass at the real sequence length and batch size on the actual GPU.</li>
+          <li><strong>A wrong response mask can train on nothing.</strong> SFT labels must be checked against the live tokenizer template. A nearly correct assistant anchor can mask every label while the job still appears to run.</li>
+          <li><strong>Four-bit weights are packed.</strong> Casting a packed <code>uint8</code> buffer to <code>bf16</code> does not dequantize it. It silently produces plausible garbage. Any merge or weight surgery must use the quantizer&apos;s dequantization path and verify tensor shapes.</li>
+          <li><strong>Quantization format is architectural.</strong> Runtime 4-bit is dependable for dense models but may leave mixture-of-experts weights untouched. Block-FP8 checkpoints can load and still fail in training kernels.</li>
+          <li><strong>A long run needs a failure plan.</strong> The process must survive the shell, checkpoint often, cap host memory, and prove that resume works before hour six.</li>
+        </ul>
+        <p>The skill keeps a run log as part of the work: exact checkpoint revision, resolved dependency versions, GPU and peak memory, adapter design, data split, decoding settings, every evaluation number, and every non-obvious failure.</p>
+
+        <h2>An evaluation that can say no</h2>
+        <p>Fine-tuning is easy to flatter. Teacher-forced accuracy gives the model the correct prefix and asks for the next token. A user does not. The skill separates five measurements:</p>
+        <div class="article-system-map article-system-map-eval" aria-label="Fine-tuning evaluation ladder">
+          <div><span>01</span><strong>Distribution</strong><p>Held-out domain loss plus an out-of-domain control.</p></div>
+          <div><span>02</span><strong>Teacher-forced</strong><p>Does the knowledge exist when the model receives the gold prefix?</p></div>
+          <div><span>03</span><strong>Generative</strong><p>Does the correct answer appear in a realistic free generation?</p></div>
+          <div><span>04</span><strong>Behavior</strong><p>Is the response correct, formatted, grounded, and able to abstain?</p></div>
+          <div><span>05</span><strong>Robustness</strong><p>Does it survive paraphrases, reordered choices, and serving precision?</p></div>
+        </div>
+        <p>The gaps are more useful than the headline score. High teacher-forced performance with weak generation means the knowledge is present but not surfacing. That calls for output-behavior work, decoding constraints, or retrieval—not another round of continued pretraining.</p>
+        <p>The field notes also show why precision belongs in the report. In observed runs, teacher-forced accuracy was roughly double free-generation accuracy, and bf16 recalled 50–60% more than the same model at 4-bit serving precision. Those figures are calibration, not universal benchmarks. The rule is universal: report the generative number produced by the artifact and endpoint that users will receive.</p>
+
+        <h2>Training decisions reach all the way into vLLM</h2>
+        <p>A small adapter that touches attention and MLP projections can remain detachable. vLLM can keep one base model on the GPU and select among adapters per request. Training embeddings or the output head changes that artifact: those matrices are saved in full, often turning megabytes into gigabytes and forcing a merge.</p>
+        <p>That is why the skill asks about serving before training. It helps choose between a detachable adapter, a merged model, and a merged-plus-quantized model. It also carries the verification through startup:</p>
+        <ol>
+          <li>Wait for the application to finish loading and compiling.</li>
+          <li>Check the health endpoint.</li>
+          <li>Confirm the expected model is listed.</li>
+          <li>Run a real generation through the same completion or chat path used by the evaluation.</li>
+        </ol>
+        <p>A process existing is not the same as a model serving. A health check alone is not the same as the correct artifact generating a useful answer.</p>
+
+        <h2>Using the skill</h2>
+        <p>The installer symlinks the same skill into Claude Code, Codex, and OpenCode, so a pull updates every harness in place:</p>
+        <pre class="article-code"><code>git clone https://github.com/abhiram1809/unsloth-finetuning-vllm-skill.git
+cd unsloth-finetuning-vllm-skill
+./install.sh</code></pre>
+        <p>It can also install for one harness or into the current project. Claude Code users can install it as a plugin. Any agent without a skill loader can read the markdown directly.</p>
+        <p>The skill triggers on planning, debugging, and evaluation questions—not only at the start of a run. A request such as “the loss went down but the model is not better” should lead the agent to inspect the label mask, compare base and fine-tuned generations, and locate the gap before recommending more training.</p>
+
+        <h2>The boundary is deliberate</h2>
+        <p>The repository does not attempt to own cluster orchestration, autoscaling, storage, or a universal training script. Those choices age quickly and depend on the environment. It stays focused on decisions that remain useful across stacks: where knowledge belongs, how data and loss must line up, how to prove the hardware path, how to evaluate honestly, and how the artifact reaches vLLM without changing underneath you.</p>
+        <p>That is the part I wanted the next agent session to inherit: not just the successful command, but the reasons the other paths failed.</p>
+
+        <div class="article-end-actions">
+          <a class="button button-primary" href="https://github.com/abhiram1809/unsloth-finetuning-vllm-skill" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="../../assets/img/toolkit-icons.svg?v=3#github"></use></svg> Open the repository</a>
+          <a class="button-link" href="../">More engineering notes <span aria-hidden="true">↗</span></a>
+        </div>
+      </article>
+    </main>
+    <footer class="site-footer"><div class="shell"><span>© <span data-current-year>2026</span> Abhiram Sharma</span><a href="../">More writing</a></div></footer>
+  </body>
+</html>
