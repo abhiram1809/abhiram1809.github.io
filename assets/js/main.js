@@ -35,10 +35,14 @@
   });
   navLinks.forEach((link) => link.addEventListener('click', closeMenu));
   document.addEventListener('keydown', (event) => { if (event.key === 'Escape') closeMenu(); });
-  const sections = navLinks.map((link) => document.querySelector(link.getAttribute('href'))).filter(Boolean);
+  const sectionLinks = navLinks.filter((link) => {
+    const href = link.getAttribute('href');
+    return href?.startsWith('#') && href.length > 1;
+  });
+  const sections = sectionLinks.map((link) => document.querySelector(link.getAttribute('href'))).filter(Boolean);
   const navObserver = new IntersectionObserver((entries) => entries.forEach((entry) => {
     if (!entry.isIntersecting) return;
-    navLinks.forEach((link) => {
+    sectionLinks.forEach((link) => {
       if (link.getAttribute('href') === `#${entry.target.id}`) link.setAttribute('aria-current', 'page');
       else link.removeAttribute('aria-current');
     });
