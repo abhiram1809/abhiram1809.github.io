@@ -33,7 +33,7 @@
         document.querySelector('meta[name="theme-color"]').content = theme === 'light' ? '#f5f2ea' : '#0b1020';
       })();
     </script>
-    <link rel="stylesheet" href="../assets/css/style.css?v=10">
+    <link rel="stylesheet" href="../assets/css/style.css?v=11">
     <script src="../assets/js/main.js?v=5" defer></script>
   </head>
   <body>
@@ -41,11 +41,12 @@
     <header class="site-header" data-header>
       <div class="shell nav-shell">
         <a class="wordmark" href="../" aria-label="Abhiram Sharma home">AS<span>.</span></a>
+        <a class="nav-blogs" href="./" aria-current="page">Blogs</a>
         <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" data-menu-toggle>
           <span class="sr-only">Open navigation</span><span aria-hidden="true"></span><span aria-hidden="true"></span>
         </button>
         <nav class="primary-nav" id="primary-nav" aria-label="Primary navigation" data-nav>
-          <a href="../#experience">Experience</a><a href="../#work">Work</a><a href="../#skills">Toolkit</a><a href="./" aria-current="page">Writing</a><a href="../#about">About</a><a href="../#contact">Contact</a>
+          <a href="../#experience">Experience</a><a href="../#work">Work</a><a href="../#skills">Toolkit</a><a href="./" aria-current="page">Blogs</a><a href="../#about">About</a><a href="../#contact">Contact</a>
         </nav>
         <button class="theme-toggle" type="button" aria-label="Switch to light theme" title="Switch to light theme" data-theme-toggle>
           <span class="sr-only">Switch to light theme</span>
@@ -62,7 +63,7 @@
     <main id="main-content" class="blog-main">
       <section class="blog-hero" aria-labelledby="blog-title">
         <div class="shell reveal">
-          <p class="eyebrow">Writing</p>
+          <p class="eyebrow">Blogs</p>
           <h1 id="blog-title">Engineering notes.</h1>
           <p>Notes on fine-tuning, inference, model serving, agent systems, and ML infrastructure.</p>
           <a class="button-link blog-back" href="../"><span aria-hidden="true">←</span> Back to portfolio</a>
