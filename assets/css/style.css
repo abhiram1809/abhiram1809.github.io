@@ -62,13 +62,15 @@ h1{max-width:760px;font-size:clamp(2.75rem,5.1vw,5.4rem);font-weight:700;letter-
 .tool-node-plain{color:var(--muted);font-family:var(--mono);font-size:.78rem;letter-spacing:.02em}
 .stack-layer-support{border-style:dashed}
 .writing-section{border-top:1px solid var(--line);background:var(--surface)}
-.writing-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(300px,.85fr);gap:clamp(40px,9vw,130px);align-items:center}
-.writing-grid .section-intro{margin-bottom:0}
-.writing-card{display:grid;gap:16px;min-height:240px;align-content:space-between;padding:28px;border:1px solid var(--line);border-radius:var(--radius);background:var(--canvas);box-shadow:var(--card-shadow);transition:transform .18s ease,border-color .18s ease}
+.writing-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;align-items:stretch}
+.writing-grid .section-intro{grid-column:1/-1;margin-bottom:36px}
+.writing-card{display:flex;min-width:0;min-height:330px;flex-direction:column;padding:28px;border:1px solid var(--line);border-radius:var(--radius);background:var(--canvas);box-shadow:var(--card-shadow);transition:transform .18s ease,border-color .18s ease}
 .writing-card:hover{border-color:var(--accent);transform:translateY(-3px)}
-.writing-card-label{color:var(--accent);font:800 .7rem/1.3 var(--mono);letter-spacing:.1em;text-transform:uppercase}
-.writing-card strong{max-width:12ch;font-size:clamp(1.8rem,3vw,3rem);letter-spacing:-.055em;line-height:1}
-.writing-card>span:last-child{color:var(--muted);font-weight:750}
+.writing-card-label{display:flex;flex-wrap:wrap;gap:6px 12px;margin-bottom:24px;color:var(--accent);font:800 .7rem/1.3 var(--mono);letter-spacing:.08em;text-transform:uppercase}
+.writing-card h3{margin-bottom:16px;font-size:clamp(1.45rem,2.2vw,2rem);letter-spacing:-.045em;line-height:1.08}
+.writing-card>p:not(.writing-card-label){margin-bottom:28px;color:var(--muted)}
+.writing-card>a{margin-top:auto;color:var(--muted);font-weight:750}
+.writing-card>a:hover{color:var(--accent)}
 .writing-card b{color:var(--accent)}
 .blog-main{min-height:calc(100vh - 135px)}
 .blog-hero{position:relative;overflow:hidden;padding:clamp(92px,13vw,170px) 0 80px;border-bottom:1px solid var(--line)}
@@ -123,6 +125,6 @@ h1{max-width:760px;font-size:clamp(2.75rem,5.1vw,5.4rem);font-weight:700;letter-
 .article-end-actions{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-top:72px;padding-top:28px;border-top:1px solid var(--line)}
 .article-end-actions svg{width:18px;height:18px;fill:currentColor}
 @media(max-width:690px){.article-shell{width:min(100% - 30px,560px)}.article-hero{padding-top:54px}.article-back{margin-bottom:34px}.article-system-map{grid-template-columns:1fr}.article-system-map-eval>div:last-child{grid-column:auto}.article-body{font-size:1rem}.article-body h2{margin-top:56px}.article-actions .button,.article-end-actions .button{width:100%;justify-content:center}}
-@media(max-width:900px){.stack-layer{grid-template-columns:1fr;gap:18px}.writing-grid{grid-template-columns:1fr}.writing-card{min-height:210px}}
-@media(max-width:690px){h1{font-size:clamp(2.55rem,12vw,3.9rem)}.availability{margin-top:-8px}.featured-work{grid-template-columns:none}.project-card{min-height:410px}.stack-layer{padding:20px}.stack-layer:not(:last-child)::after{right:22px}.tool-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.tool-node{min-width:0;padding:9px 10px;font-size:.82rem}.tool-node svg{width:22px;height:22px}.writing-card{min-height:190px}.blog-hero{padding-top:74px}.blog-topics span{padding-inline:3px}}
+@media(max-width:900px){.stack-layer{grid-template-columns:1fr;gap:18px}.writing-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.writing-card{min-height:300px}}
+@media(max-width:690px){h1{font-size:clamp(2.55rem,12vw,3.9rem)}.availability{margin-top:-8px}.featured-work{grid-template-columns:none}.project-card{min-height:410px}.stack-layer{padding:20px}.stack-layer:not(:last-child)::after{right:22px}.tool-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.tool-node{min-width:0;padding:9px 10px;font-size:.82rem}.writing-grid{grid-template-columns:1fr}.writing-grid .section-intro{margin-bottom:20px}.writing-card{min-height:0}.blog-hero{padding-top:74px}.blog-topics span{padding-inline:3px}}
 @media(max-width:390px){.tool-list{grid-template-columns:1fr}.tool-node{min-height:48px}}
