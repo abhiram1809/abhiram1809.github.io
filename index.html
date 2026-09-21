@@ -46,7 +46,7 @@
           <span class="sr-only">Open navigation</span><span aria-hidden="true"></span><span aria-hidden="true"></span>
         </button>
         <nav class="primary-nav" id="primary-nav" aria-label="Primary navigation" data-nav>
-          <a href="#experience">Experience</a><a href="#work">Work</a><a href="#skills">Toolkit</a><a href="#about">About</a><a href="#contact">Contact</a>
+          <a href="#experience">Experience</a><a href="#work">Work</a><a href="#skills">Toolkit</a><a href="blogs/">Blogs</a><a href="#about">About</a><a href="#contact">Contact</a>
         </nav>
         <button class="theme-toggle" type="button" aria-label="Switch to light theme" title="Switch to light theme" data-theme-toggle>
           <span class="sr-only">Switch to light theme</span>
@@ -178,10 +178,22 @@
           </div>
         </div>
       </section>
-      <section class="section writing-section" id="writing" aria-labelledby="writing-title">
+      <section class="section writing-section" id="writing" aria-labelledby="blogs-title">
         <div class="shell writing-grid">
-          <div class="section-intro reveal"><p class="eyebrow">06 / Writing</p><h2 id="writing-title">Engineering notes.</h2><p>Notes on systems I build, how they work, and the tradeoffs behind them.</p></div>
-          <a class="writing-card reveal" href="blogs/llm-finetuning-skill/"><span class="writing-card-label">New · Agent skills</span><strong>Fine-tuning starts before training</strong><span>Read the article <b aria-hidden="true">↗</b></span></a>
+          <div class="section-intro reveal"><p class="eyebrow">06 / Blogs</p><h2 id="blogs-title">Latest posts.</h2><p>Notes on systems I build, how they work, and the tradeoffs behind them.</p></div>
+          <article class="writing-card reveal">
+            <p class="writing-card-label"><time datetime="2026-09-19">September 19, 2026</time><span>Agent skills · Local LLMs</span></p>
+            <h3>Fine-tuning starts before training</h3>
+            <p>Why I turned practical LoRA, Unsloth, quantization, evaluation, and vLLM field notes into an agent skill for Claude Code, OpenCode, and Codex.</p>
+            <a href="blogs/llm-finetuning-skill/">Read “Fine-tuning starts before training” <b aria-hidden="true">↗</b></a>
+          </article>
+          <article class="writing-card reveal">
+            <p class="writing-card-label"><time datetime="2026-09-19">September 19, 2026</time><span>Neuro-inspired systems</span></p>
+            <h3>Building a small fruit-fly brain in the browser</h3>
+            <p>How FlySim handles odor identity, sparse memory, learned avoidance, compass drift, and a fixed 200 Hz brain loop.</p>
+            <a href="blogs/flysim/">Read “Building a small fruit-fly brain in the browser” <b aria-hidden="true">↗</b></a>
+          </article>
+          <!-- Add the third latest-post card when its article metadata and URL are available. -->
         </div>
       </section>
       <section class="section about-section" id="about" aria-labelledby="about-title"><div class="shell about-grid"><div class="section-intro reveal"><p class="eyebrow">07 / About</p><h2 id="about-title">About me.</h2><p>My work has moved from computer vision and document AI into LLM inference and agent systems.</p></div><div class="about-details reveal"><div><p class="detail-label">Mentorship</p><p>I mentored an intern in AWS and AI engineering, helping her learn and troubleshoot independently.</p></div><div><p class="detail-label">Education</p><p><strong>B.Tech, Computer Science</strong><br>Amity University · 2024</p></div><div><p class="detail-label">Outside work</p><p>Strength training, mixed martial arts, and chess.</p></div></div></div></section>
