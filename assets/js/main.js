@@ -1,40 +1,127 @@
 (() => {
   document.documentElement.classList.add('js');
+
+  const supportedLanguages = ['en', 'de', 'fr', 'es'];
+  const localeNames = { en: 'en-US', de: 'de-DE', fr: 'fr-FR', es: 'es-ES' };
+  const messages = {
+    en: { language: 'Language', light: 'Switch to light theme', dark: 'Switch to dark theme', open: 'Open navigation', close: 'Close navigation', copied: 'Email address copied.', copyError: 'Copy unavailable. Use the email link above.' },
+    de: { language: 'Sprache', light: 'Zum hellen Design wechseln', dark: 'Zum dunklen Design wechseln', open: 'Navigation öffnen', close: 'Navigation schließen', copied: 'E-Mail-Adresse kopiert.', copyError: 'Kopieren nicht verfügbar. Verwenden Sie den E-Mail-Link oben.' },
+    fr: { language: 'Langue', light: 'Passer au thème clair', dark: 'Passer au thème sombre', open: 'Ouvrir la navigation', close: 'Fermer la navigation', copied: 'Adresse e-mail copiée.', copyError: 'Copie indisponible. Utilisez le lien e-mail ci-dessus.' },
+    es: { language: 'Idioma', light: 'Cambiar al tema claro', dark: 'Cambiar al tema oscuro', open: 'Abrir la navegación', close: 'Cerrar la navegación', copied: 'Dirección de correo copiada.', copyError: 'No se puede copiar. Usa el enlace de correo de arriba.' }
+  };
+  const dictionaries = window.PORTFOLIO_I18N || {};
+  let currentLanguage = supportedLanguages.includes(document.documentElement.dataset.language) ? document.documentElement.dataset.language : 'en';
+
+  const normalize = (value) => value.replace(/\s+/g, ' ').trim();
+  const localizedTextNodes = [];
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  while (walker.nextNode()) {
+    const node = walker.currentNode;
+    const parent = node.parentElement;
+    const key = normalize(node.nodeValue);
+    if (!key || parent?.closest('script, style, svg, code, pre, .theme-toggle, .menu-toggle, .language-control, [data-copy-status]')) continue;
+    localizedTextNodes.push({ node, key, original: node.nodeValue });
+  }
+
+  const localizedAttributes = [];
+  document.querySelectorAll('[aria-label], [alt], [title]').forEach((element) => {
+    ['aria-label', 'alt', 'title'].forEach((name) => {
+      const value = element.getAttribute(name);
+      if (value && !element.matches('[data-theme-toggle], [data-language-select], .language-control')) localizedAttributes.push({ element, name, original: value });
+    });
+  });
+  const metadata = [...document.querySelectorAll('meta[name="description"], meta[name="twitter:title"], meta[name="twitter:description"], meta[property="og:title"], meta[property="og:description"]')]
+    .map((element) => ({ element, original: element.content }));
+  const originalTitle = document.title;
+
   const themeButton = document.querySelector('[data-theme-toggle]');
   const themeMeta = document.querySelector('meta[name="theme-color"]');
+  const languageSelect = document.querySelector('[data-language-select]');
+  const languageControl = languageSelect?.closest('.language-control');
+  const languageLabel = document.querySelector('[data-language-label]');
+  const menuButton = document.querySelector('[data-menu-toggle]');
+  const nav = document.querySelector('[data-nav]');
+  const navLinks = [...document.querySelectorAll('[data-nav] a')];
+  const copyButton = document.querySelector('[data-copy-email]');
+  const copyStatus = document.querySelector('[data-copy-status]');
+
   const updateThemeControl = (theme) => {
-    const nextTheme = theme === 'dark' ? 'light' : 'dark';
-    const actionLabel = `Switch to ${nextTheme} theme`;
+    const actionLabel = theme === 'dark' ? messages[currentLanguage].light : messages[currentLanguage].dark;
     document.documentElement.dataset.theme = theme;
     if (themeMeta) themeMeta.content = theme === 'light' ? '#f5f2ea' : '#0b1020';
     if (!themeButton) return;
     themeButton.setAttribute('aria-label', actionLabel);
     themeButton.setAttribute('title', actionLabel);
-    themeButton.querySelector('.sr-only').textContent = actionLabel;
+    const hiddenLabel = themeButton.querySelector('.sr-only');
+    if (hiddenLabel) hiddenLabel.textContent = actionLabel;
   };
-  updateThemeControl(document.documentElement.dataset.theme === 'light' ? 'light' : 'dark');
+
+  const updateMenuControl = () => {
+    if (!menuButton) return;
+    const label = menuButton.getAttribute('aria-expanded') === 'true' ? messages[currentLanguage].close : messages[currentLanguage].open;
+    menuButton.setAttribute('aria-label', label);
+    const hiddenLabel = menuButton.querySelector('.sr-only');
+    if (hiddenLabel) hiddenLabel.textContent = label;
+  };
+
+  const applyLanguage = (language, persist = true) => {
+    currentLanguage = supportedLanguages.includes(language) ? language : 'en';
+    const dictionary = dictionaries[currentLanguage] || {};
+    localizedTextNodes.forEach(({ node, key, original }) => {
+      if (currentLanguage === 'en' || !dictionary[key]) {
+        node.nodeValue = original;
+        return;
+      }
+      const leading = original.match(/^\s*/)?.[0] || '';
+      const trailing = original.match(/\s*$/)?.[0] || '';
+      node.nodeValue = `${leading}${dictionary[key]}${trailing}`;
+    });
+    localizedAttributes.forEach(({ element, name, original }) => element.setAttribute(name, currentLanguage === 'en' ? original : (dictionary[original] || original)));
+    metadata.forEach(({ element, original }) => { element.content = currentLanguage === 'en' ? original : (dictionary[original] || original); });
+    document.title = currentLanguage === 'en' ? originalTitle : (dictionary[originalTitle] || originalTitle);
+    document.documentElement.lang = currentLanguage;
+    document.documentElement.dataset.language = currentLanguage;
+    if (languageSelect) {
+      languageSelect.value = currentLanguage;
+      languageSelect.setAttribute('aria-label', messages[currentLanguage].language);
+    }
+    if (languageLabel) languageLabel.textContent = messages[currentLanguage].language;
+    if (languageControl) languageControl.title = messages[currentLanguage].language;
+    document.querySelectorAll('time[datetime]').forEach((time) => {
+      const date = new Date(`${time.dateTime}T12:00:00Z`);
+      if (!Number.isNaN(date.getTime())) time.textContent = new Intl.DateTimeFormat(localeNames[currentLanguage], { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(date);
+    });
+    if (copyStatus) copyStatus.textContent = '';
+    updateThemeControl(document.documentElement.dataset.theme === 'light' ? 'light' : 'dark');
+    updateMenuControl();
+    if (persist) {
+      try { localStorage.setItem('portfolio-language', currentLanguage); } catch {}
+    }
+  };
+
+  applyLanguage(currentLanguage, false);
+  languageSelect?.addEventListener('change', () => applyLanguage(languageSelect.value));
   themeButton?.addEventListener('click', () => {
     const theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
     updateThemeControl(theme);
     try { localStorage.setItem('portfolio-theme', theme); } catch {}
   });
-  const menuButton = document.querySelector('[data-menu-toggle]');
-  const nav = document.querySelector('[data-nav]');
-  const navLinks = [...document.querySelectorAll('[data-nav] a')];
+
   const closeMenu = () => {
     if (!menuButton || !nav) return;
     menuButton.setAttribute('aria-expanded', 'false');
-    menuButton.querySelector('.sr-only').textContent = 'Open navigation';
     nav.classList.remove('is-open');
+    updateMenuControl();
   };
   menuButton?.addEventListener('click', () => {
     const isOpen = menuButton.getAttribute('aria-expanded') === 'true';
     menuButton.setAttribute('aria-expanded', String(!isOpen));
-    menuButton.querySelector('.sr-only').textContent = isOpen ? 'Open navigation' : 'Close navigation';
     nav?.classList.toggle('is-open', !isOpen);
+    updateMenuControl();
   });
   navLinks.forEach((link) => link.addEventListener('click', closeMenu));
   document.addEventListener('keydown', (event) => { if (event.key === 'Escape') closeMenu(); });
+
   const sectionLinks = navLinks.filter((link) => {
     const href = link.getAttribute('href');
     return href?.startsWith('#') && href.length > 1;
@@ -52,11 +139,10 @@
     if (entry.isIntersecting) { entry.target.classList.add('is-visible'); observer.unobserve(entry.target); }
   }), { threshold: 0.12 });
   document.querySelectorAll('.reveal').forEach((item) => revealObserver.observe(item));
-  const copyButton = document.querySelector('[data-copy-email]');
-  const copyStatus = document.querySelector('[data-copy-status]');
+
   copyButton?.addEventListener('click', async () => {
-    try { await navigator.clipboard.writeText(copyButton.dataset.email); copyStatus.textContent = 'Email address copied.'; }
-    catch { copyStatus.textContent = 'Copy unavailable. Use the email link above.'; }
+    try { await navigator.clipboard.writeText(copyButton.dataset.email); copyStatus.textContent = messages[currentLanguage].copied; }
+    catch { copyStatus.textContent = messages[currentLanguage].copyError; }
   });
   const year = document.querySelector('[data-current-year]');
   if (year) year.textContent = new Date().getFullYear();

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="dark" data-language="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -28,13 +28,19 @@
         let theme = 'dark';
         try {
           if (localStorage.getItem('portfolio-theme') === 'light') theme = 'light';
+          const language = localStorage.getItem('portfolio-language');
+          if (['en', 'de', 'fr', 'es'].includes(language)) {
+            root.lang = language;
+            root.dataset.language = language;
+          }
         } catch {}
         root.dataset.theme = theme;
         document.querySelector('meta[name="theme-color"]').content = theme === 'light' ? '#f5f2ea' : '#0b1020';
       })();
     </script>
-    <link rel="stylesheet" href="../assets/css/style.css?v=12">
-    <script src="../assets/js/main.js?v=5" defer></script>
+    <link rel="stylesheet" href="../assets/css/style.css?v=13">
+    <script src="../assets/js/i18n.js?v=1" defer></script>
+    <script src="../assets/js/main.js?v=6" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
@@ -48,6 +54,7 @@
         <nav class="primary-nav" id="primary-nav" aria-label="Primary navigation" data-nav>
           <a href="../#experience">Experience</a><a href="../#work">Work</a><a href="../#skills">Toolkit</a><a href="./" aria-current="page">Blogs</a><a href="../#about">About</a><a href="../#contact">Contact</a>
         </nav>
+        <div class="display-controls">
         <button class="theme-toggle" type="button" aria-label="Switch to light theme" title="Switch to light theme" data-theme-toggle>
           <span class="sr-only">Switch to light theme</span>
           <svg class="theme-icon theme-icon-sun" aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
@@ -57,7 +64,13 @@
             <path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7Z"></path>
           </svg>
         </button>
-        <a class="nav-cv" href="../assets/Abhiram-Sharma-CV.pdf" target="_blank" rel="noopener">View CV <span aria-hidden="true">↗</span></a>
+        <label class="language-control" title="Language">
+          <span class="sr-only" data-language-label>Language</span>
+          <svg aria-hidden="true" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3c2.5 2.5 3.7 5.5 3.7 9S14.5 18.5 12 21M12 3c-2.5 2.5-3.7 5.5-3.7 9s1.2 6.5 3.7 9"></path></svg>
+          <select aria-label="Language" data-language-select><option value="en">EN</option><option value="de">DE</option><option value="fr">FR</option><option value="es">ES</option></select>
+        </label>
+        </div>
+        <a class="nav-cv" href="../assets/Abhiram-Sharma-CV.pdf" target="_blank" rel="noopener" aria-label="View CV">View CV <span aria-hidden="true">↗</span></a>
       </div>
     </header>
     <main id="main-content" class="blog-main">
