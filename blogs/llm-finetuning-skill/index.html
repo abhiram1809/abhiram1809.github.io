@@ -26,7 +26,7 @@
         try {
           if (localStorage.getItem('portfolio-theme') === 'light') theme = 'light';
           const language = localStorage.getItem('portfolio-language');
-          if (['en', 'de', 'fr', 'es'].includes(language)) {
+          if (['en', 'de', 'fr', 'es', 'nl'].includes(language)) {
             root.lang = language;
             root.dataset.language = language;
           }
@@ -35,9 +35,9 @@
         document.querySelector('meta[name="theme-color"]').content = theme === 'light' ? '#f5f2ea' : '#0b1020';
       })();
     </script>
-    <link rel="stylesheet" href="../../assets/css/style.css?v=14">
-    <script src="../../assets/js/i18n.js?v=1" defer></script>
-    <script src="../../assets/js/main.js?v=7" defer></script>
+    <link rel="stylesheet" href="../../assets/css/style.css?v=15">
+    <script src="../../assets/js/i18n.js?v=2" defer></script>
+    <script src="../../assets/js/main.js?v=8" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#article-content">Skip to article</a>
@@ -72,6 +72,7 @@
             <button class="language-option" type="button" role="option" aria-selected="false" data-language-option="de"><span class="language-flag" aria-hidden="true">🇩🇪</span><span><strong>Deutsch</strong><small>Deutschland</small></span><span class="language-check" aria-hidden="true">✓</span></button>
             <button class="language-option" type="button" role="option" aria-selected="false" data-language-option="fr"><span class="language-flag" aria-hidden="true">🇫🇷</span><span><strong>Français</strong><small>France</small></span><span class="language-check" aria-hidden="true">✓</span></button>
             <button class="language-option" type="button" role="option" aria-selected="false" data-language-option="es"><span class="language-flag" aria-hidden="true">🇪🇸</span><span><strong>Español</strong><small>España</small></span><span class="language-check" aria-hidden="true">✓</span></button>
+            <button class="language-option" type="button" role="option" aria-selected="false" data-language-option="nl"><span class="language-flag" aria-hidden="true">🇳🇱</span><span><strong>Nederlands</strong><small>Nederland</small></span><span class="language-check" aria-hidden="true">✓</span></button>
           </div>
         </div>
         </div>
@@ -103,6 +104,14 @@
 
         <h2>The first question is where the knowledge should live</h2>
         <p>A request such as “train this model on our documentation” can describe several different goals. Exact product codes and changing API names belong in retrieval. Output format, domain style, task framing, and tool behavior are better candidates for weights. Most domain assistants need both.</p>
+        <figure class="article-animation" data-article-animation>
+          <picture>
+            <source media="(prefers-reduced-motion: reduce)" srcset="../../assets/img/llm-finetuning/knowledge-locus-still.png">
+            <img id="knowledge-animation" src="../../assets/img/llm-finetuning/knowledge-locus.gif" data-animation-src="../../assets/img/llm-finetuning/knowledge-locus.gif" data-still-src="../../assets/img/llm-finetuning/knowledge-locus-still.png" width="600" height="338" loading="lazy" decoding="async" alt="Documents flow into retrieval for exact facts, LoRA for behavior, or a hybrid of both.">
+          </picture>
+          <figcaption>Choose where knowledge belongs: retrieve changing facts, train behavior, or combine both.</figcaption>
+          <button class="animation-toggle" type="button" data-animation-toggle aria-controls="knowledge-animation" aria-pressed="false" hidden>Pause animation</button>
+        </figure>
         <p>The skill therefore starts with three choices:</p>
         <div class="article-system-map" aria-label="Knowledge location choices">
           <div><span>IN CONTEXT</span><strong>Prompt or retrieval</strong><p>For exact, editable, changing, or long-tail facts.</p></div>
@@ -140,6 +149,14 @@
         <p>The skill keeps a run log as part of the work: exact checkpoint revision, resolved dependency versions, GPU and peak memory, adapter design, data split, decoding settings, every evaluation number, and every non-obvious failure.</p>
 
         <h2>An evaluation that can say no</h2>
+        <figure class="article-animation" data-article-animation>
+          <picture>
+            <source media="(prefers-reduced-motion: reduce)" srcset="../../assets/img/llm-finetuning/honest-evaluation-still.png">
+            <img id="evaluation-animation" src="../../assets/img/llm-finetuning/honest-evaluation.gif" data-animation-src="../../assets/img/llm-finetuning/honest-evaluation.gif" data-still-src="../../assets/img/llm-finetuning/honest-evaluation-still.png" width="600" height="338" loading="lazy" decoding="async" alt="Three scores compare teacher-forced accuracy, free generation in bf16, and generation at 4-bit serving precision.">
+          </picture>
+          <figcaption>Evaluate what users receive: free generation at serving precision, with the metric and endpoint reported.</figcaption>
+          <button class="animation-toggle" type="button" data-animation-toggle aria-controls="evaluation-animation" aria-pressed="false" hidden>Pause animation</button>
+        </figure>
         <p>Fine-tuning is easy to flatter. Teacher-forced accuracy gives the model the correct prefix and asks for the next token. A user does not. The skill separates five measurements:</p>
         <div class="article-system-map article-system-map-eval" aria-label="Fine-tuning evaluation ladder">
           <div><span>01</span><strong>Distribution</strong><p>Held-out domain loss plus an out-of-domain control.</p></div>

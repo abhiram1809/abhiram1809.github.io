@@ -28,7 +28,7 @@
         try {
           if (localStorage.getItem('portfolio-theme') === 'light') theme = 'light';
           const language = localStorage.getItem('portfolio-language');
-          if (['en', 'de', 'fr', 'es'].includes(language)) {
+          if (['en', 'de', 'fr', 'es', 'nl'].includes(language)) {
             root.lang = language;
             root.dataset.language = language;
           }
@@ -37,9 +37,9 @@
         document.querySelector('meta[name="theme-color"]').content = theme === 'light' ? '#f5f2ea' : '#0b1020';
       })();
     </script>
-    <link rel="stylesheet" href="../../assets/css/style.css?v=14">
-    <script src="../../assets/js/i18n.js?v=1" defer></script>
-    <script src="../../assets/js/main.js?v=7" defer></script>
+    <link rel="stylesheet" href="../../assets/css/style.css?v=15">
+    <script src="../../assets/js/i18n.js?v=2" defer></script>
+    <script src="../../assets/js/main.js?v=8" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#article-content">Skip to article</a>
@@ -74,6 +74,7 @@
             <button class="language-option" type="button" role="option" aria-selected="false" data-language-option="de"><span class="language-flag" aria-hidden="true">🇩🇪</span><span><strong>Deutsch</strong><small>Deutschland</small></span><span class="language-check" aria-hidden="true">✓</span></button>
             <button class="language-option" type="button" role="option" aria-selected="false" data-language-option="fr"><span class="language-flag" aria-hidden="true">🇫🇷</span><span><strong>Français</strong><small>France</small></span><span class="language-check" aria-hidden="true">✓</span></button>
             <button class="language-option" type="button" role="option" aria-selected="false" data-language-option="es"><span class="language-flag" aria-hidden="true">🇪🇸</span><span><strong>Español</strong><small>España</small></span><span class="language-check" aria-hidden="true">✓</span></button>
+            <button class="language-option" type="button" role="option" aria-selected="false" data-language-option="nl"><span class="language-flag" aria-hidden="true">🇳🇱</span><span><strong>Nederlands</strong><small>Nederland</small></span><span class="language-check" aria-hidden="true">✓</span></button>
           </div>
         </div>
         </div>

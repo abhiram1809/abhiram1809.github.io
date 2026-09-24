@@ -1,19 +1,21 @@
 (() => {
   document.documentElement.classList.add('js');
 
-  const supportedLanguages = ['en', 'de', 'fr', 'es'];
-  const localeNames = { en: 'en-US', de: 'de-DE', fr: 'fr-FR', es: 'es-ES' };
+  const supportedLanguages = ['en', 'de', 'fr', 'es', 'nl'];
+  const localeNames = { en: 'en-US', de: 'de-DE', fr: 'fr-FR', es: 'es-ES', nl: 'nl-NL' };
   const languageInfo = {
     en: { name: 'English', code: 'EN', flag: '🇬🇧' },
     de: { name: 'Deutsch', code: 'DE', flag: '🇩🇪' },
     fr: { name: 'Français', code: 'FR', flag: '🇫🇷' },
-    es: { name: 'Español', code: 'ES', flag: '🇪🇸' }
+    es: { name: 'Español', code: 'ES', flag: '🇪🇸' },
+    nl: { name: 'Nederlands', code: 'NL', flag: '🇳🇱' }
   };
   const messages = {
     en: { language: 'Language', light: 'Switch to light theme', dark: 'Switch to dark theme', open: 'Open navigation', close: 'Close navigation', copied: 'Email address copied.', copyError: 'Copy unavailable. Use the email link above.' },
     de: { language: 'Sprache', light: 'Zum hellen Design wechseln', dark: 'Zum dunklen Design wechseln', open: 'Navigation öffnen', close: 'Navigation schließen', copied: 'E-Mail-Adresse kopiert.', copyError: 'Kopieren nicht verfügbar. Verwenden Sie den E-Mail-Link oben.' },
     fr: { language: 'Langue', light: 'Passer au thème clair', dark: 'Passer au thème sombre', open: 'Ouvrir la navigation', close: 'Fermer la navigation', copied: 'Adresse e-mail copiée.', copyError: 'Copie indisponible. Utilisez le lien e-mail ci-dessus.' },
-    es: { language: 'Idioma', light: 'Cambiar al tema claro', dark: 'Cambiar al tema oscuro', open: 'Abrir la navegación', close: 'Cerrar la navegación', copied: 'Dirección de correo copiada.', copyError: 'No se puede copiar. Usa el enlace de correo de arriba.' }
+    es: { language: 'Idioma', light: 'Cambiar al tema claro', dark: 'Cambiar al tema oscuro', open: 'Abrir la navegación', close: 'Cerrar la navegación', copied: 'Dirección de correo copiada.', copyError: 'No se puede copiar. Usa el enlace de correo de arriba.' },
+    nl: { language: 'Taal', light: 'Schakel naar licht thema', dark: 'Schakel naar donker thema', open: 'Navigatie openen', close: 'Navigatie sluiten', copied: 'E-mailadres gekopieerd.', copyError: 'Kopiëren is niet beschikbaar. Gebruik de e-maillink hierboven.' }
   };
   const dictionaries = window.PORTFOLIO_I18N || {};
   let currentLanguage = supportedLanguages.includes(document.documentElement.dataset.language) ? document.documentElement.dataset.language : 'en';
@@ -175,6 +177,23 @@
     const theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
     updateThemeControl(theme);
     try { localStorage.setItem('portfolio-theme', theme); } catch {}
+  });
+
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  document.querySelectorAll('[data-article-animation]').forEach((figure) => {
+    const img = figure.querySelector('img');
+    const source = figure.querySelector('source');
+    const toggle = figure.querySelector('[data-animation-toggle]');
+    const updateAnimation = (paused) => {
+      // The picture source also supplies a still image before JavaScript runs.
+      source.media = paused ? 'all' : 'not all';
+      img.src = paused ? img.dataset.stillSrc : img.dataset.animationSrc;
+      toggle.setAttribute('aria-pressed', String(paused));
+    };
+    updateAnimation(reducedMotion.matches);
+    toggle.hidden = false;
+    toggle.addEventListener('click', () => updateAnimation(toggle.getAttribute('aria-pressed') !== 'true'));
+    reducedMotion.addEventListener('change', (event) => updateAnimation(event.matches));
   });
 
   const closeMenu = () => {

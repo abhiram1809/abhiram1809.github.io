@@ -106,6 +106,12 @@ h1{max-width:760px;font-size:clamp(2.75rem,5.1vw,5.4rem);font-weight:700;letter-
 .article-actions svg{width:18px;height:18px;fill:currentColor}
 .article-body{padding-block:clamp(64px,10vw,112px);color:var(--body-copy);font-size:1.08rem;line-height:1.78}
 .article-body>p,.article-body>ol{margin-bottom:26px}
+.article-animation{margin:30px 0;padding:12px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface)}
+.article-animation picture{display:block;overflow:hidden;border-radius:calc(var(--radius)/2);background:#f7f9fc}
+.article-animation img{display:block;width:100%;height:auto;aspect-ratio:600/338}
+.article-animation figcaption{padding:14px 4px 8px;color:var(--muted);font-size:.88rem;line-height:1.55}
+.animation-toggle{margin:4px;padding:7px 12px;border:1px solid var(--line);border-radius:8px;background:var(--canvas);color:var(--ink);font:inherit;font-size:.8rem;cursor:pointer}
+.animation-toggle:hover,.animation-toggle:focus-visible,.animation-toggle[aria-pressed="true"]{border-color:var(--accent);color:var(--accent)}
 .article-body h2{margin:72px 0 20px;color:var(--ink);font-size:clamp(1.85rem,3.8vw,3rem);letter-spacing:-.055em;line-height:1.03}
 .article-body a:not(.button):not(.button-link){color:var(--accent);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
 .article-lead{color:var(--ink);font-size:1.25rem;line-height:1.65}
@@ -133,4 +139,6 @@ h1{max-width:760px;font-size:clamp(2.75rem,5.1vw,5.4rem);font-weight:700;letter-
 @media(max-width:900px){.nav-shell{gap:10px}.language-trigger{width:132px}.nav-cv{display:none}}
 @media(max-width:690px){.display-controls{gap:6px}.language-menu{width:240px}}
 @media(max-width:390px){.nav-cv{display:none}.language-trigger{width:140px;padding-inline:9px}.language-menu{width:236px}}
+html[data-language="nl"] .language-trigger{width:174px}
+@media(max-width:900px){html[data-language="nl"] .language-trigger{width:166px}html[data-language="nl"] .language-trigger-copy>span{font-size:.72rem}}
 @media(max-width:390px){.tool-list{grid-template-columns:1fr}.tool-node{min-height:48px}}
