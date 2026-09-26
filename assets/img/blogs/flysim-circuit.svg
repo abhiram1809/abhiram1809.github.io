@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 520" role="img" aria-labelledby="title desc">
+  <title id="title">FlySim odor to behavior circuit</title>
+  <desc id="desc">Odor channels are normalized by the antennal lobe, sparsified in the mushroom body, and combined with a drifting central-complex compass to choose behavior.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#71809c"/></marker>
+    <style>
+      .bg{fill:#f7f9fc}.grid{stroke:#e8edf4;stroke-width:1}.card{fill:#fff;stroke:#d6deea;stroke-width:2}.ink{fill:#162033}.muted{fill:#617089}.label{font:700 14px system-ui,sans-serif;letter-spacing:1.4px}.head{font:700 20px system-ui,sans-serif}.body{font:500 14px system-ui,sans-serif}.num{font:800 24px system-ui,sans-serif}.wire{fill:none;stroke:#71809c;stroke-width:3;marker-end:url(#arrow)}.odor{stroke:#51b9a7}.reward{stroke:#78c949}.risk{stroke:#e8a751}.dot{fill:#78c949;filter:drop-shadow(0 0 5px #78c949)}.bump{fill:#e8a751;transform-box:fill-box;transform-origin:center;animation:bob 2.8s ease-in-out infinite alternate}
+      .march{stroke-dasharray:8 8;animation:flow 2.4s linear infinite}.odor-dot{animation:drift 3.6s ease-in-out infinite alternate}.delay{animation-delay:.7s}.delay2{animation-delay:1.4s}
+      @keyframes flow{to{stroke-dashoffset:-64}}@keyframes drift{to{transform:translateX(18px)}}@keyframes bob{to{transform:translateY(-10px)}}@media(prefers-reduced-motion:reduce){.march,.odor-dot,.bump{animation:none}.dot{display:none}}
+    </style>
+  </defs>
+  <rect class="bg" width="1200" height="520" rx="24"/>
+  <path class="grid" d="M0 90H1200M0 440H1200M0 165H1200M0 355H1200"/>
+  <text x="42" y="52" class="label muted">A SMALL CIRCUIT, ONE SHARED SIMULATION STATE</text>
+  <g transform="translate(44 176)"><rect class="card" width="178" height="154" rx="18"/><text x="20" y="34" class="label muted">WORLD</text><text x="20" y="72" class="head ink">Flower odor</text><text x="20" y="107" class="num ink">4 species</text><text x="20" y="133" class="body muted">16 odor channels</text><circle class="odor-dot" cx="133" cy="118" r="5" fill="#51b9a7"/><circle class="odor-dot delay" cx="150" cy="103" r="4" fill="#51b9a7"/><circle class="odor-dot delay2" cx="165" cy="124" r="3" fill="#51b9a7"/></g>
+  <path class="wire march odor" d="M222 253H270"/><circle class="dot" cx="222" cy="253" r="5"><animateMotion dur="2.4s" repeatCount="indefinite" path="M0 0H48"/></circle>
+  <g transform="translate(270 176)"><rect class="card" width="190" height="154" rx="18"/><text x="20" y="34" class="label muted">01 · STABILIZE</text><text x="20" y="72" class="head ink">Antennal lobe</text><text x="20" y="108" class="body muted">Divisive normalization</text><text x="20" y="133" class="body muted">identity stays stable</text><path d="M150 104v28m-12-14h24" stroke="#51b9a7" stroke-width="4" stroke-linecap="round"/></g>
+  <path class="wire march odor" d="M460 253H508"/><circle class="dot" cx="460" cy="253" r="5"><animateMotion dur="2.4s" repeatCount="indefinite" path="M0 0H48"/></circle>
+  <g transform="translate(508 176)"><rect class="card" width="190" height="154" rx="18"/><text x="20" y="34" class="label muted">02 · LEARN</text><text x="20" y="72" class="head ink">Mushroom body</text><text x="20" y="108" class="num ink">800 → 40</text><text x="20" y="133" class="body muted">sparse active cells</text><g fill="#51b9a7"><circle cx="143" cy="109" r="4"/><circle cx="158" cy="120" r="4"/><circle cx="174" cy="103" r="4"/><circle cx="168" cy="133" r="4"/></g></g>
+  <path class="wire march reward" d="M698 253H746"/><circle class="dot" cx="698" cy="253" r="5"><animateMotion dur="2.4s" repeatCount="indefinite" path="M0 0H48"/></circle>
+  <g transform="translate(746 176)"><rect class="card" width="190" height="154" rx="18"/><text x="20" y="34" class="label muted">03 · VALUE</text><text x="20" y="72" class="head ink">Learned valence</text><text x="20" y="108" class="body muted">reward or toxin</text><text x="20" y="133" class="body muted">depresses one pathway</text><circle cx="153" cy="111" r="15" fill="#dff2d5"/><path d="M146 111h14" stroke="#78c949" stroke-width="4" stroke-linecap="round"/></g>
+  <path class="wire march reward" d="M936 253H984"/><circle class="dot" cx="936" cy="253" r="5"><animateMotion dur="2.4s" repeatCount="indefinite" path="M0 0H48"/></circle>
+  <g transform="translate(984 176)"><rect class="card" width="172" height="154" rx="18"/><text x="20" y="34" class="label muted">04 · ACT</text><text x="20" y="72" class="head ink">Behavior</text><text x="20" y="108" class="body muted">search · track</text><text x="20" y="133" class="body muted">feed · avoid</text><path d="M137 103l12 8 12-8m-12 8v24" fill="none" stroke="#78c949" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></g>
+  <g transform="translate(500 350)"><rect class="card" width="410" height="76" rx="16"/><text x="22" y="31" class="label muted">CENTRAL COMPLEX · INTERNAL COMPASS</text><text x="22" y="56" class="body ink">32-unit ring attractor · heading estimate drifts over time</text><circle class="bump" cx="375" cy="38" r="7"/></g>
+  <path class="wire march risk" d="M910 388H1070V330"/>
+  <text x="44" y="478" class="body muted">The renderer reads the model state; it does not advance the brain loop or change its random stream.</text>
+</svg>

@@ -37,7 +37,7 @@
         document.querySelector('meta[name="theme-color"]').content = theme === 'light' ? '#f5f2ea' : '#0b1020';
       })();
     </script>
-    <link rel="stylesheet" href="../../assets/css/style.css?v=15">
+    <link rel="stylesheet" href="../../assets/css/style.css?v=16">
     <script src="../../assets/js/i18n.js?v=2" defer></script>
     <script src="../../assets/js/main.js?v=8" defer></script>
   </head>
@@ -106,6 +106,11 @@
         <h2>One world, four smells</h2>
         <p>The world contains four flower species. Each one produces a different pattern across 16 odor channels. Two species contain nectar and two are toxic. The fly starts without that information. It has to approach flowers, experience the result, and change its response to that odor.</p>
         <p>This keeps the task small enough to inspect. The interesting part is not whether the fly eventually finds nectar. It is whether a bad landing changes the next decision in a way that can be traced through the model.</p>
+
+        <figure class="article-diagram">
+          <img src="../../assets/img/blogs/flysim-circuit.svg" width="1200" height="520" loading="lazy" decoding="async" alt="Animated circuit map: flower odor passes through the antennal lobe, mushroom body, learned valence, and behavior, while the central-complex compass supplies a drifting heading estimate.">
+          <figcaption>Odor identity, learned valence, and an intentionally drifting compass all feed the same behavior loop.</figcaption>
+        </figure>
 
         <div class="article-system-map" aria-label="FlySim circuit map">
           <div><span>01</span><strong>Antennal lobe</strong><p>Turns raw odor concentration into a stable identity signal.</p></div>

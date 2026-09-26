@@ -35,7 +35,7 @@
         document.querySelector('meta[name="theme-color"]').content = theme === 'light' ? '#f5f2ea' : '#0b1020';
       })();
     </script>
-    <link rel="stylesheet" href="../../assets/css/style.css?v=15">
+    <link rel="stylesheet" href="../../assets/css/style.css?v=16">
     <script src="../../assets/js/i18n.js?v=2" defer></script>
     <script src="../../assets/js/main.js?v=8" defer></script>
   </head>
@@ -122,6 +122,10 @@
 
         <h2>A method ladder instead of a default recipe</h2>
         <p>Once training is justified, the skill climbs only as high as the goal requires:</p>
+        <figure class="article-diagram">
+          <img src="../../assets/img/blogs/finetuning-decisions.svg" width="1200" height="460" loading="lazy" decoding="async" alt="Animated method map: start with a baseline, choose retrieval for changing facts, LoRA for behavior, or continued pretraining for unusual language, then evaluate and escalate only if needed.">
+          <figcaption>Start with a baseline, choose the method that matches the gap, and let evaluation decide whether to continue.</figcaption>
+        </figure>
         <ol>
           <li><strong>Prompt, RAG, or long context.</strong> The baseline and often the complete solution for factual work.</li>
           <li><strong>LoRA SFT.</strong> The default for teaching behavior, output shape, workflow, and style with a small detachable adapter.</li>

@@ -107,6 +107,9 @@ h1{max-width:760px;font-size:clamp(2.75rem,5.1vw,5.4rem);font-weight:700;letter-
 .article-body{padding-block:clamp(64px,10vw,112px);color:var(--body-copy);font-size:1.08rem;line-height:1.78}
 .article-body>p,.article-body>ol{margin-bottom:26px}
 .article-animation{margin:30px 0;padding:12px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface)}
+.article-diagram{margin:30px 0;padding:12px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface)}
+.article-diagram img{display:block;width:100%;height:auto;border-radius:calc(var(--radius)/2)}
+.article-diagram figcaption{padding:14px 4px 8px;color:var(--muted);font-size:.88rem;line-height:1.55}
 .article-animation picture{display:block;overflow:hidden;border-radius:calc(var(--radius)/2);background:#f7f9fc}
 .article-animation img{display:block;width:100%;height:auto;aspect-ratio:600/338}
 .article-animation figcaption{padding:14px 4px 8px;color:var(--muted);font-size:.88rem;line-height:1.55}

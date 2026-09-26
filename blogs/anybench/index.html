@@ -37,7 +37,7 @@
         document.querySelector('meta[name="theme-color"]').content = theme === 'light' ? '#f5f2ea' : '#0b1020';
       })();
     </script>
-    <link rel="stylesheet" href="../../assets/css/style.css?v=15">
+    <link rel="stylesheet" href="../../assets/css/style.css?v=16">
     <script src="../../assets/js/i18n.js?v=2" defer></script>
     <script src="../../assets/js/main.js?v=8" defer></script>
   </head>
@@ -103,6 +103,11 @@
           <strong>A benchmark starts with evidence, not a score.</strong>
           <p>Generated tasks still need review. AnyBench records which cases were verified, skipped, or unfinished so a model score cannot quietly hide a broken test or an incomplete attempt.</p>
         </aside>
+
+        <figure class="article-diagram">
+          <img src="../../assets/img/blogs/anybench-flow.svg" width="1200" height="420" loading="lazy" decoding="async" alt="Animated flow from Git commits through task drafting, human review, before and after Docker verification, candidate attempts, and a report.">
+          <figcaption>AnyBench keeps each step visible, including the five verified cases and two candidate attempts that hit the token limit.</figcaption>
+        </figure>
 
         <h2>From recent commits to replayable tasks</h2>
         <p>On September 25, 2026, I sampled the five then-recent commits in each repository. GLM-5.3 Flash drafted six problems from those ten commits. I reviewed the problem statements and test commands, then kept the cases whose checks could be tied to behavior changed by the historical commit.</p>

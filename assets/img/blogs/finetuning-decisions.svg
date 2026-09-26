@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 460" role="img" aria-labelledby="title desc">
+  <title id="title">Fine tuning method selection map</title>
+  <desc id="desc">Start with a baseline. Retrieve changing facts, use LoRA for behavior, consider continued pretraining for unusual language, and escalate only when evaluation justifies it.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#71809c"/></marker>
+    <style>
+      .bg{fill:#f7f9fc}.grid{stroke:#e8edf4;stroke-width:1}.card{fill:#fff;stroke:#d6deea;stroke-width:2}.ink{fill:#162033}.muted{fill:#617089}.label{font:700 14px system-ui,sans-serif;letter-spacing:1.4px}.head{font:700 20px system-ui,sans-serif}.body{font:500 14px system-ui,sans-serif}.wire{fill:none;stroke:#71809c;stroke-width:3;marker-end:url(#arrow)}.mint{fill:#b9ef82}.teal{fill:#8bd6c8}.gold{fill:#f0bf70}.selected{fill:#f5faed;stroke:#9bc875}.pulse{fill:#78c949;filter:drop-shadow(0 0 5px #78c949)}.draw{stroke-dasharray:9 9;animation:flow 2.8s linear infinite}
+      @keyframes flow{to{stroke-dashoffset:-72}}@media(prefers-reduced-motion:reduce){.draw{animation:none}.pulse{display:none}}
+    </style>
+  </defs>
+  <rect class="bg" width="1200" height="460" rx="24"/>
+  <path class="grid" d="M0 78H1200M0 390H1200"/>
+  <text x="42" y="48" class="label muted">CHOOSE THE SMALLEST METHOD THAT FITS THE GOAL</text>
+  <g transform="translate(42 160)"><rect class="card" width="196" height="150" rx="18"/><circle cx="29" cy="30" r="13" class="mint"/><text x="52" y="35" class="label muted">START</text><text x="20" y="82" class="head ink">Measure a baseline</text><text x="20" y="116" class="body muted">Base model + retrieval-only</text><text x="20" y="138" class="body muted">Define the success metric</text></g>
+  <path class="wire draw" d="M238 260H292"/><circle class="pulse" cx="238" cy="260" r="5"><animateMotion dur="2.8s" repeatCount="indefinite" path="M0 0H54"/></circle>
+  <path d="M292 260V132H342M292 260H342M292 260V338H342" class="wire draw"/>
+  <g transform="translate(342 82)"><rect class="card" width="228" height="100" rx="18"/><circle cx="25" cy="28" r="11" class="teal"/><text x="48" y="33" class="label muted">FACTS CHANGE?</text><text x="20" y="68" class="head ink">Prompt or retrieval</text><text x="20" y="90" class="body muted">Exact, editable, current facts</text></g>
+  <g transform="translate(342 198)"><rect class="card selected" width="228" height="100" rx="18"/><circle cx="25" cy="28" r="11" class="mint"/><text x="48" y="33" class="label muted">NEED A NEW BEHAVIOR?</text><text x="20" y="68" class="head ink">LoRA SFT</text><text x="20" y="90" class="body muted">Format, workflow, style</text></g>
+  <g transform="translate(342 314)"><rect class="card" width="228" height="100" rx="18"/><circle cx="25" cy="28" r="11" class="gold"/><text x="48" y="33" class="label muted">LANGUAGE IS UNUSUAL?</text><text x="20" y="68" class="head ink">Continued pretraining</text><text x="20" y="90" class="body muted">Only for a real distribution gap</text></g>
+  <path class="wire draw" d="M570 132H636M570 248H636M570 364H636"/><circle class="pulse" cx="570" cy="248" r="5"><animateMotion dur="2.8s" repeatCount="indefinite" path="M0 0H66"/></circle>
+  <g transform="translate(636 158)"><rect class="card" width="224" height="154" rx="18"/><text x="20" y="36" class="label muted">EVERY STAGE</text><text x="20" y="76" class="head ink">Evaluate honestly</text><text x="20" y="112" class="body muted">Free generation at serving</text><text x="20" y="136" class="body muted">precision; include a baseline</text><path d="M182 28v20m-8-10 8 10 8-10" fill="none" stroke="#78c949" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></g>
+  <path class="wire draw" d="M860 235H920"/><circle class="pulse" cx="860" cy="235" r="5"><animateMotion dur="2.8s" repeatCount="indefinite" path="M0 0H60"/></circle>
+  <g transform="translate(920 158)"><rect class="card" width="236" height="154" rx="18"/><text x="20" y="36" class="label muted">ONLY IF THE GAP REMAINS</text><text x="20" y="76" class="head ink">Escalate with evidence</text><text x="20" y="112" class="body muted">More capacity → full tuning</text><text x="20" y="136" class="body muted">or distillation, if needed</text></g>
+  <text x="42" y="440" class="body muted">Stop when a lighter path meets the target. More training stages do not guarantee more progress.</text>
+</svg>

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" role="img" aria-labelledby="title desc">
+  <title id="title">AnyBench commit to benchmark workflow</title>
+  <desc id="desc">Repository history is turned into candidate tasks, reviewed by a person, verified against before and after commits, then run against a model and reported.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#71809c"/></marker>
+    <style>
+      .bg{fill:#f7f9fc}.grid{stroke:#e8edf4;stroke-width:1}.card{fill:#fff;stroke:#d6deea;stroke-width:2}.line{fill:none;stroke:#71809c;stroke-width:3;marker-end:url(#arrow)}.accent{fill:#b9ef82}.teal{fill:#8bd6c8}.gold{fill:#f0bf70}.ink{fill:#162033}.muted{fill:#617089}.label{font:700 15px system-ui,sans-serif;letter-spacing:1.6px}.head{font:700 21px system-ui,sans-serif}.sub{font:500 14px system-ui,sans-serif}.count{font:800 27px system-ui,sans-serif}.pulse{fill:#78c949;filter:drop-shadow(0 0 5px #78c949)}
+      .draw{stroke-dasharray:12 9;animation:flow 2.8s linear infinite}.n1{animation-delay:0s}.n2{animation-delay:.32s}.n3{animation-delay:.64s}.n4{animation-delay:.96s}.n5{animation-delay:1.28s}
+      @keyframes flow{to{stroke-dashoffset:-84}} @media(prefers-reduced-motion:reduce){.draw{animation:none}.pulse{display:none}}
+    </style>
+  </defs>
+  <rect class="bg" width="1200" height="420" rx="24"/>
+  <path class="grid" d="M0 72H1200M0 348H1200M0 140H1200M0 280H1200"/>
+  <text x="42" y="44" class="label muted">FROM COMMITS TO EVIDENCE</text>
+  <path class="line draw" d="M192 204H246M382 204H436M572 204H626M762 204H816M952 204H1006"/>
+  <circle class="pulse n1" cx="192" cy="204" r="5"><animateMotion dur="2.8s" repeatCount="indefinite" path="M0 0H54"/></circle>
+  <circle class="pulse n2" cx="382" cy="204" r="5"><animateMotion dur="2.8s" repeatCount="indefinite" path="M0 0H54"/></circle>
+  <circle class="pulse n3" cx="572" cy="204" r="5"><animateMotion dur="2.8s" repeatCount="indefinite" path="M0 0H54"/></circle>
+  <circle class="pulse n4" cx="762" cy="204" r="5"><animateMotion dur="2.8s" repeatCount="indefinite" path="M0 0H54"/></circle>
+  <circle class="pulse n5" cx="952" cy="204" r="5"><animateMotion dur="2.8s" repeatCount="indefinite" path="M0 0H54"/></circle>
+  <g transform="translate(32 116)"><rect class="card" width="160" height="176" rx="18"/><circle cx="28" cy="30" r="14" class="accent"/><text x="52" y="35" class="label muted">01 · INPUT</text><text x="20" y="82" class="head ink">Git history</text><text x="20" y="116" class="count ink">10</text><text x="20" y="140" class="sub muted">commits sampled</text><text x="20" y="162" class="sub muted">Humanize + Boltons</text></g>
+  <g transform="translate(246 116)"><rect class="card" width="136" height="176" rx="18"/><circle cx="28" cy="30" r="14" class="teal"/><text x="52" y="35" class="label muted">02 · DRAFT</text><text x="18" y="82" class="head ink">Task builder</text><text x="18" y="119" class="count ink">6</text><text x="18" y="145" class="sub muted">cases drafted</text><text x="18" y="166" class="sub muted">by GLM-5.3 Flash</text></g>
+  <g transform="translate(436 116)"><rect class="card" width="136" height="176" rx="18"/><circle cx="28" cy="30" r="14" class="gold"/><text x="52" y="35" class="label muted">03 · REVIEW</text><text x="18" y="82" class="head ink">Human pass</text><path d="M20 112h95m-95 18h82m-82 18h63" stroke="#d6deea" stroke-width="8" stroke-linecap="round"/><text x="18" y="166" class="sub muted">inspect prompt + test</text></g>
+  <g transform="translate(626 116)"><rect class="card" width="136" height="176" rx="18"/><circle cx="28" cy="30" r="14" class="accent"/><text x="52" y="35" class="label muted">04 · VERIFY</text><text x="18" y="82" class="head ink">Docker gate</text><text x="18" y="119" class="count ink">5</text><text x="18" y="145" class="sub muted">verified cases</text><text x="18" y="166" class="sub muted">before fail → after pass</text></g>
+  <g transform="translate(816 116)"><rect class="card" width="136" height="176" rx="18"/><circle cx="28" cy="30" r="14" class="teal"/><text x="52" y="35" class="label muted">05 · RUN</text><text x="18" y="82" class="head ink">Qwen3.8-27B</text><text x="18" y="119" class="count ink">3 / 5</text><text x="18" y="145" class="sub muted">completed attempts</text><text x="18" y="166" class="sub muted">2 hit token limit</text></g>
+  <g transform="translate(1006 116)"><rect class="card" width="162" height="176" rx="18"/><circle cx="28" cy="30" r="14" class="gold"/><text x="52" y="35" class="label muted">06 · REPORT</text><text x="20" y="82" class="head ink">Evidence first</text><text x="20" y="119" class="count ink">0.90</text><text x="20" y="145" class="sub muted">mean judge score</text><text x="20" y="166" class="sub muted">completed runs only</text></g>
+  <text x="42" y="382" class="sub muted">A task counts only when its check fails on the parent and passes after the reference fix.</text>
+</svg>
