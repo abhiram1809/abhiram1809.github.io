@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en" data-theme="dark" data-language="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="How AnyBench turns Git history from Humanize and Boltons into verified coding tasks, and what a small model run can and cannot tell us.">
+    <meta name="theme-color" content="#0b1020">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://abhiram1809.github.io/blogs/anybench/">
+    <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="../../assets/img/R.png">
+    <title>Benchmarking Real Repositories with AnyBench | Abhiram Sharma</title>
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://abhiram1809.github.io/blogs/anybench/">
+    <meta property="og:title" content="Benchmarking Real Repositories with AnyBench">
+    <meta property="og:description" content="How AnyBench turns Git history from Humanize and Boltons into verified coding tasks, and what a small model run can and cannot tell us.">
+    <meta property="og:image" content="https://abhiram1809.github.io/assets/img/og-portfolio.png">
+    <meta property="article:published_time" content="2026-09-25">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Benchmarking Real Repositories with AnyBench">
+    <meta name="twitter:description" content="How AnyBench turns Git history from Humanize and Boltons into verified coding tasks, and what a small model run can and cannot tell us.">
+    <meta name="twitter:image" content="https://abhiram1809.github.io/assets/img/og-portfolio.png">
+    <script>
+      (() => {
+        const root = document.documentElement;
+        root.classList.add('js');
+        let theme = 'dark';
+        try {
+          if (localStorage.getItem('portfolio-theme') === 'light') theme = 'light';
+          const language = localStorage.getItem('portfolio-language');
+          if (['en', 'de', 'fr', 'es', 'nl'].includes(language)) {
+            root.lang = language;
+            root.dataset.language = language;
+          }
+        } catch {}
+        root.dataset.theme = theme;
+        document.querySelector('meta[name="theme-color"]').content = theme === 'light' ? '#f5f2ea' : '#0b1020';
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/css/style.css?v=15">
+    <script src="../../assets/js/i18n.js?v=2" defer></script>
+    <script src="../../assets/js/main.js?v=8" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#article-content">Skip to article</a>
+    <header class="site-header" data-header>
+      <div class="shell nav-shell">
+        <a class="wordmark" href="../../" aria-label="Abhiram Sharma home">AS<span>.</span></a>
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" data-menu-toggle>
+          <span class="sr-only">Open navigation</span><span aria-hidden="true"></span><span aria-hidden="true"></span>
+        </button>
+        <nav class="primary-nav" id="primary-nav" aria-label="Primary navigation" data-nav>
+          <a href="../../#experience">Experience</a><a href="../../#work">Work</a><a href="../../#skills">Toolkit</a><a href="../../#about">About</a><a href="../../#contact">Contact</a>
+        </nav>
+        <div class="display-controls">
+        <button class="theme-toggle" type="button" aria-label="Switch to light theme" title="Switch to light theme" data-theme-toggle>
+          <span class="sr-only">Switch to light theme</span>
+          <svg class="theme-icon theme-icon-sun" aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <circle cx="12" cy="12" r="3.5"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"></path>
+          </svg>
+          <svg class="theme-icon theme-icon-moon" aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7Z"></path>
+          </svg>
+        </button>
+        <div class="language-picker" data-language-picker>
+          <button class="language-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="language-menu" aria-label="Language: English" data-language-toggle>
+            <span class="language-flag" aria-hidden="true" data-current-flag>🇬🇧</span>
+            <span class="language-trigger-copy"><span data-current-language>English</span><small data-current-code>EN</small></span>
+            <svg class="language-chevron" aria-hidden="true" viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m6 8 4 4 4-4"></path></svg>
+          </button>
+          <div class="language-menu" id="language-menu" role="listbox" aria-label="Language" data-language-menu hidden>
+            <button class="language-option" type="button" role="option" aria-selected="true" data-language-option="en"><span class="language-flag" aria-hidden="true">🇬🇧</span><span><strong>English</strong><small>United Kingdom</small></span><span class="language-check" aria-hidden="true">✓</span></button>
+            <button class="language-option" type="button" role="option" aria-selected="false" data-language-option="de"><span class="language-flag" aria-hidden="true">🇩🇪</span><span><strong>Deutsch</strong><small>Deutschland</small></span><span class="language-check" aria-hidden="true">✓</span></button>
+            <button class="language-option" type="button" role="option" aria-selected="false" data-language-option="fr"><span class="language-flag" aria-hidden="true">🇫🇷</span><span><strong>Français</strong><small>France</small></span><span class="language-check" aria-hidden="true">✓</span></button>
+            <button class="language-option" type="button" role="option" aria-selected="false" data-language-option="es"><span class="language-flag" aria-hidden="true">🇪🇸</span><span><strong>Español</strong><small>España</small></span><span class="language-check" aria-hidden="true">✓</span></button>
+            <button class="language-option" type="button" role="option" aria-selected="false" data-language-option="nl"><span class="language-flag" aria-hidden="true">🇳🇱</span><span><strong>Nederlands</strong><small>Nederland</small></span><span class="language-check" aria-hidden="true">✓</span></button>
+          </div>
+        </div>
+        </div>
+        <a class="nav-cv" href="../../assets/Abhiram-Sharma-CV.pdf" target="_blank" rel="noopener" aria-label="View CV">View CV <span aria-hidden="true">↗</span></a>
+      </div>
+    </header>
+    <main id="article-content" class="article-main">
+      <header class="article-hero">
+        <div class="article-shell reveal">
+          <a class="button-link article-back" href="../"><span aria-hidden="true">←</span> All notes</a>
+          <p class="eyebrow">Coding benchmarks · Open source</p>
+          <h1>Benchmarking real repositories with AnyBench.</h1>
+          <p class="article-dek">I built AnyBench to turn a repository's Git history into verified coding tasks, then run candidate models against them. Here is what happened on Humanize and Boltons.</p>
+          <div class="article-meta"><time datetime="2026-09-25">September 25, 2026</time><span>7 min read</span></div>
+          <div class="article-actions">
+            <a class="button button-primary" href="https://github.com/abhiram1809/any-bench" target="_blank" rel="noopener">View AnyBench <span aria-hidden="true">↗</span></a>
+            <a class="button button-secondary" href="https://github.com/abhiram1809/any-bench" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="../../assets/img/toolkit-icons.svg?v=3#github"></use></svg> View source</a>
+          </div>
+        </div>
+      </header>
+
+      <article class="article-body article-shell">
+        <p class="article-lead">A coding benchmark is only useful if its tasks are grounded in real code and its checks distinguish a working change from a plausible patch. AnyBench starts with a repository&apos;s Git history, turns selected changes into coding problems, verifies each problem against the before and after revisions in Docker, and then measures candidate models on the verified set.</p>
+        <p>I built AnyBench to make that workflow usable with repositories you choose at run time. It does not ship a fixed test set or assume one programming language. The first public example runs it against two mature Python libraries: <a href="https://github.com/jazzband/humanize" target="_blank" rel="noopener">Humanize</a> and <a href="https://github.com/boltons/boltons" target="_blank" rel="noopener">Boltons</a>.</p>
+
+        <aside class="article-callout">
+          <strong>A benchmark starts with evidence, not a score.</strong>
+          <p>Generated tasks still need review. AnyBench records which cases were verified, skipped, or unfinished so a model score cannot quietly hide a broken test or an incomplete attempt.</p>
+        </aside>
+
+        <h2>From recent commits to replayable tasks</h2>
+        <p>On September 25, 2026, I sampled the five then-recent commits in each repository. GLM-5.3 Flash drafted six problems from those ten commits. I reviewed the problem statements and test commands, then kept the cases whose checks could be tied to behavior changed by the historical commit.</p>
+        <p>Verification is the gate. Each selected check ran against both snapshots in an isolated Docker environment: it had to fail on the parent revision and pass after the reference change. Five cases passed that check. One translation workflow was skipped because the environment lacked the required gettext tooling.</p>
+        <p>This before-and-after test is what makes a commit-derived task useful. A test that simply passes on the fixed version may be unrelated, too broad, or accidentally dependent on behavior that already existed.</p>
+
+        <h2>What happened in the candidate run</h2>
+        <p>Qwen3.8-27B was run once on each of the five verified cases, with one attempt at a time and a 20-step limit. Three attempts completed and passed their checks. Two ran into the token budget before completion. GLM-5.3 Flash judged the completed attempts at a mean score of 0.90.</p>
+        <div class="article-system-map" aria-label="AnyBench example results">
+          <div><span>INPUT</span><strong>2 repositories</strong><p>Five recent commits sampled from Humanize and Boltons.</p></div>
+          <div><span>BUILDER</span><strong>6 drafted cases</strong><p>Generated from ten commit contexts and reviewed.</p></div>
+          <div><span>VERIFICATION</span><strong>5 passed</strong><p>Checks failed before and passed after the historical fixes.</p></div>
+          <div><span>CANDIDATE</span><strong>3 of 5 completed</strong><p>Two attempts reached the token cap; mean judge score 0.90 on completed attempts.</p></div>
+        </div>
+        <p>These numbers describe a small diagnostic run, not a model ranking. The sample is tiny, the task set was reviewed and adjusted by a person, and two attempts did not finish. The judge score adds context, but the locally verified tests remain the main signal.</p>
+
+        <h2>Review is part of the benchmark</h2>
+        <p>The builder can propose a command that refers to a test introduced by the target commit, contains invalid syntax, or assumes a tool that is not installed. I inspected every generated case and replaced unsuitable commands with focused checks that work against both snapshots. The translation task stayed visible in the run data with its skip reason rather than disappearing from the totals.</p>
+        <p>That human pass is not a loophole around automation. It is part of the dataset creation process, and it is recorded so someone replaying the example can see what was selected and why. The checked-in CSVs include the reviewed cases, evaluator commands, and historical reference diffs; the JSON results record the commits, changed files, validation outcomes, and candidate attempts.</p>
+
+        <h2>Containers keep the environment honest</h2>
+        <p>The default sandbox did not include all the dependencies these libraries needed. I built a shared Python image with pytest, freezegun, and Humanize&apos;s generated version module, then used that image for validation and candidate execution. Verification and benchmark containers run without network access; image construction can still download public dependencies.</p>
+        <p>That boundary matters for reproducibility. A failed setup should be reported as a setup problem, not turned into a model failure. Likewise, a candidate whose patch passes one check but does not finish its attempt is still incomplete; AnyBench records that outcome rather than counting it as solved.</p>
+
+        <h2>Replay the example</h2>
+        <p>The repository includes pinned cases and model configuration files without credentials. After installing AnyBench and Docker, the examples README shows how to build the image, validate the Humanize or Boltons cases, run a candidate, evaluate completed attempts, and generate an HTML report. Validation itself does not call a model; replaying candidate and judge calls uses your configured API endpoint and can incur costs.</p>
+        <pre class="article-code"><code>docker build -f examples/Dockerfile.python-libs \
+  -t anybench-python-libs:example .
+
+anybench validate examples/humanize/cases.csv --check-tests \
+  --image anybench-python-libs:example \
+  --verified-output .anybench/humanize-verified.csv</code></pre>
+        <p>Start with the <a href="https://github.com/abhiram1809/any-bench/tree/main/examples" target="_blank" rel="noopener">example data and replay guide</a> for full commands, configuration, and the limits of this run.</p>
+
+        <h2>What the run changed in AnyBench</h2>
+        <p>Trying the workflow on real repositories exposed practical gaps: the builder needed bounded source inspection, test commands needed clearer guidance, and the runner needed better handling for common line ranges, newline preservation, and cache files. I also tightened container Git ownership and added an end-to-end deadline for API responses.</p>
+        <p>That feedback loop is the point of the project: use ordinary repositories to exercise the whole path from commit selection to a report, then improve the tool where the workflow breaks. AnyBench makes it easier to build a small benchmark for a codebase; it does not remove the need to inspect the cases or interpret the results carefully.</p>
+
+        <div class="article-end-actions">
+          <a class="button button-primary" href="https://github.com/abhiram1809/any-bench" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="../../assets/img/toolkit-icons.svg?v=3#github"></use></svg> View AnyBench on GitHub</a>
+          <a class="button-link" href="https://github.com/abhiram1809/any-bench/tree/main/examples" target="_blank" rel="noopener">Replay the Humanize and Boltons examples <span aria-hidden="true">↗</span></a>
+        </div>
+      </article>
+    </main>
+    <footer class="site-footer"><div class="shell"><span>© <span data-current-year>2026</span> Abhiram Sharma</span><a href="../">More writing</a></div></footer>
+  </body>
+</html>
