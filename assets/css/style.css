@@ -145,3 +145,32 @@ h1{max-width:760px;font-size:clamp(2.75rem,5.1vw,5.4rem);font-weight:700;letter-
 html[data-language="nl"] .language-trigger{width:174px}
 @media(max-width:900px){html[data-language="nl"] .language-trigger{width:166px}html[data-language="nl"] .language-trigger-copy>span{font-size:.72rem}}
 @media(max-width:390px){.tool-list{grid-template-columns:1fr}.tool-node{min-height:48px}}
+
+/* Hobbies and chess achievement */
+.hobbies-block{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);align-items:center;gap:clamp(32px,6vw,88px);margin-top:58px;padding-top:48px;border-top:1px solid var(--line)}
+.hobbies-intro h3{margin-bottom:16px;font-size:clamp(1.8rem,3vw,2.6rem);line-height:1.05;letter-spacing:-.05em}
+.hobbies-intro>p:not(.eyebrow){max-width:34ch;margin-bottom:24px;color:var(--muted)}
+.hobby-tags{display:flex;flex-wrap:wrap;gap:8px}
+.hobby-tags span{padding:7px 12px;border:1px solid var(--line);border-radius:999px;color:var(--body-copy);font-size:.78rem;font-weight:600}
+.chess-card{--chess-accent:#e7c58b;--chess-border:#685940;--chess-square:rgba(231,197,139,.08);--chess-piece-line:#282333;position:relative;overflow:hidden;padding:28px 30px 18px;border:1px solid var(--chess-border);border-radius:var(--radius);background:linear-gradient(125deg,var(--surface),color-mix(in srgb,var(--surface) 87%,var(--chess-accent)));box-shadow:var(--card-shadow)}
+:root[data-theme="light"] .chess-card{--chess-accent:#80571e;--chess-border:#cab898;--chess-square:rgba(128,87,30,.07);--chess-piece-line:#fff6e7}
+.chess-card-heading{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.chess-card-heading h4{margin:0;font-size:1.08rem;font-weight:750;letter-spacing:-.025em}
+.chess-platform{color:var(--muted);font:600 .72rem/1.4 var(--mono)}
+.chess-card-body{display:grid;grid-template-columns:minmax(0,1fr) 120px;align-items:center;gap:22px;margin-top:22px}
+.chess-stats{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin:0}
+.chess-stats>div{display:flex;min-width:0;flex-direction:column}
+.chess-stats>div+div{padding-left:22px;border-left:1px solid var(--chess-border)}
+.chess-stats dt{order:2;margin-top:8px;color:var(--muted);font-size:.78rem;font-weight:600}
+.chess-stats dd{margin:0;color:var(--chess-accent);font-size:clamp(2.3rem,4vw,3.5rem);font-weight:750;letter-spacing:-.065em;line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap}
+.chess-ordinal{display:inline-block;margin-left:3px;font-size:.3em;vertical-align:super;letter-spacing:0}
+.chess-board{display:grid;width:120px;aspect-ratio:1;place-items:center;border:1px solid color-mix(in srgb,var(--chess-border) 70%,transparent);border-radius:12px;background:repeating-conic-gradient(var(--chess-square) 0% 25%,transparent 0% 50%) 0 0 / 30px 30px}
+.chess-board svg{width:86px;height:86px;color:var(--chess-accent);filter:drop-shadow(0 5px 8px rgba(0,0,0,.15))}
+.chess-context{margin:15px 0 20px;color:var(--muted);font-size:.78rem}
+.chess-profile{display:flex;min-height:44px;align-items:center;justify-content:space-between;gap:16px;border-top:1px solid var(--chess-border);color:var(--chess-accent);font-size:.82rem;font-weight:700}
+.chess-profile:hover>span:first-child{text-decoration:underline;text-underline-offset:4px}
+.chess-profile>span:last-child{font-size:1.2rem}
+@media(max-width:1050px) and (min-width:691px){.chess-card-body{grid-template-columns:minmax(0,1fr) 88px;gap:16px}.chess-board{width:88px;background-size:22px 22px}.chess-board svg{width:66px;height:66px}.chess-stats{gap:14px}.chess-stats>div+div{padding-left:14px}.chess-stats dd{font-size:2.6rem}}
+@media(max-width:690px){.hobbies-block{grid-template-columns:1fr;gap:28px;margin-top:36px;padding-top:36px}.hobbies-intro>p:not(.eyebrow){max-width:none;margin-bottom:18px}.chess-card{padding:24px 22px 14px}.chess-card-body{grid-template-columns:minmax(0,1fr) 88px;gap:16px}.chess-board{width:88px;background-size:22px 22px}.chess-board svg{width:66px;height:66px}.chess-stats{gap:16px}.chess-stats>div+div{padding-left:16px}.chess-stats dd{font-size:clamp(2.15rem,7vw,3rem)}}
+@media(max-width:390px){.chess-card-body{grid-template-columns:minmax(0,1fr) 64px;gap:12px}.chess-board{width:64px;background-size:16px 16px}.chess-board svg{width:50px;height:50px}.chess-stats{gap:12px}.chess-stats>div+div{padding-left:12px}.chess-stats dd{font-size:2rem}.chess-stats dt{font-size:.72rem}}
+@media(max-width:1050px){.chess-stats{grid-template-columns:minmax(0,1fr) max-content}}

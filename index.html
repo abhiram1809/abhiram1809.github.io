@@ -38,8 +38,8 @@
         document.querySelector('meta[name="theme-color"]').content = theme === 'light' ? '#f5f2ea' : '#0b1020';
       })();
     </script>
-    <link rel="stylesheet" href="assets/css/style.css?v=16">
-    <script src="assets/js/i18n.js?v=2" defer></script>
+    <link rel="stylesheet" href="assets/css/style.css?v=17">
+    <script src="assets/js/i18n.js?v=3" defer></script>
     <script src="assets/js/main.js?v=8" defer></script>
   </head>
   <body>
@@ -223,7 +223,36 @@
           </article>
         </div>
       </section>
-      <section class="section about-section" id="about" aria-labelledby="about-title"><div class="shell about-grid"><div class="section-intro reveal"><p class="eyebrow">07 / About</p><h2 id="about-title">About me.</h2><p>My work has moved from computer vision and document AI into LLM inference and agent systems.</p></div><div class="about-details reveal"><div><p class="detail-label">Mentorship</p><p>I mentored an intern in AWS and AI engineering, helping her learn and troubleshoot independently.</p></div><div><p class="detail-label">Education</p><p><strong>B.Tech, Computer Science</strong><br>Amity University · 2024</p></div><div><p class="detail-label">Outside work</p><p>Strength training, mixed martial arts, and chess.</p></div></div></div></section>
+      <section class="section about-section" id="about" aria-labelledby="about-title">
+        <div class="shell">
+          <div class="about-grid">
+            <div class="section-intro reveal"><p class="eyebrow">07 / About</p><h2 id="about-title">About me.</h2><p>My work has moved from computer vision and document AI into LLM inference and agent systems.</p></div>
+            <div class="about-details reveal"><div><p class="detail-label">Mentorship</p><p>I mentored an intern in AWS and AI engineering, helping her learn and troubleshoot independently.</p></div><div><p class="detail-label">Education</p><p><strong>B.Tech, Computer Science</strong><br>Amity University · 2024</p></div></div>
+          </div>
+          <div class="hobbies-block" id="hobbies" aria-labelledby="hobbies-title">
+            <div class="hobbies-intro reveal">
+              <p class="eyebrow">Hobbies</p>
+              <h3 id="hobbies-title">Beyond the screen.</h3>
+              <p>Strength training, mixed martial arts, and chess.</p>
+              <div class="hobby-tags"><span>Strength training</span><span>Mixed martial arts</span></div>
+            </div>
+            <article class="chess-card reveal" aria-labelledby="chess-title">
+              <div class="chess-card-heading"><h4 id="chess-title">Chess</h4><span class="chess-platform">Chess.com</span></div>
+              <div class="chess-card-body">
+                <dl class="chess-stats">
+                  <div><dt>Rapid rating</dt><dd>2050</dd></div>
+                  <div><dt>Percentile</dt><dd>99.9<span class="chess-ordinal">th</span></dd></div>
+                </dl>
+                <div class="chess-board" aria-hidden="true">
+                  <svg viewBox="0 0 100 100" fill="none"><path d="M28 73c-1-15 4-25 14-34l-13 7-10-8 17-15 4-12 9 8c15 0 25 11 27 28l2 26H28Z" fill="currentColor"/><path d="m29 38 18-12M44 40c12 4 17 13 17 25" stroke="var(--chess-piece-line)" stroke-width="3" stroke-linecap="round"/><circle cx="49" cy="29" r="2.5" fill="var(--chess-piece-line)"/><path d="M27 79h53l4 9H23l4-9Z" fill="currentColor"/></svg>
+                </div>
+              </div>
+              <p class="chess-context">Among Chess.com Rapid players</p>
+              <a class="chess-profile" href="https://www.chess.com/member/monkey_with_drip" target="_blank" rel="noopener noreferrer"><span>View Chess.com profile</span><span aria-hidden="true">↗</span></a>
+            </article>
+          </div>
+        </div>
+      </section>
       <section class="contact-section" id="contact" aria-labelledby="contact-title"><div class="shell contact-grid reveal"><div><p class="eyebrow">08 / Contact</p><h2 id="contact-title">Open to the right role.</h2><p class="contact-intro">I&apos;m open to full-time roles in inference engineering, agentic AI, and machine learning engineering. I also take on select freelance projects.</p></div><div class="contact-actions"><a class="contact-email" href="mailto:sharmaabhiram1809@gmail.com?subject=AI%20engineering%20opportunity">Email me <span aria-hidden="true">↗</span></a><a class="contact-address" href="mailto:sharmaabhiram1809@gmail.com">sharmaabhiram1809@gmail.com</a><button class="copy-email" type="button" data-copy-email data-email="sharmaabhiram1809@gmail.com">Copy email address</button><div class="contact-links"><a href="https://www.linkedin.com/in/abhiram-sharma-06681b196/" target="_blank" rel="noopener">LinkedIn <span aria-hidden="true">↗</span></a><a href="https://github.com/abhiram1809" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a><a href="assets/Abhiram-Sharma-CV.pdf" target="_blank" rel="noopener">View CV <span aria-hidden="true">↗</span></a><a href="assets/Abhiram-Sharma-CV.pdf" download>Download CV <span aria-hidden="true">↓</span></a></div><p class="copy-status" aria-live="polite" data-copy-status></p></div></div></section>
     </main>
     <footer class="site-footer"><div class="shell"><span>© <span data-current-year>2026</span> Abhiram Sharma</span><a href="#top">Back to top ↑</a></div></footer>
