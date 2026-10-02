@@ -37,9 +37,11 @@
         document.querySelector('meta[name="theme-color"]').content = theme === 'light' ? '#f5f2ea' : '#0b1020';
       })();
     </script>
-    <link rel="stylesheet" href="../../assets/css/style.css?v=19">
+    <link rel="stylesheet" href="../../assets/css/style.css?v=20">
     <script src="../../assets/js/i18n.js?v=5" defer></script>
-    <script src="../../assets/js/main.js?v=9" defer></script>
+    <script src="../../assets/js/main.js?v=10" defer></script>
+    <link rel="stylesheet" href="../../assets/css/ui-details.css?v=1">
+    <script src="../../assets/js/ui-details.js?v=1" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#article-content">Skip to article</a>
@@ -81,7 +83,7 @@
       </div>
     </header>
     <main id="article-content" class="article-main inference-article">
-      <header class="article-hero">
+      <header id="article-introduction" class="article-hero">
         <div class="article-shell reveal">
           <a class="button-link article-back" href="../"><span aria-hidden="true">←</span> All notes</a>
           <p class="eyebrow">Inference engineering · Agent skill</p>
@@ -117,11 +119,11 @@
           </div>
         </figure>
 
-        <h2>Define the deployment requirements</h2>
+        <h2 id="define-the-deployment-requirements">Define the deployment requirements</h2>
         <p>The first step is an inventory: the exact model and tokenizer, GPU memory and interconnect, host RAM, storage, and the client features that must work. Then come the workload questions: how many generations are active at once, how long the prompts and outputs are, and how quickly users need the first and subsequent tokens.</p>
         <p>Registered users do not tell us the concurrency. A few agents working through long documents can put more pressure on a server than many occasional chat users. When the workload is unspecified, the skill provisionally assumes one active user and prioritizes interactive latency. It also starts with the model’s full native context, including output headroom. If that cannot fit, it exposes the capacity gap before changing the requirement.</p>
 
-        <h2>Weights and KV cache are separate budgets</h2>
+        <h2 id="weights-and-kv-cache-are-separate-budgets">Weights and KV cache are separate budgets</h2>
         <p>A 4-bit checkpoint is a starting candidate, not a complete memory plan. The deployment also needs room for the KV cache, runtime allocations, graph capture, and workspace. Those costs depend on the model, context length, concurrency, and engine. A GGUF file size does not establish that the same model fits in vLLM or SGLang.</p>
         <p>The skill evaluates weight precision separately from KV precision. It prefers an FP8 KV candidate where the device, model, and attention backend support it, while retaining a BF16 or FP16 control. Promotion requires checks on quality, long-context behavior, memory, and performance. Likewise, an NVFP4 label is not proof of native FP4 execution: the checkpoint metadata and the launched kernel path both need verification.</p>
 
@@ -138,19 +140,19 @@
           </div>
         </figure>
 
-        <h2>Choose a runtime, then test the hypothesis</h2>
+        <h2 id="choose-a-runtime-then-test-the-hypothesis">Choose a runtime, then test the hypothesis</h2>
         <p>The routing guidance covers vLLM, SGLang, TensorRT-LLM, and llama.cpp, with MLX-LM and vLLM-Metal considered for Apple Silicon. On supported NVIDIA hardware, vLLM is the initial candidate for concurrent serving and SGLang for one active user. These are project starting preferences; a comparable run on the actual workload decides which configuration to keep.</p>
         <p>Compatibility can change the route before performance tuning begins. Older hardware may call for a llama.cpp or Vulkan candidate. A required API can favor another engine or a tested adapter. Community builds and plugins are candidates too, but their source revisions, changes, and actual kernel behavior have to be recorded. A successful startup is one check in that process.</p>
 
-        <h2>An API endpoint is a behavioral contract</h2>
+        <h2 id="an-api-endpoint-is-a-behavioral-contract">An API endpoint is a behavioral contract</h2>
         <p>Coding agents need more than a plain-text completion. The workflow tests the required OpenAI Chat Completions, OpenAI Responses, or Anthropic Messages routes, including streaming, tool-call round trips, structured output, reasoning fields, and usage reporting where needed. The tokenizer, chat template, and model-specific parsers are part of that verification.</p>
         <p>A server returning HTTP 200 does not establish that an agent can continue a tool exchange or interpret its stream. If a gateway or adapter translates the protocol, the tests run through that component as well. The point is to verify the path the real client uses before measuring it as a working deployment.</p>
 
-        <h2>Measure the workload before adding optimizations</h2>
+        <h2 id="measure-the-workload-before-adding-optimizations">Measure the workload before adding optimizations</h2>
         <p>The benchmark plan includes short, medium, and near-native-context prompts at both interactive and peak concurrency. Repeated-prefix applications get cold-cache and warm-cache runs. The report tracks time to first token, inter-token latency, per-user and aggregate output throughput, latency percentiles, errors, and peak memory. Enough samples are needed before interpreting tail latency.</p>
         <p>Tuning then changes one dimension at a time: weights and kernels, FP8 KV, batching and scheduling, graph capture, prefix reuse, parallelism, and speculative decoding where supported. Correctness and quality are rechecked after changes. A throughput gain that misses the latency target does not win automatically, and a faster synthetic microbenchmark does not establish a faster serving system.</p>
 
-        <h2>Extend the same discipline to multiple GPUs</h2>
+        <h2 id="extend-the-same-discipline-to-multiple-gpus">Extend the same discipline to multiple GPUs</h2>
         <p>For multi-GPU deployments, the skill evaluates feasible tensor, pipeline, data, and expert parallel layouts sequentially. Expert parallelism applies to supported mixture-of-experts models. Per-GPU fit, rank placement, and interconnect costs matter; adding devices does not guarantee lower latency for one active stream.</p>
         <p>At the fleet level, llm-d enters as an orchestration and routing layer above the serving engine. The comparison starts with ordinary replicas, then cache- and load-aware routing, and finally separate prefill and decode pools when measured interference justifies them. KV transfer time, network contention, pool balance, and gateway latency remain part of the measurement. The aim is the simplest architecture that meets the workload with a demonstrated benefit.</p>
 
@@ -167,11 +169,11 @@
           </div>
         </figure>
 
-        <h2>Use it with your coding agent</h2>
+        <h2 id="use-it-with-your-coding-agent">Use it with your coding agent</h2>
         <p>The canonical skill lives in the repository’s Codex skill folder. Claude Code and OpenCode paths point to that same folder through relative symlinks. For another project, copy the complete inference-optimizer folder into your harness’s supported skill directory and keep its references folder alongside SKILL.md.</p>
-        <pre class="article-code"><code>git clone https://github.com/abhiram1809/inference-god-mode.git</code></pre>
+        <pre class="article-code" data-kind="terminal"><code>git clone https://github.com/abhiram1809/inference-god-mode.git</code></pre>
         <p>Then give the agent a concrete request. Replace the placeholders with your deployment requirements:</p>
-        <pre class="article-code"><code>Use inference-optimizer to serve &lt;model repository&gt;
+        <pre class="article-code" data-kind="prompt"><code>Use inference-optimizer to serve &lt;model repository&gt;
 on &lt;GPU model, count, and memory&gt;.
 
 Required APIs: &lt;client protocols and features&gt;.
@@ -182,7 +184,7 @@ Keep the full native context.
 Evaluate 4-bit weights and FP8 KV.
 Benchmark my workload and report the best verified setup.</code></pre>
 
-        <h2>What the project establishes today</h2>
+        <h2 id="what-the-project-establishes-today">What the project establishes today</h2>
         <p>Inference God Mode provides a structured workflow and reference guides. Its published validation covers skill structure, local reference links, and harness symlinks. It does not establish a universal speedup or a benchmark-winning configuration. Those results still have to be measured for the chosen model, hardware, runtime, and traffic.</p>
         <p>The useful output is a reproducible configuration or a concrete next experiment: pinned revisions, selected kernels, tested APIs, context and concurrency limits, measurements, quality observations, and the remaining bottleneck. That makes the skill a way to organize inference engineering around evidence and to carry that evidence into the next deployment decision.</p>
 

@@ -37,9 +37,11 @@
         document.querySelector('meta[name="theme-color"]').content = theme === 'light' ? '#f5f2ea' : '#0b1020';
       })();
     </script>
-    <link rel="stylesheet" href="../../assets/css/style.css?v=16">
+    <link rel="stylesheet" href="../../assets/css/style.css?v=20">
     <script src="../../assets/js/i18n.js?v=2" defer></script>
-    <script src="../../assets/js/main.js?v=8" defer></script>
+    <script src="../../assets/js/main.js?v=10" defer></script>
+    <link rel="stylesheet" href="../../assets/css/ui-details.css?v=1">
+    <script src="../../assets/js/ui-details.js?v=1" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#article-content">Skip to article</a>
@@ -81,7 +83,7 @@
       </div>
     </header>
     <main id="article-content" class="article-main">
-      <header class="article-hero">
+      <header id="article-introduction" class="article-hero">
         <div class="article-shell reveal">
           <a class="button-link article-back" href="../"><span aria-hidden="true">←</span> All notes</a>
           <p class="eyebrow">Coding benchmarks · Open source</p>
@@ -109,12 +111,12 @@
           <figcaption>AnyBench keeps each step visible, including the five verified cases and two candidate attempts that hit the token limit.</figcaption>
         </figure>
 
-        <h2>From recent commits to replayable tasks</h2>
+        <h2 id="from-recent-commits-to-replayable-tasks">From recent commits to replayable tasks</h2>
         <p>On September 25, 2026, I sampled the five then-recent commits in each repository. GLM-5.3 Flash drafted six problems from those ten commits. I reviewed the problem statements and test commands, then kept the cases whose checks could be tied to behavior changed by the historical commit.</p>
         <p>Verification is the gate. Each selected check ran against both snapshots in an isolated Docker environment: it had to fail on the parent revision and pass after the reference change. Five cases passed that check. One translation workflow was skipped because the environment lacked the required gettext tooling.</p>
         <p>This before-and-after test is what makes a commit-derived task useful. A test that simply passes on the fixed version may be unrelated, too broad, or accidentally dependent on behavior that already existed.</p>
 
-        <h2>What happened in the candidate run</h2>
+        <h2 id="what-happened-in-the-candidate-run">What happened in the candidate run</h2>
         <p>Qwen3.8-27B was run once on each of the five verified cases, with one attempt at a time and a 20-step limit. Three attempts completed and passed their checks. Two ran into the token budget before completion. GLM-5.3 Flash judged the completed attempts at a mean score of 0.90.</p>
         <div class="article-system-map" aria-label="AnyBench example results">
           <div><span>INPUT</span><strong>2 repositories</strong><p>Five recent commits sampled from Humanize and Boltons.</p></div>
@@ -124,17 +126,17 @@
         </div>
         <p>These numbers describe a small diagnostic run, not a model ranking. The sample is tiny, the task set was reviewed and adjusted by a person, and two attempts did not finish. The judge score adds context, but the locally verified tests remain the main signal.</p>
 
-        <h2>Review is part of the benchmark</h2>
+        <h2 id="review-is-part-of-the-benchmark">Review is part of the benchmark</h2>
         <p>The builder can propose a command that refers to a test introduced by the target commit, contains invalid syntax, or assumes a tool that is not installed. I inspected every generated case and replaced unsuitable commands with focused checks that work against both snapshots. The translation task stayed visible in the run data with its skip reason rather than disappearing from the totals.</p>
         <p>That human pass is not a loophole around automation. It is part of the dataset creation process, and it is recorded so someone replaying the example can see what was selected and why. The checked-in CSVs include the reviewed cases, evaluator commands, and historical reference diffs; the JSON results record the commits, changed files, validation outcomes, and candidate attempts.</p>
 
-        <h2>Containers keep the environment honest</h2>
+        <h2 id="containers-keep-the-environment-honest">Containers keep the environment honest</h2>
         <p>The default sandbox did not include all the dependencies these libraries needed. I built a shared Python image with pytest, freezegun, and Humanize&apos;s generated version module, then used that image for validation and candidate execution. Verification and benchmark containers run without network access; image construction can still download public dependencies.</p>
         <p>That boundary matters for reproducibility. A failed setup should be reported as a setup problem, not turned into a model failure. Likewise, a candidate whose patch passes one check but does not finish its attempt is still incomplete; AnyBench records that outcome rather than counting it as solved.</p>
 
-        <h2>Replay the example</h2>
+        <h2 id="replay-the-example">Replay the example</h2>
         <p>The repository includes pinned cases and model configuration files without credentials. After installing AnyBench and Docker, the examples README shows how to build the image, validate the Humanize or Boltons cases, run a candidate, evaluate completed attempts, and generate an HTML report. Validation itself does not call a model; replaying candidate and judge calls uses your configured API endpoint and can incur costs.</p>
-        <pre class="article-code"><code>docker build -f examples/Dockerfile.python-libs \
+        <pre class="article-code" data-kind="terminal"><code>docker build -f examples/Dockerfile.python-libs \
   -t anybench-python-libs:example .
 
 anybench validate examples/humanize/cases.csv --check-tests \
@@ -142,7 +144,7 @@ anybench validate examples/humanize/cases.csv --check-tests \
   --verified-output .anybench/humanize-verified.csv</code></pre>
         <p>Start with the <a href="https://github.com/abhiram1809/any-bench/tree/main/examples" target="_blank" rel="noopener">example data and replay guide</a> for full commands, configuration, and the limits of this run.</p>
 
-        <h2>What the run changed in AnyBench</h2>
+        <h2 id="what-the-run-changed-in-anybench">What the run changed in AnyBench</h2>
         <p>Trying the workflow on real repositories exposed practical gaps: the builder needed bounded source inspection, test commands needed clearer guidance, and the runner needed better handling for common line ranges, newline preservation, and cache files. I also tightened container Git ownership and added an end-to-end deadline for API responses.</p>
         <p>That feedback loop is the point of the project: use ordinary repositories to exercise the whole path from commit selection to a report, then improve the tool where the workflow breaks. AnyBench makes it easier to build a small benchmark for a codebase; it does not remove the need to inspect the cases or interpret the results carefully.</p>
 

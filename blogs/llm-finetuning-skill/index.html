@@ -35,9 +35,11 @@
         document.querySelector('meta[name="theme-color"]').content = theme === 'light' ? '#f5f2ea' : '#0b1020';
       })();
     </script>
-    <link rel="stylesheet" href="../../assets/css/style.css?v=16">
+    <link rel="stylesheet" href="../../assets/css/style.css?v=20">
     <script src="../../assets/js/i18n.js?v=2" defer></script>
-    <script src="../../assets/js/main.js?v=8" defer></script>
+    <script src="../../assets/js/main.js?v=10" defer></script>
+    <link rel="stylesheet" href="../../assets/css/ui-details.css?v=1">
+    <script src="../../assets/js/ui-details.js?v=1" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#article-content">Skip to article</a>
@@ -79,7 +81,7 @@
       </div>
     </header>
     <main id="article-content" class="article-main">
-      <header class="article-hero">
+      <header id="article-introduction" class="article-hero">
         <div class="article-shell reveal">
           <a class="button-link article-back" href="../"><span aria-hidden="true">←</span> All notes</a>
           <p class="eyebrow">Agent skills · Local LLMs</p>
@@ -101,7 +103,7 @@
           <p>The skill does not ship a fixed trainer or a table of fashionable hyperparameters. It tells the agent what to decide, what to verify, and which failure modes to rule out in the stack already being used.</p>
         </aside>
 
-        <h2>The first question is where the knowledge should live</h2>
+        <h2 id="the-first-question-is-where-the-knowledge-should-live">The first question is where the knowledge should live</h2>
         <p>A request such as “train this model on our documentation” can describe several different goals. Exact product codes and changing API names belong in retrieval. Output format, domain style, task framing, and tool behavior are better candidates for weights. Most domain assistants need both.</p>
         <figure class="article-animation" data-article-animation>
           <picture>
@@ -120,7 +122,7 @@
         </div>
         <p>The opinionated part is simple: a low-rank adapter is a poor database. If the success metric is exact recall, the agent should say that before it spends hours encoding unstable facts into weights.</p>
 
-        <h2>A method ladder instead of a default recipe</h2>
+        <h2 id="a-method-ladder-instead-of-a-default-recipe">A method ladder instead of a default recipe</h2>
         <p>Once training is justified, the skill climbs only as high as the goal requires:</p>
         <figure class="article-diagram">
           <img src="../../assets/img/blogs/finetuning-decisions.svg" width="1200" height="460" loading="lazy" decoding="async" alt="Animated method map: start with a baseline, choose retrieval for changing facts, LoRA for behavior, or continued pretraining for unusual language, then evaluate and escalate only if needed.">
@@ -135,12 +137,12 @@
         </ol>
         <p>Each stage has an exit. If continued pretraining beats the later SFT checkpoint on the metric that matters, the earlier checkpoint ships. More stages are not automatically more progress.</p>
 
-        <h2>Why this lives as an agent skill</h2>
+        <h2 id="why-this-lives-as-an-agent-skill">Why this lives as an agent skill</h2>
         <p>Fine-tuning work spreads across the repository, the dataset, the machine, and the serving target. A static checklist cannot inspect those pieces. A coding agent can.</p>
         <p>The main <code>SKILL.md</code> holds the decision process. Six references are loaded only when needed: data preparation, teacher–student generation, evaluation, training operations, serving, and troubleshooting. An evaluation question does not spend context on vLLM startup flags; a serving failure does not reload the entire data guide.</p>
         <p>The content is model- and domain-agnostic. Unsloth with a PEFT/TRL-style loop is the reference path for single-GPU LoRA and QLoRA because that is where the field notes came from. A different trainer does not invalidate the decisions.</p>
 
-        <h2>The mistakes I wanted the agent to remember</h2>
+        <h2 id="the-mistakes-i-wanted-the-agent-to-remember">The mistakes I wanted the agent to remember</h2>
         <p>The useful parts are the failures that look reasonable until they waste a day.</p>
         <ul class="article-bullets">
           <li><strong>Loading is not training.</strong> A checkpoint can fit during inference and fail on the first backward pass. The skill requires one forward and backward pass at the real sequence length and batch size on the actual GPU.</li>
@@ -151,7 +153,7 @@
         </ul>
         <p>The skill keeps a run log as part of the work: exact checkpoint revision, resolved dependency versions, GPU and peak memory, adapter design, data split, decoding settings, every evaluation number, and every non-obvious failure.</p>
 
-        <h2>An evaluation that can say no</h2>
+        <h2 id="an-evaluation-that-can-say-no">An evaluation that can say no</h2>
         <figure class="article-animation" data-article-animation>
           <picture>
             <source media="(prefers-reduced-motion: reduce)" srcset="../../assets/img/llm-finetuning/honest-evaluation-still.png">
@@ -171,7 +173,7 @@
         <p>The gaps are more useful than the headline score. High teacher-forced performance with weak generation means the knowledge is present but not surfacing. That calls for output-behavior work, decoding constraints, or retrieval—not another round of continued pretraining.</p>
         <p>The field notes also show why precision belongs in the report. In observed runs, teacher-forced accuracy was roughly double free-generation accuracy, and bf16 recalled 50–60% more than the same model at 4-bit serving precision. Those figures are calibration, not universal benchmarks. The rule is universal: report the generative number produced by the artifact and endpoint that users will receive.</p>
 
-        <h2>Training decisions reach all the way into vLLM</h2>
+        <h2 id="training-decisions-reach-all-the-way-into-vllm">Training decisions reach all the way into vLLM</h2>
         <p>A small adapter that touches attention and MLP projections can remain detachable. vLLM can keep one base model on the GPU and select among adapters per request. Training embeddings or the output head changes that artifact: those matrices are saved in full, often turning megabytes into gigabytes and forcing a merge.</p>
         <p>That is why the skill asks about serving before training. It helps choose between a detachable adapter, a merged model, and a merged-plus-quantized model. It also carries the verification through startup:</p>
         <ol>
@@ -182,9 +184,9 @@
         </ol>
         <p>A process existing is not the same as a model serving. A health check alone is not the same as the correct artifact generating a useful answer.</p>
 
-        <h2>Using the skill</h2>
+        <h2 id="using-the-skill">Using the skill</h2>
         <p>The installer symlinks the same skill into Claude Code, Codex, and OpenCode, so a pull updates every harness in place:</p>
-        <pre class="article-code"><code>git clone https://github.com/abhiram1809/unsloth-finetuning-vllm-skill.git
+        <pre class="article-code" data-kind="terminal"><code>git clone https://github.com/abhiram1809/unsloth-finetuning-vllm-skill.git
 cd unsloth-finetuning-vllm-skill
 ./install.sh</code></pre>
         <p>It can also install for one harness or into the current project. Claude Code users can install it as a plugin. Any agent without a skill loader can read the markdown directly.</p>

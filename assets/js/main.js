@@ -132,6 +132,7 @@
     updateThemeControl(document.documentElement.dataset.theme === 'light' ? 'light' : 'dark');
     updateMenuControl();
     videoControlUpdates.forEach((update) => update());
+    document.dispatchEvent(new CustomEvent('portfolio:languagechange'));
     if (persist) {
       try { localStorage.setItem('portfolio-language', currentLanguage); } catch {}
     }
@@ -288,23 +289,12 @@
   navLinks.forEach((link) => link.addEventListener('click', closeMenu));
   document.addEventListener('keydown', (event) => {
     if (event.key !== 'Escape') return;
+    const wasMenuOpen = menuButton?.getAttribute('aria-expanded') === 'true';
     closeMenu();
+    if (wasMenuOpen) menuButton.focus({ preventScroll: true });
     closeLanguageMenu();
   });
 
-  const sectionLinks = navLinks.filter((link) => {
-    const href = link.getAttribute('href');
-    return href?.startsWith('#') && href.length > 1;
-  });
-  const sections = sectionLinks.map((link) => document.querySelector(link.getAttribute('href'))).filter(Boolean);
-  const navObserver = new IntersectionObserver((entries) => entries.forEach((entry) => {
-    if (!entry.isIntersecting) return;
-    sectionLinks.forEach((link) => {
-      if (link.getAttribute('href') === `#${entry.target.id}`) link.setAttribute('aria-current', 'page');
-      else link.removeAttribute('aria-current');
-    });
-  }), { rootMargin: '-35% 0px -55% 0px', threshold: 0 });
-  sections.forEach((section) => navObserver.observe(section));
   const revealObserver = new IntersectionObserver((entries, observer) => entries.forEach((entry) => {
     if (entry.isIntersecting) { entry.target.classList.add('is-visible'); observer.unobserve(entry.target); }
   }), { threshold: 0.12 });

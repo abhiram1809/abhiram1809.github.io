@@ -37,9 +37,11 @@
         document.querySelector('meta[name="theme-color"]').content = theme === 'light' ? '#f5f2ea' : '#0b1020';
       })();
     </script>
-    <link rel="stylesheet" href="../../assets/css/style.css?v=16">
+    <link rel="stylesheet" href="../../assets/css/style.css?v=20">
     <script src="../../assets/js/i18n.js?v=2" defer></script>
-    <script src="../../assets/js/main.js?v=8" defer></script>
+    <script src="../../assets/js/main.js?v=10" defer></script>
+    <link rel="stylesheet" href="../../assets/css/ui-details.css?v=1">
+    <script src="../../assets/js/ui-details.js?v=1" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#article-content">Skip to article</a>
@@ -81,7 +83,7 @@
       </div>
     </header>
     <main id="article-content" class="article-main">
-      <header class="article-hero">
+      <header id="article-introduction" class="article-hero">
         <div class="article-shell reveal">
           <a class="button-link article-back" href="../"><span aria-hidden="true">←</span> All notes</a>
           <p class="eyebrow">Neuro-inspired systems</p>
@@ -103,7 +105,7 @@
           <p>FlySim is a connectome-inspired circuit model. It borrows known motifs from the antennal lobe, mushroom body, and central complex, but it is not a neuron-by-neuron reconstruction of a fly brain.</p>
         </aside>
 
-        <h2>One world, four smells</h2>
+        <h2 id="one-world-four-smells">One world, four smells</h2>
         <p>The world contains four flower species. Each one produces a different pattern across 16 odor channels. Two species contain nectar and two are toxic. The fly starts without that information. It has to approach flowers, experience the result, and change its response to that odor.</p>
         <p>This keeps the task small enough to inspect. The interesting part is not whether the fly eventually finds nectar. It is whether a bad landing changes the next decision in a way that can be traced through the model.</p>
 
@@ -119,25 +121,25 @@
           <div><span>04</span><strong>Behavior loop</strong><p>Chooses search, track, feed, or avoid from the circuit outputs.</p></div>
         </div>
 
-        <h2>Keeping odor identity stable</h2>
+        <h2 id="keeping-odor-identity-stable">Keeping odor identity stable</h2>
         <p>A fly moving toward a flower sees the same odor at very different concentrations. If the input is used directly, getting closer can swamp the pattern that identifies the flower. FlySim uses divisive normalization in the antennal lobe:</p>
-        <pre class="article-code" aria-label="Antennal lobe normalization equation"><code>PNᵢ = ORNᵢ¹·⁵ / (σ¹·⁵ + (Σ ORN)¹·⁵)</code></pre>
+        <pre class="article-code" data-kind="equation" aria-label="Antennal lobe normalization equation"><code>PNᵢ = ORNᵢ¹·⁵ / (σ¹·⁵ + (Σ ORN)¹·⁵)</code></pre>
         <p>The shared denominator suppresses overall magnitude while preserving the relative pattern across glomeruli. The steering loop can still use the difference between the left and right antennae, while the mushroom body receives a more stable odor identity.</p>
 
-        <h2>Sparse memory, then depression-only learning</h2>
+        <h2 id="sparse-memory-then-depression-only-learning">Sparse memory, then depression-only learning</h2>
         <p>The mushroom body maps 16 projection-neuron values into 800 Kenyon cells. Each Kenyon cell samples four inputs. An APL-style global inhibition step keeps only the strongest 40 responses, so each odor activates a small subset of the population.</p>
         <p>That sparse code feeds two opposing outputs: approach and avoid. Both start with equal weights, which makes the fly naive rather than optimistic or fearful. A reward depresses the avoid pathway for the active Kenyon cells. A toxic landing depresses the approach pathway. There is no separate strengthening rule.</p>
         <p>The behavioral effect matters more than the weight update. Once the learned valence for an odor becomes negative, the fly does not merely report a lower score in the HUD. It steers down the gradient and can refuse to land.</p>
 
-        <h2>A compass that is allowed to be wrong</h2>
+        <h2 id="a-compass-that-is-allowed-to-be-wrong">A compass that is allowed to be wrong</h2>
         <p>The central-complex model is a 32-unit ring attractor. It moves its activity bump from angular velocity and never receives the fly&apos;s true heading. This produces dead reckoning, including accumulated error.</p>
         <p>I left that drift visible. The HUD shows body heading, compass heading, and the difference between them. Hiding the mismatch would make the demo cleaner, but it would also remove one of the most useful signs that the compass is an internal estimate rather than a value copied from the renderer.</p>
 
-        <h2>The renderer cannot change the experiment</h2>
+        <h2 id="the-renderer-cannot-change-the-experiment">The renderer cannot change the experiment</h2>
         <p>The brain and world advance at a fixed 200 Hz. Rendering runs independently. A slow frame can change how smooth the motion looks, but it does not change the time step used by the circuits.</p>
         <p>The renderer is also read-only. It does not call the simulation&apos;s random-number generator. That detail prevents a camera or graphics change from silently moving every flower and changing the fly&apos;s experience. The same simulation state drives the map, chase, and point-of-view modes.</p>
 
-        <h2>What to watch in the demo</h2>
+        <h2 id="what-to-watch-in-the-demo">What to watch in the demo</h2>
         <ol>
           <li>Start at 4× or 16× speed and watch the behavior label switch between <code>SEARCH</code> and <code>TRACK</code>.</li>
           <li>After a toxic landing, look at the learned-value row for that flower species.</li>
@@ -148,7 +150,7 @@
 
         <p>The portfolio route uses the standalone build: one HTML file, no framework, no WebGL dependency, and no network calls after the page loads. The 3D view is a small software renderer drawn onto a 240-pixel canvas.</p>
 
-        <h2>Why I built it</h2>
+        <h2 id="why-i-built-it">Why I built it</h2>
         <p>The project started from the question behind the <a href="https://www.fruitflybrain.org/" target="_blank" rel="noopener">Fruit Fly Brain Observatory</a>: what becomes easier to understand when neural structure is something you can run rather than only read about?</p>
         <p>FlySim is deliberately smaller. Its value is that the entire path from odor to action fits in a browser tab, and every number shown in the interface belongs to the same running model.</p>
 
