@@ -1,0 +1,69 @@
+{
+  "renderer": "Manim Community 0.21.0",
+  "font": "Kalam",
+  "scenes": {
+    "MemoryBudget": {
+      "duration_seconds": 19.7,
+      "width": 1200,
+      "height": 900,
+      "fps": 30,
+      "poster_time_seconds": 15.5,
+      "files": {
+        "memory-budget.mp4": {
+          "bytes": 800115,
+          "sha256": "909a97b11ac089fbcbb6e016811876e002cf7374c8a6aa5e410b4df1b0106cdf"
+        },
+        "memory-budget.webm": {
+          "bytes": 869799,
+          "sha256": "d592f87ba429e3425dcf95508e4ac1634ff23c1c02cbad0e212be8c2f00e65de"
+        },
+        "memory-budget-poster.webp": {
+          "bytes": 76268,
+          "sha256": "16e8fd4266657c5f8e0aea9f9cc63180973d19339c24d5cc16c16deef0a4f70a"
+        }
+      }
+    },
+    "OptimizationLoop": {
+      "duration_seconds": 20.267,
+      "width": 1200,
+      "height": 900,
+      "fps": 30,
+      "poster_time_seconds": 16.6,
+      "files": {
+        "optimization-loop.mp4": {
+          "bytes": 634618,
+          "sha256": "1ba1c25d83e5da8d6c7007895c34fe0583186d65478da6b368e8d2e5c2228641"
+        },
+        "optimization-loop.webm": {
+          "bytes": 652763,
+          "sha256": "1b567b43e9279271dc37ac8713e9a5772714e27184384ec8ca99865ccf19d774"
+        },
+        "optimization-loop-poster.webp": {
+          "bytes": 57930,
+          "sha256": "13c2bf27743e492dbcf60e87a3e44c21826b60430c850b3acbeef2f9ff442c81"
+        }
+      }
+    },
+    "CacheRouting": {
+      "duration_seconds": 19.1,
+      "width": 1200,
+      "height": 900,
+      "fps": 30,
+      "poster_time_seconds": 15.2,
+      "files": {
+        "cache-routing.mp4": {
+          "bytes": 723136,
+          "sha256": "80b3e452a8f43b129dc7d6a635e1136a17761a5cd9e051814af72873c531e29c"
+        },
+        "cache-routing.webm": {
+          "bytes": 632146,
+          "sha256": "7a4b2536f9c2f56be5c19c3d29b99c7d73b9ba20e61ed314b2084904775d209e"
+        },
+        "cache-routing-poster.webp": {
+          "bytes": 69340,
+          "sha256": "af41631461d77f19f0bb2afc8c93cc6523b96ac862b850760e7ddbeac1f0c6e5"
+        }
+      }
+    }
+  }
+}

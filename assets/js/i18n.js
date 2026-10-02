@@ -1,5 +1,12 @@
 window.PORTFOLIO_I18N = {
   "de": {
+    "Fit the full context, verify APIs and quality, measure real traffic, then change one thing and test again. The loop keeps the workload requirements fixed.": "Den vollständigen Kontext ermöglichen, APIs und Qualität prüfen, echten Datenverkehr messen und dann eine einzelne Änderung erneut testen. Die Anforderungen an die Arbeitslast bleiben im gesamten Zyklus gleich.",
+    "Weights, KV cache, runtime allocations, and headroom share the GPU memory budget. Weight precision and KV precision are separate choices; segment sizes are schematic, not measured.": "Gewichte, KV-Cache, Laufzeitallokationen und Reserve teilen sich den GPU-Speicher. Gewichts- und KV-Präzision werden getrennt gewählt; die Segmentgrößen sind schematisch und keine Messwerte.",
+    "Workers A and C hold the same reusable prefix. When A becomes busy, routing to C preserves cache reuse while avoiding extra load on A. The worker loads are illustrative.": "Die Worker A und C halten dasselbe wiederverwendbare Präfix. Wird A ausgelastet, bewahrt das Routing zu C die Cache-Nutzung und entlastet A. Die dargestellten Lasten sind beispielhaft.",
+    "Watch the animation": "Animation ansehen",
+    "Play animation": "Animation abspielen",
+    "Full screen": "Vollbild",
+    "Exit full screen": "Vollbild verlassen",
     "Inference engineering · Agent skill": "Inferenz-Engineering · Agenten-Skill",
     "Inference tuning starts with a workload.": "Inferenz-Tuning beginnt mit der Arbeitslast.",
     "I built Inference God Mode to guide a coding agent through self-hosted LLM serving: size the deployment, verify the client contract, measure the workload, and tune what the evidence supports.": "Ich habe Inference God Mode entwickelt, um einen Coding-Agenten durch selbst gehostetes LLM-Serving zu führen: Kapazität planen, den Client-Vertrag prüfen, die Arbeitslast messen und anhand der Ergebnisse optimieren.",
@@ -444,6 +451,13 @@ window.PORTFOLIO_I18N = {
     "Pause animation": "Animation pausieren"
   },
   "fr": {
+    "Fit the full context, verify APIs and quality, measure real traffic, then change one thing and test again. The loop keeps the workload requirements fixed.": "Accueillir le contexte complet, vérifier les API et la qualité, mesurer le trafic réel, puis modifier un paramètre et tester à nouveau. Les exigences de charge restent fixes tout au long du cycle.",
+    "Weights, KV cache, runtime allocations, and headroom share the GPU memory budget. Weight precision and KV precision are separate choices; segment sizes are schematic, not measured.": "Les poids, le cache KV, les allocations du runtime et la réserve partagent la mémoire GPU. Les précisions des poids et du KV sont deux choix distincts ; les tailles représentées sont schématiques, pas mesurées.",
+    "Workers A and C hold the same reusable prefix. When A becomes busy, routing to C preserves cache reuse while avoiding extra load on A. The worker loads are illustrative.": "Les workers A et C possèdent le même préfixe réutilisable. Quand A est chargé, router vers C conserve le bénéfice du cache sans surcharger A. Les charges sont illustratives.",
+    "Watch the animation": "Voir l’animation",
+    "Play animation": "Lire l’animation",
+    "Full screen": "Plein écran",
+    "Exit full screen": "Quitter le plein écran",
     "Inference engineering · Agent skill": "Ingénierie de l’inférence · Compétence d’agent",
     "Inference tuning starts with a workload.": "L’optimisation de l’inférence commence par la charge de travail.",
     "I built Inference God Mode to guide a coding agent through self-hosted LLM serving: size the deployment, verify the client contract, measure the workload, and tune what the evidence supports.": "J’ai créé Inference God Mode pour guider un agent de programmation dans le déploiement de LLM auto-hébergés : dimensionner, vérifier le contrat client, mesurer la charge et optimiser selon les résultats.",
@@ -888,6 +902,13 @@ window.PORTFOLIO_I18N = {
     "Pause animation": "Mettre l’animation en pause"
   },
   "es": {
+    "Fit the full context, verify APIs and quality, measure real traffic, then change one thing and test again. The loop keeps the workload requirements fixed.": "Admitir el contexto completo, verificar APIs y calidad, medir tráfico real y después cambiar una sola cosa y volver a probar. Los requisitos de la carga permanecen fijos durante todo el ciclo.",
+    "Weights, KV cache, runtime allocations, and headroom share the GPU memory budget. Weight precision and KV precision are separate choices; segment sizes are schematic, not measured.": "Los pesos, la caché KV, las asignaciones del runtime y el margen comparten la memoria GPU. La precisión de los pesos y la del KV son decisiones separadas; los tamaños son esquemáticos, no medidos.",
+    "Workers A and C hold the same reusable prefix. When A becomes busy, routing to C preserves cache reuse while avoiding extra load on A. The worker loads are illustrative.": "Los workers A y C tienen el mismo prefijo reutilizable. Cuando A está ocupado, enviar la solicitud a C conserva la reutilización de caché y evita más carga en A. Las cargas son ilustrativas.",
+    "Watch the animation": "Ver la animación",
+    "Play animation": "Reproducir animación",
+    "Full screen": "Pantalla completa",
+    "Exit full screen": "Salir de pantalla completa",
     "Inference engineering · Agent skill": "Ingeniería de inferencia · Habilidad de agente",
     "Inference tuning starts with a workload.": "La optimización de inferencia empieza por la carga de trabajo.",
     "I built Inference God Mode to guide a coding agent through self-hosted LLM serving: size the deployment, verify the client contract, measure the workload, and tune what the evidence supports.": "Creé Inference God Mode para guiar a un agente de programación en el despliegue de LLM autoalojados: dimensionar, verificar el contrato del cliente, medir la carga y optimizar según los resultados.",
@@ -1332,6 +1353,13 @@ window.PORTFOLIO_I18N = {
     "Pause animation": "Pausar animación"
   },
   "nl": {
+    "Fit the full context, verify APIs and quality, measure real traffic, then change one thing and test again. The loop keeps the workload requirements fixed.": "Het volledige contextvenster ondersteunen, API’s en kwaliteit controleren, echt verkeer meten en daarna één wijziging opnieuw testen. De werklastvereisten blijven tijdens de hele cyclus gelijk.",
+    "Weights, KV cache, runtime allocations, and headroom share the GPU memory budget. Weight precision and KV precision are separate choices; segment sizes are schematic, not measured.": "Gewichten, KV-cache, runtimeallocaties en vrije ruimte delen het GPU-geheugen. Gewichtenprecisie en KV-precisie zijn aparte keuzes; de segmentgroottes zijn schematisch, niet gemeten.",
+    "Workers A and C hold the same reusable prefix. When A becomes busy, routing to C preserves cache reuse while avoiding extra load on A. The worker loads are illustrative.": "Workers A en C hebben dezelfde herbruikbare prefix. Als A druk wordt, behoudt routing naar C het cachehergebruik zonder A extra te belasten. De werklast is illustratief.",
+    "Watch the animation": "Animatie bekijken",
+    "Play animation": "Animatie afspelen",
+    "Full screen": "Volledig scherm",
+    "Exit full screen": "Volledig scherm sluiten",
     "Inference engineering · Agent skill": "Inferentie-engineering · Agentvaardigheid",
     "Inference tuning starts with a workload.": "Inferentie afstemmen begint bij de werklast.",
     "I built Inference God Mode to guide a coding agent through self-hosted LLM serving: size the deployment, verify the client contract, measure the workload, and tune what the evidence supports.": "Ik bouwde Inference God Mode om een programmeeragent door zelf gehoste LLM-serving te leiden: capaciteit bepalen, het clientcontract controleren, de werklast meten en afstemmen op basis van bewijs.",

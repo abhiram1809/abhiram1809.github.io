@@ -37,9 +37,9 @@
         document.querySelector('meta[name="theme-color"]').content = theme === 'light' ? '#f5f2ea' : '#0b1020';
       })();
     </script>
-    <link rel="stylesheet" href="../../assets/css/style.css?v=18">
-    <script src="../../assets/js/i18n.js?v=4" defer></script>
-    <script src="../../assets/js/main.js?v=8" defer></script>
+    <link rel="stylesheet" href="../../assets/css/style.css?v=19">
+    <script src="../../assets/js/i18n.js?v=5" defer></script>
+    <script src="../../assets/js/main.js?v=9" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#article-content">Skip to article</a>
@@ -104,12 +104,18 @@
           <p>A faster configuration is useful only if it preserves the required context, quality, concurrency, and API behavior. The skill keeps those constraints in the loop as the deployment changes.</p>
         </aside>
 
-        <div class="article-system-map inference-workflow" aria-label="Inference optimization workflow">
-          <div><span>01 / SIZE</span><strong>Establish the target</strong><p>Model revision, GPU topology, native context, active generations, and client requirements.</p></div>
-          <div><span>02 / VERIFY</span><strong>Build a correct baseline</strong><p>Check memory fit, actual kernels, output quality, and the complete API contract.</p></div>
-          <div><span>03 / MEASURE</span><strong>Replay the workload</strong><p>Short and long prompts, cold and warm prefixes, interactive latency, and peak concurrency.</p></div>
-          <div><span>04 / TUNE</span><strong>Keep the best verified configuration</strong><p>Change one dimension at a time and retain the latency, throughput, memory, and quality tradeoffs.</p></div>
-        </div>
+        <figure class="article-animation article-animation-video" data-article-video>
+          <video id="optimization-loop-animation" width="1200" height="900" controls muted loop playsinline preload="none" poster="../../assets/media/inference-god-mode/optimization-loop-poster.webp" aria-labelledby="optimization-loop-caption">
+            <source src="../../assets/media/inference-god-mode/optimization-loop.webm" type="video/webm">
+            <source src="../../assets/media/inference-god-mode/optimization-loop.mp4" type="video/mp4">
+            <a href="../../assets/media/inference-god-mode/optimization-loop.mp4">Watch the animation</a>
+          </video>
+          <figcaption id="optimization-loop-caption">Fit the full context, verify APIs and quality, measure real traffic, then change one thing and test again. The loop keeps the workload requirements fixed.</figcaption>
+          <div class="video-controls" data-video-controls hidden>
+            <button class="animation-toggle" type="button" data-video-toggle aria-controls="optimization-loop-animation" aria-pressed="false">Play animation</button>
+            <button class="animation-toggle" type="button" data-video-fullscreen aria-controls="optimization-loop-animation">Full screen</button>
+          </div>
+        </figure>
 
         <h2>Define the deployment requirements</h2>
         <p>The first step is an inventory: the exact model and tokenizer, GPU memory and interconnect, host RAM, storage, and the client features that must work. Then come the workload questions: how many generations are active at once, how long the prompts and outputs are, and how quickly users need the first and subsequent tokens.</p>
@@ -118,6 +124,19 @@
         <h2>Weights and KV cache are separate budgets</h2>
         <p>A 4-bit checkpoint is a starting candidate, not a complete memory plan. The deployment also needs room for the KV cache, runtime allocations, graph capture, and workspace. Those costs depend on the model, context length, concurrency, and engine. A GGUF file size does not establish that the same model fits in vLLM or SGLang.</p>
         <p>The skill evaluates weight precision separately from KV precision. It prefers an FP8 KV candidate where the device, model, and attention backend support it, while retaining a BF16 or FP16 control. Promotion requires checks on quality, long-context behavior, memory, and performance. Likewise, an NVFP4 label is not proof of native FP4 execution: the checkpoint metadata and the launched kernel path both need verification.</p>
+
+        <figure class="article-animation article-animation-video" data-article-video>
+          <video id="memory-budget-animation" width="1200" height="900" controls muted loop playsinline preload="none" poster="../../assets/media/inference-god-mode/memory-budget-poster.webp" aria-labelledby="memory-budget-caption">
+            <source src="../../assets/media/inference-god-mode/memory-budget.webm" type="video/webm">
+            <source src="../../assets/media/inference-god-mode/memory-budget.mp4" type="video/mp4">
+            <a href="../../assets/media/inference-god-mode/memory-budget.mp4">Watch the animation</a>
+          </video>
+          <figcaption id="memory-budget-caption">Weights, KV cache, runtime allocations, and headroom share the GPU memory budget. Weight precision and KV precision are separate choices; segment sizes are schematic, not measured.</figcaption>
+          <div class="video-controls" data-video-controls hidden>
+            <button class="animation-toggle" type="button" data-video-toggle aria-controls="memory-budget-animation" aria-pressed="false">Play animation</button>
+            <button class="animation-toggle" type="button" data-video-fullscreen aria-controls="memory-budget-animation">Full screen</button>
+          </div>
+        </figure>
 
         <h2>Choose a runtime, then test the hypothesis</h2>
         <p>The routing guidance covers vLLM, SGLang, TensorRT-LLM, and llama.cpp, with MLX-LM and vLLM-Metal considered for Apple Silicon. On supported NVIDIA hardware, vLLM is the initial candidate for concurrent serving and SGLang for one active user. These are project starting preferences; a comparable run on the actual workload decides which configuration to keep.</p>
@@ -134,6 +153,19 @@
         <h2>Extend the same discipline to multiple GPUs</h2>
         <p>For multi-GPU deployments, the skill evaluates feasible tensor, pipeline, data, and expert parallel layouts sequentially. Expert parallelism applies to supported mixture-of-experts models. Per-GPU fit, rank placement, and interconnect costs matter; adding devices does not guarantee lower latency for one active stream.</p>
         <p>At the fleet level, llm-d enters as an orchestration and routing layer above the serving engine. The comparison starts with ordinary replicas, then cache- and load-aware routing, and finally separate prefill and decode pools when measured interference justifies them. KV transfer time, network contention, pool balance, and gateway latency remain part of the measurement. The aim is the simplest architecture that meets the workload with a demonstrated benefit.</p>
+
+        <figure class="article-animation article-animation-video" data-article-video>
+          <video id="cache-routing-animation" width="1200" height="900" controls muted loop playsinline preload="none" poster="../../assets/media/inference-god-mode/cache-routing-poster.webp" aria-labelledby="cache-routing-caption">
+            <source src="../../assets/media/inference-god-mode/cache-routing.webm" type="video/webm">
+            <source src="../../assets/media/inference-god-mode/cache-routing.mp4" type="video/mp4">
+            <a href="../../assets/media/inference-god-mode/cache-routing.mp4">Watch the animation</a>
+          </video>
+          <figcaption id="cache-routing-caption">Workers A and C hold the same reusable prefix. When A becomes busy, routing to C preserves cache reuse while avoiding extra load on A. The worker loads are illustrative.</figcaption>
+          <div class="video-controls" data-video-controls hidden>
+            <button class="animation-toggle" type="button" data-video-toggle aria-controls="cache-routing-animation" aria-pressed="false">Play animation</button>
+            <button class="animation-toggle" type="button" data-video-fullscreen aria-controls="cache-routing-animation">Full screen</button>
+          </div>
+        </figure>
 
         <h2>Use it with your coding agent</h2>
         <p>The canonical skill lives in the repository’s Codex skill folder. Claude Code and OpenCode paths point to that same folder through relative symlinks. For another project, copy the complete inference-optimizer folder into your harness’s supported skill directory and keep its references folder alongside SKILL.md.</p>

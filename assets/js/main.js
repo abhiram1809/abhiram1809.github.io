@@ -18,6 +18,7 @@
     nl: { language: 'Taal', light: 'Schakel naar licht thema', dark: 'Schakel naar donker thema', open: 'Navigatie openen', close: 'Navigatie sluiten', copied: 'E-mailadres gekopieerd.', copyError: 'Kopiëren is niet beschikbaar. Gebruik de e-maillink hierboven.' }
   };
   const dictionaries = window.PORTFOLIO_I18N || {};
+  const videoControlUpdates = [];
   let currentLanguage = supportedLanguages.includes(document.documentElement.dataset.language) ? document.documentElement.dataset.language : 'en';
 
   const normalize = (value) => value.replace(/\s+/g, ' ').trim();
@@ -27,7 +28,7 @@
     const node = walker.currentNode;
     const parent = node.parentElement;
     const key = normalize(node.nodeValue);
-    if (!key || parent?.closest('script, style, svg, code, pre, .theme-toggle, .menu-toggle, .language-picker, [data-copy-status]')) continue;
+    if (!key || parent?.closest('script, style, svg, code, pre, .theme-toggle, .menu-toggle, .language-picker, [data-copy-status], [data-video-controls]')) continue;
     localizedTextNodes.push({ node, key, original: node.nodeValue });
   }
 
@@ -130,6 +131,7 @@
     if (copyStatus) copyStatus.textContent = '';
     updateThemeControl(document.documentElement.dataset.theme === 'light' ? 'light' : 'dark');
     updateMenuControl();
+    videoControlUpdates.forEach((update) => update());
     if (persist) {
       try { localStorage.setItem('portfolio-language', currentLanguage); } catch {}
     }
@@ -194,6 +196,81 @@
     toggle.hidden = false;
     toggle.addEventListener('click', () => updateAnimation(toggle.getAttribute('aria-pressed') !== 'true'));
     reducedMotion.addEventListener('change', (event) => updateAnimation(event.matches));
+  });
+
+  document.querySelectorAll('[data-article-video]').forEach((figure) => {
+    const video = figure.querySelector('video');
+    const controls = figure.querySelector('[data-video-controls]');
+    const toggle = figure.querySelector('[data-video-toggle]');
+    const fullscreen = figure.querySelector('[data-video-fullscreen]');
+    if (!video || !controls || !toggle || !fullscreen) return;
+
+    let visible = false;
+    let manuallyPaused = false;
+    let automaticPause = false;
+    const text = (key) => dictionaries[currentLanguage]?.[key] || key;
+    const updateControls = () => {
+      toggle.textContent = text(video.paused ? 'Play animation' : 'Pause animation');
+      toggle.setAttribute('aria-pressed', String(!video.paused));
+      fullscreen.textContent = text(document.fullscreenElement === figure ? 'Exit full screen' : 'Full screen');
+    };
+    const pauseAutomatically = () => {
+      if (video.paused) return;
+      automaticPause = true;
+      video.pause();
+    };
+    const updatePlayback = () => {
+      if (visible && !document.hidden && !reducedMotion.matches && !manuallyPaused) {
+        video.play().catch(updateControls);
+      } else {
+        pauseAutomatically();
+      }
+    };
+
+    // Keep controls outside the picture so they cannot obscure the annotations.
+    video.controls = false;
+    video.muted = true;
+    controls.hidden = false;
+    fullscreen.hidden = !figure.requestFullscreen;
+    videoControlUpdates.push(updateControls);
+    updateControls();
+    video.addEventListener('play', () => {
+      manuallyPaused = false;
+      updateControls();
+    });
+    video.addEventListener('pause', () => {
+      if (!automaticPause) manuallyPaused = true;
+      automaticPause = false;
+      updateControls();
+    });
+    toggle.addEventListener('click', () => {
+      if (video.paused) {
+        manuallyPaused = false;
+        video.play().catch(updateControls);
+      } else {
+        manuallyPaused = true;
+        pauseAutomatically();
+      }
+    });
+    fullscreen.addEventListener('click', async () => {
+      try {
+        if (document.fullscreenElement === figure) await document.exitFullscreen();
+        else await figure.requestFullscreen();
+      } catch {
+        // Playback still works if the browser denies a fullscreen request.
+      }
+      updateControls();
+    });
+    document.addEventListener('fullscreenchange', updateControls);
+    document.addEventListener('visibilitychange', updatePlayback);
+    reducedMotion.addEventListener('change', updatePlayback);
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver(([entry]) => {
+        visible = entry.isIntersecting && entry.intersectionRatio >= .25;
+        updatePlayback();
+      }, { threshold: [0, .25] });
+      observer.observe(video);
+    }
   });
 
   const closeMenu = () => {
