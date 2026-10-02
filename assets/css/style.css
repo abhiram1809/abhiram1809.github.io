@@ -62,7 +62,7 @@ h1{max-width:760px;font-size:clamp(2.75rem,5.1vw,5.4rem);font-weight:700;letter-
 .tool-node-plain{color:var(--muted);font-family:var(--mono);font-size:.78rem;letter-spacing:.02em}
 .stack-layer-support{border-style:dashed}
 .writing-section{border-top:1px solid var(--line);background:var(--surface)}
-.writing-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;align-items:stretch}
+.writing-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:stretch}
 .writing-grid .section-intro{grid-column:1/-1;margin-bottom:36px}
 .writing-card{display:flex;min-width:0;min-height:330px;flex-direction:column;padding:28px;border:1px solid var(--line);border-radius:var(--radius);background:var(--canvas);box-shadow:var(--card-shadow);transition:transform .18s ease,border-color .18s ease}
 .writing-card:hover{border-color:var(--accent);transform:translateY(-3px)}
@@ -174,3 +174,16 @@ html[data-language="nl"] .language-trigger{width:174px}
 @media(max-width:690px){.hobbies-block{grid-template-columns:1fr;gap:28px;margin-top:36px;padding-top:36px}.hobbies-intro>p:not(.eyebrow){max-width:none;margin-bottom:18px}.chess-card{padding:24px 22px 14px}.chess-card-body{grid-template-columns:minmax(0,1fr) 88px;gap:16px}.chess-board{width:88px;background-size:22px 22px}.chess-board svg{width:66px;height:66px}.chess-stats{gap:16px}.chess-stats>div+div{padding-left:16px}.chess-stats dd{font-size:clamp(2.15rem,7vw,3rem)}}
 @media(max-width:390px){.chess-card-body{grid-template-columns:minmax(0,1fr) 64px;gap:12px}.chess-board{width:64px;background-size:16px 16px}.chess-board svg{width:50px;height:50px}.chess-stats{gap:12px}.chess-stats>div+div{padding-left:12px}.chess-stats dd{font-size:2rem}.chess-stats dt{font-size:.72rem}}
 @media(max-width:1050px){.chess-stats{grid-template-columns:minmax(0,1fr) max-content}}
+
+/* Inference God Mode */
+.project-inference{--inference-highlight:#8ee3c9;background:linear-gradient(145deg,#101e2b,#173a3d 65%,#244d48)}
+:root[data-theme="light"] .project-inference{--inference-highlight:#176653;background:linear-gradient(145deg,#f3fcf9,#dbefe8 65%,#c9e4df)}
+.project-inference::before{content:"KV / GPU";position:absolute;right:20px;top:16px;color:var(--project-decoration);font:800 clamp(2.4rem,5vw,5.5rem)/1 var(--mono);letter-spacing:-.08em}
+.project-inference>*{position:relative;z-index:1}
+.project-inference .code-statement{color:var(--inference-highlight);font-size:clamp(1.1rem,2vw,1.65rem)}
+.project-inference .code-statement span{color:var(--work-kicker);font-size:.75em;letter-spacing:-.04em}
+.inference-workflow>div{border-top:3px solid var(--accent)}
+.inference-workflow strong{display:block;font-size:1.05rem;line-height:1.35;letter-spacing:-.025em}
+.article-source-note{margin-top:32px;color:var(--muted);font-size:.85rem;line-height:1.6}
+.inference-article h1,.inference-article .article-body{overflow-wrap:anywhere}
+.inference-article h1{hyphens:auto}

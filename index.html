@@ -38,8 +38,8 @@
         document.querySelector('meta[name="theme-color"]').content = theme === 'light' ? '#f5f2ea' : '#0b1020';
       })();
     </script>
-    <link rel="stylesheet" href="assets/css/style.css?v=17">
-    <script src="assets/js/i18n.js?v=3" defer></script>
+    <link rel="stylesheet" href="assets/css/style.css?v=18">
+    <script src="assets/js/i18n.js?v=4" defer></script>
     <script src="assets/js/main.js?v=8" defer></script>
   </head>
   <body>
@@ -117,6 +117,7 @@
         <div class="shell">
           <div class="section-intro reveal"><p class="eyebrow">02 / Work</p><h2 id="work-title">Selected work.</h2><p>Open-source contributions and projects I have built outside my day job.</p></div>
           <div class="featured-work" tabindex="0" aria-label="Scrollable selected projects">
+            <article class="project-card project-inference reveal"><div class="project-kicker">Inference engineering · Agent skill</div><p class="code-statement">SIZE → SERVE<br><span>VERIFY → MEASURE → TUNE</span></p><h3>Inference God Mode</h3><p>A reusable coding-agent skill for self-hosted LLM inference, from one GPU to Kubernetes: memory sizing, runtime selection, API verification, workload benchmarks, and measured optimization.</p><div class="project-actions"><a href="https://github.com/abhiram1809/inference-god-mode" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="assets/img/toolkit-icons.svg?v=3#github"></use></svg> Repository</a><a class="project-action-read" href="blogs/inference-god-mode/">Read article <span aria-hidden="true">↗</span></a></div></article>
             <article class="project-card project-agent reveal"><div class="project-kicker">Benchmark tooling · Open source</div><p class="code-statement">5 VERIFIED<br><span>HUMANIZE + BOLTONS</span></p><h3>AnyBench</h3><p>Turns repository history into coding tasks, verifies each task against the historical fix in Docker, and reports how candidate models perform on your code.</p><div class="project-actions"><a href="https://github.com/abhiram1809/any-bench" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="assets/img/toolkit-icons.svg?v=3#github"></use></svg> Repository</a><a class="project-action-read" href="blogs/anybench/">Read article <span aria-hidden="true">↗</span></a></div></article>
             <article class="project-card project-vllm reveal"><div class="project-kicker">Inference engineering</div><p class="code-statement">SM 12.0a<br><span>NVFP4 / vLLM</span></p><h3>MiniMax-M3 NVFP4 on RTX PRO 6000</h3><p>Built and tested a custom vLLM branch with SM 12.0a backend support and parser fixes after a community report of Chinese and nonsensical output. The upstream PR remains open and unmerged; review raised concerns about broad parser-side normalization.</p><div class="project-links"><a href="https://github.com/vllm-project/vllm/pull/47001" target="_blank" rel="noopener">vLLM PR #47001 <span aria-hidden="true">↗</span></a><a href="https://huggingface.co/nvidia/MiniMax-M3-NVFP4/discussions/1" target="_blank" rel="noopener">Community report <span aria-hidden="true">↗</span></a></div></article>
             <article class="project-card project-finetune reveal"><div class="project-kicker">Agent skill · local LLMs</div><p class="code-statement">DECIDE → TRAIN<br><span>EVAL → vLLM</span></p><h3>LLM fine-tuning advisor</h3><p>An agent skill for Claude Code, OpenCode, and Codex that plans LoRA, SFT, or continued pretraining, catches local training failures, and evaluates the artifact that will actually be served.</p><div class="project-actions"><a href="https://github.com/abhiram1809/unsloth-finetuning-vllm-skill" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="assets/img/toolkit-icons.svg?v=3#github"></use></svg> Repository</a><a class="project-action-read" href="blogs/llm-finetuning-skill/">Read article <span aria-hidden="true">↗</span></a></div></article>
@@ -203,6 +204,12 @@
       <section class="section writing-section" id="writing" aria-labelledby="blogs-title">
         <div class="shell writing-grid">
           <div class="section-intro reveal"><p class="eyebrow">06 / Blogs</p><h2 id="blogs-title">Latest posts.</h2><p>Notes on systems I build, how they work, and the tradeoffs behind them.</p></div>
+          <article class="writing-card reveal">
+            <p class="writing-card-label"><time datetime="2026-10-02">October 2, 2026</time><span>Inference engineering · Agent skill</span></p>
+            <h3>Inference tuning starts with a workload</h3>
+            <p>How Inference God Mode turns model, hardware, API, and workload requirements into a measured deployment and optimization loop.</p>
+            <a href="blogs/inference-god-mode/">Read “Inference tuning starts with a workload” <b aria-hidden="true">↗</b></a>
+          </article>
           <article class="writing-card reveal">
             <p class="writing-card-label"><time datetime="2026-09-25">September 25, 2026</time><span>Coding benchmarks · Open source</span></p>
             <h3>Benchmarking real repositories with AnyBench</h3>

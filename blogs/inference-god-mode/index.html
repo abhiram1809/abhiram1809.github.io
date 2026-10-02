@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en" data-theme="dark" data-language="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="How Inference God Mode turns model, hardware, API, and workload requirements into a measured deployment and optimization loop.">
+    <meta name="theme-color" content="#0b1020">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://abhiram1809.github.io/blogs/inference-god-mode/">
+    <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="../../assets/img/R.png">
+    <title>Inference tuning starts with a workload | Abhiram Sharma</title>
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://abhiram1809.github.io/blogs/inference-god-mode/">
+    <meta property="og:title" content="Inference tuning starts with a workload">
+    <meta property="og:description" content="How Inference God Mode turns model, hardware, API, and workload requirements into a measured deployment and optimization loop.">
+    <meta property="og:image" content="https://abhiram1809.github.io/assets/img/og-portfolio.png">
+    <meta property="article:published_time" content="2026-10-02">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Inference tuning starts with a workload">
+    <meta name="twitter:description" content="How Inference God Mode turns model, hardware, API, and workload requirements into a measured deployment and optimization loop.">
+    <meta name="twitter:image" content="https://abhiram1809.github.io/assets/img/og-portfolio.png">
+    <script>
+      (() => {
+        const root = document.documentElement;
+        root.classList.add('js');
+        let theme = 'dark';
+        try {
+          if (localStorage.getItem('portfolio-theme') === 'light') theme = 'light';
+          const language = localStorage.getItem('portfolio-language');
+          if (['en', 'de', 'fr', 'es', 'nl'].includes(language)) {
+            root.lang = language;
+            root.dataset.language = language;
+          }
+        } catch {}
+        root.dataset.theme = theme;
+        document.querySelector('meta[name="theme-color"]').content = theme === 'light' ? '#f5f2ea' : '#0b1020';
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/css/style.css?v=18">
+    <script src="../../assets/js/i18n.js?v=4" defer></script>
+    <script src="../../assets/js/main.js?v=8" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#article-content">Skip to article</a>
+    <header class="site-header" data-header>
+      <div class="shell nav-shell">
+        <a class="wordmark" href="../../" aria-label="Abhiram Sharma home">AS<span>.</span></a>
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" data-menu-toggle>
+          <span class="sr-only">Open navigation</span><span aria-hidden="true"></span><span aria-hidden="true"></span>
+        </button>
+        <nav class="primary-nav" id="primary-nav" aria-label="Primary navigation" data-nav>
+          <a href="../../#experience">Experience</a><a href="../../#work">Work</a><a href="../../#skills">Toolkit</a><a href="../../#about">About</a><a href="../../#contact">Contact</a>
+        </nav>
+        <div class="display-controls">
+        <button class="theme-toggle" type="button" aria-label="Switch to light theme" title="Switch to light theme" data-theme-toggle>
+          <span class="sr-only">Switch to light theme</span>
+          <svg class="theme-icon theme-icon-sun" aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <circle cx="12" cy="12" r="3.5"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"></path>
+          </svg>
+          <svg class="theme-icon theme-icon-moon" aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7Z"></path>
+          </svg>
+        </button>
+        <div class="language-picker" data-language-picker>
+          <button class="language-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="language-menu" aria-label="Language: English" data-language-toggle>
+            <span class="language-flag" aria-hidden="true" data-current-flag>🇬🇧</span>
+            <span class="language-trigger-copy"><span data-current-language>English</span><small data-current-code>EN</small></span>
+            <svg class="language-chevron" aria-hidden="true" viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m6 8 4 4 4-4"></path></svg>
+          </button>
+          <div class="language-menu" id="language-menu" role="listbox" aria-label="Language" data-language-menu hidden>
+            <button class="language-option" type="button" role="option" aria-selected="true" data-language-option="en"><span class="language-flag" aria-hidden="true">🇬🇧</span><span><strong>English</strong><small>United Kingdom</small></span><span class="language-check" aria-hidden="true">✓</span></button>
+            <button class="language-option" type="button" role="option" aria-selected="false" data-language-option="de"><span class="language-flag" aria-hidden="true">🇩🇪</span><span><strong>Deutsch</strong><small>Deutschland</small></span><span class="language-check" aria-hidden="true">✓</span></button>
+            <button class="language-option" type="button" role="option" aria-selected="false" data-language-option="fr"><span class="language-flag" aria-hidden="true">🇫🇷</span><span><strong>Français</strong><small>France</small></span><span class="language-check" aria-hidden="true">✓</span></button>
+            <button class="language-option" type="button" role="option" aria-selected="false" data-language-option="es"><span class="language-flag" aria-hidden="true">🇪🇸</span><span><strong>Español</strong><small>España</small></span><span class="language-check" aria-hidden="true">✓</span></button>
+            <button class="language-option" type="button" role="option" aria-selected="false" data-language-option="nl"><span class="language-flag" aria-hidden="true">🇳🇱</span><span><strong>Nederlands</strong><small>Nederland</small></span><span class="language-check" aria-hidden="true">✓</span></button>
+          </div>
+        </div>
+        </div>
+        <a class="nav-cv" href="../../assets/Abhiram-Sharma-CV.pdf" target="_blank" rel="noopener" aria-label="View CV">View CV <span aria-hidden="true">↗</span></a>
+      </div>
+    </header>
+    <main id="article-content" class="article-main inference-article">
+      <header class="article-hero">
+        <div class="article-shell reveal">
+          <a class="button-link article-back" href="../"><span aria-hidden="true">←</span> All notes</a>
+          <p class="eyebrow">Inference engineering · Agent skill</p>
+          <h1>Inference tuning starts with a workload.</h1>
+          <p class="article-dek">I built Inference God Mode to guide a coding agent through self-hosted LLM serving: size the deployment, verify the client contract, measure the workload, and tune what the evidence supports.</p>
+          <div class="article-meta"><time datetime="2026-10-02">October 2, 2026</time><span>7 min read</span></div>
+          <div class="article-actions">
+            <a class="button button-primary" href="https://github.com/abhiram1809/inference-god-mode" target="_blank" rel="noopener">View Inference God Mode <span aria-hidden="true">↗</span></a>
+            <a class="button button-secondary" href="https://github.com/abhiram1809/inference-god-mode/blob/03f87c65aabe74ac426d3234c58a9eda8daf02c1/.codex/skills/inference-optimizer/SKILL.md" target="_blank" rel="noopener">Read the skill workflow <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </header>
+
+      <article class="article-body article-shell">
+        <p class="article-lead">A model that loads successfully is only the beginning of an inference deployment. It still has to fit the intended context window, handle simultaneous requests, speak the client’s API, and deliver acceptable quality within a useful latency budget.</p>
+        <p>I built Inference God Mode to put those decisions into a reusable coding-agent skill. Its inference-optimizer workflow takes a specific model, hardware setup, and workload through planning, deployment, benchmarking, and tuning. The same process extends from a single GPU to Kubernetes serving, with the evidence for each decision kept visible.</p>
+
+        <aside class="article-callout">
+          <strong>The workload defines the optimization target.</strong>
+          <p>A faster configuration is useful only if it preserves the required context, quality, concurrency, and API behavior. The skill keeps those constraints in the loop as the deployment changes.</p>
+        </aside>
+
+        <div class="article-system-map inference-workflow" aria-label="Inference optimization workflow">
+          <div><span>01 / SIZE</span><strong>Establish the target</strong><p>Model revision, GPU topology, native context, active generations, and client requirements.</p></div>
+          <div><span>02 / VERIFY</span><strong>Build a correct baseline</strong><p>Check memory fit, actual kernels, output quality, and the complete API contract.</p></div>
+          <div><span>03 / MEASURE</span><strong>Replay the workload</strong><p>Short and long prompts, cold and warm prefixes, interactive latency, and peak concurrency.</p></div>
+          <div><span>04 / TUNE</span><strong>Keep the best verified configuration</strong><p>Change one dimension at a time and retain the latency, throughput, memory, and quality tradeoffs.</p></div>
+        </div>
+
+        <h2>Define the deployment requirements</h2>
+        <p>The first step is an inventory: the exact model and tokenizer, GPU memory and interconnect, host RAM, storage, and the client features that must work. Then come the workload questions: how many generations are active at once, how long the prompts and outputs are, and how quickly users need the first and subsequent tokens.</p>
+        <p>Registered users do not tell us the concurrency. A few agents working through long documents can put more pressure on a server than many occasional chat users. When the workload is unspecified, the skill provisionally assumes one active user and prioritizes interactive latency. It also starts with the model’s full native context, including output headroom. If that cannot fit, it exposes the capacity gap before changing the requirement.</p>
+
+        <h2>Weights and KV cache are separate budgets</h2>
+        <p>A 4-bit checkpoint is a starting candidate, not a complete memory plan. The deployment also needs room for the KV cache, runtime allocations, graph capture, and workspace. Those costs depend on the model, context length, concurrency, and engine. A GGUF file size does not establish that the same model fits in vLLM or SGLang.</p>
+        <p>The skill evaluates weight precision separately from KV precision. It prefers an FP8 KV candidate where the device, model, and attention backend support it, while retaining a BF16 or FP16 control. Promotion requires checks on quality, long-context behavior, memory, and performance. Likewise, an NVFP4 label is not proof of native FP4 execution: the checkpoint metadata and the launched kernel path both need verification.</p>
+
+        <h2>Choose a runtime, then test the hypothesis</h2>
+        <p>The routing guidance covers vLLM, SGLang, TensorRT-LLM, and llama.cpp, with MLX-LM and vLLM-Metal considered for Apple Silicon. On supported NVIDIA hardware, vLLM is the initial candidate for concurrent serving and SGLang for one active user. These are project starting preferences; a comparable run on the actual workload decides which configuration to keep.</p>
+        <p>Compatibility can change the route before performance tuning begins. Older hardware may call for a llama.cpp or Vulkan candidate. A required API can favor another engine or a tested adapter. Community builds and plugins are candidates too, but their source revisions, changes, and actual kernel behavior have to be recorded. A successful startup is one check in that process.</p>
+
+        <h2>An API endpoint is a behavioral contract</h2>
+        <p>Coding agents need more than a plain-text completion. The workflow tests the required OpenAI Chat Completions, OpenAI Responses, or Anthropic Messages routes, including streaming, tool-call round trips, structured output, reasoning fields, and usage reporting where needed. The tokenizer, chat template, and model-specific parsers are part of that verification.</p>
+        <p>A server returning HTTP 200 does not establish that an agent can continue a tool exchange or interpret its stream. If a gateway or adapter translates the protocol, the tests run through that component as well. The point is to verify the path the real client uses before measuring it as a working deployment.</p>
+
+        <h2>Measure the workload before adding optimizations</h2>
+        <p>The benchmark plan includes short, medium, and near-native-context prompts at both interactive and peak concurrency. Repeated-prefix applications get cold-cache and warm-cache runs. The report tracks time to first token, inter-token latency, per-user and aggregate output throughput, latency percentiles, errors, and peak memory. Enough samples are needed before interpreting tail latency.</p>
+        <p>Tuning then changes one dimension at a time: weights and kernels, FP8 KV, batching and scheduling, graph capture, prefix reuse, parallelism, and speculative decoding where supported. Correctness and quality are rechecked after changes. A throughput gain that misses the latency target does not win automatically, and a faster synthetic microbenchmark does not establish a faster serving system.</p>
+
+        <h2>Extend the same discipline to multiple GPUs</h2>
+        <p>For multi-GPU deployments, the skill evaluates feasible tensor, pipeline, data, and expert parallel layouts sequentially. Expert parallelism applies to supported mixture-of-experts models. Per-GPU fit, rank placement, and interconnect costs matter; adding devices does not guarantee lower latency for one active stream.</p>
+        <p>At the fleet level, llm-d enters as an orchestration and routing layer above the serving engine. The comparison starts with ordinary replicas, then cache- and load-aware routing, and finally separate prefill and decode pools when measured interference justifies them. KV transfer time, network contention, pool balance, and gateway latency remain part of the measurement. The aim is the simplest architecture that meets the workload with a demonstrated benefit.</p>
+
+        <h2>Use it with your coding agent</h2>
+        <p>The canonical skill lives in the repository’s Codex skill folder. Claude Code and OpenCode paths point to that same folder through relative symlinks. For another project, copy the complete inference-optimizer folder into your harness’s supported skill directory and keep its references folder alongside SKILL.md.</p>
+        <pre class="article-code"><code>git clone https://github.com/abhiram1809/inference-god-mode.git</code></pre>
+        <p>Then give the agent a concrete request. Replace the placeholders with your deployment requirements:</p>
+        <pre class="article-code"><code>Use inference-optimizer to serve &lt;model repository&gt;
+on &lt;GPU model, count, and memory&gt;.
+
+Required APIs: &lt;client protocols and features&gt;.
+Peak active generations: &lt;concurrency&gt;.
+Latency target: &lt;first-token and inter-token budget&gt;.
+
+Keep the full native context.
+Evaluate 4-bit weights and FP8 KV.
+Benchmark my workload and report the best verified setup.</code></pre>
+
+        <h2>What the project establishes today</h2>
+        <p>Inference God Mode provides a structured workflow and reference guides. Its published validation covers skill structure, local reference links, and harness symlinks. It does not establish a universal speedup or a benchmark-winning configuration. Those results still have to be measured for the chosen model, hardware, runtime, and traffic.</p>
+        <p>The useful output is a reproducible configuration or a concrete next experiment: pinned revisions, selected kernels, tested APIs, context and concurrency limits, measurements, quality observations, and the remaining bottleneck. That makes the skill a way to organize inference engineering around evidence and to carry that evidence into the next deployment decision.</p>
+
+        <div class="article-end-actions">
+          <a class="button button-primary" href="https://github.com/abhiram1809/inference-god-mode" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="../../assets/img/toolkit-icons.svg?v=3#github"></use></svg> View Inference God Mode on GitHub</a>
+          <a class="button-link" href="https://github.com/abhiram1809/inference-god-mode/blob/03f87c65aabe74ac426d3234c58a9eda8daf02c1/.codex/skills/inference-optimizer/SKILL.md" target="_blank" rel="noopener">Read the skill workflow <span aria-hidden="true">↗</span></a>
+        </div>
+        <p class="article-source-note">This article describes the repository as reviewed on October 2, 2026. The linked skill revision records the workflow; deployment commands and compatibility checks should use current upstream documentation.</p>
+      </article>
+    </main>
+    <footer class="site-footer"><div class="shell"><span>© <span data-current-year>2026</span> Abhiram Sharma</span><a href="../">More writing</a></div></footer>
+  </body>
+</html>
