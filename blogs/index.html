@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-theme="dark" data-language="en">
+<html lang="en" data-theme="dark" data-language="en" data-blog>
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -28,9 +28,9 @@
         let theme = 'dark';
         try {
           if (localStorage.getItem('portfolio-theme') === 'light') theme = 'light';
-          const language = localStorage.getItem('portfolio-language');
-          if (['en', 'de', 'fr', 'es', 'nl'].includes(language)) {
-            root.lang = language;
+          const language = localStorage.getItem('blog-language') || localStorage.getItem('portfolio-language');
+          if (['en', 'de', 'fr', 'es', 'nl', 'hulk'].includes(language)) {
+            root.lang = language === 'hulk' ? 'en' : language;
             root.dataset.language = language;
           }
         } catch {}
@@ -40,9 +40,11 @@
     </script>
     <link rel="stylesheet" href="../assets/css/style.css?v=20">
     <script src="../assets/js/i18n.js?v=4" defer></script>
-    <script src="../assets/js/main.js?v=10" defer></script>
+    <script src="../assets/js/blog-hulk.js?v=2" defer></script>
+    <link rel="stylesheet" href="../assets/css/blog-reading.css?v=2">
+    <script src="../assets/js/main.js?v=12" defer></script>
     <link rel="stylesheet" href="../assets/css/ui-details.css?v=2">
-    <script src="../assets/js/ui-details.js?v=1" defer></script>
+    <script src="../assets/js/ui-details.js?v=2" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
@@ -77,6 +79,7 @@
             <button class="language-option" type="button" role="option" aria-selected="false" data-language-option="fr"><span class="language-flag" aria-hidden="true">🇫🇷</span><span><strong>Français</strong><small>France</small></span><span class="language-check" aria-hidden="true">✓</span></button>
             <button class="language-option" type="button" role="option" aria-selected="false" data-language-option="es"><span class="language-flag" aria-hidden="true">🇪🇸</span><span><strong>Español</strong><small>España</small></span><span class="language-check" aria-hidden="true">✓</span></button>
             <button class="language-option" type="button" role="option" aria-selected="false" data-language-option="nl"><span class="language-flag" aria-hidden="true">🇳🇱</span><span><strong>Nederlands</strong><small>Nederland</small></span><span class="language-check" aria-hidden="true">✓</span></button>
+            <button class="language-option" type="button" role="option" aria-selected="false" data-language-option="hulk"><span class="language-flag" aria-hidden="true"><img src="../assets/img/hulk-face.svg" width="24" height="24" alt=""></span><span><strong>Hulk Speak</strong><small>Short sentences. Fast reading.</small></span><span class="language-check" aria-hidden="true">✓</span></button>
           </div>
         </div>
         </div>
@@ -92,12 +95,18 @@
           <a class="button-link blog-back" href="../"><span aria-hidden="true">←</span> Back to portfolio</a>
         </div>
       </section>
-      <section class="blog-index" aria-labelledby="archive-title">
+      <section class="blog-index" aria-label="Blog articles">
         <div class="shell">
           <div class="blog-list" data-blog-list>
             <article class="blog-card reveal">
+              <p class="blog-card-meta"><time datetime="2026-10-03">October 3, 2026</time><span>LLM inference · Memory systems</span></p>
+              <h2><a href="paged-attention/">PagedAttention in vLLM: scattered memory, exact attention</a></h2>
+              <p>Memory fragmentation, virtual memory, KV blocks, prefix reuse, and the exact math behind paged attention.</p>
+              <a class="blog-card-link" href="paged-attention/">Read article <span aria-hidden="true">↗</span></a>
+            </article>
+            <article class="blog-card reveal">
               <p class="blog-card-meta"><time datetime="2026-10-02">October 2, 2026</time><span>Inference engineering · Agent skill</span></p>
-              <h2 id="archive-title"><a href="inference-god-mode/">Inference tuning starts with a workload</a></h2>
+              <h2><a href="inference-god-mode/">Inference tuning starts with a workload</a></h2>
               <p>How Inference God Mode turns model, hardware, API, and workload requirements into a measured deployment and optimization loop.</p>
               <a class="blog-card-link" href="inference-god-mode/">Read article <span aria-hidden="true">↗</span></a>
             </article>

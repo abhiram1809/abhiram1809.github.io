@@ -3,6 +3,18 @@
 Static HTML, CSS, and JavaScript, published with GitHub Pages.
 Preview locally with `python3 -m http.server 4173`.
 
+Blog pages also offer **Hulk Speak**, a hand-written English reading style with
+shorter sentences. It covers the archive and every published article, preserving
+code, equations, source titles, and technical names. The `blog-language` preference
+is separate from `portfolio-language`, so choosing it never changes the main
+portfolio. Add new blog readings to `assets/js/blog-hulk.js`; source HTML remains
+the complete English article and works without JavaScript.
+
+The Hulk Speak picker uses an original comic face SVG. The PagedAttention blog
+includes four Manim scenes with playback controls, reduced-motion posters, and
+English/Hulk Speak captions. See [rendering instructions](animations/paged-attention/README.md)
+for the scene plan, source, and reproducible media exports.
+
 ## UI design references
 
 The navigation and article details are original, dependency-free implementations

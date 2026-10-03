@@ -1,0 +1,90 @@
+{
+  "renderer": "Manim Community 0.21.0",
+  "font": "Kalam and Noto Sans Mono",
+  "scenes": {
+    "Fragmentation": {
+      "duration_seconds": 18.433,
+      "width": 1200,
+      "height": 900,
+      "fps": 30,
+      "poster_time_seconds": 13.0,
+      "files": {
+        "fragmentation.mp4": {
+          "bytes": 775271,
+          "sha256": "68386c1d9b3f4f2eb42a36f0cde49c19cca54260536a612d7b1cc9e8e381f6dc"
+        },
+        "fragmentation.webm": {
+          "bytes": 872556,
+          "sha256": "712de618bb13e1abf8ffcf7f7074100bf5cae1d602c0ab4a4e98fc343ec71895"
+        },
+        "fragmentation-poster.webp": {
+          "bytes": 65002,
+          "sha256": "01ecd8f48e515e8495b71c2a4aaa192aa4bc955912ef2e0348b18a5452d78a12"
+        }
+      }
+    },
+    "BlockMapping": {
+      "duration_seconds": 20.433,
+      "width": 1200,
+      "height": 900,
+      "fps": 30,
+      "poster_time_seconds": 14.5,
+      "files": {
+        "block-mapping.mp4": {
+          "bytes": 908856,
+          "sha256": "ff7d70727b956ec16a8bc83e27c3d0801a81d036f179aff835f9e427879c9095"
+        },
+        "block-mapping.webm": {
+          "bytes": 816949,
+          "sha256": "c65cb224e45a8ffe2c559765dfc7ca77fd49b52ec791157f4f9a49d95cb0ef3c"
+        },
+        "block-mapping-poster.webp": {
+          "bytes": 70426,
+          "sha256": "3b1a40248572800e0e080cd0ea6f2541b68abcef55e5490859f3ff26f8c8ffe8"
+        }
+      }
+    },
+    "PrefixReuse": {
+      "duration_seconds": 21.033,
+      "width": 1200,
+      "height": 900,
+      "fps": 30,
+      "poster_time_seconds": 15.0,
+      "files": {
+        "prefix-reuse.mp4": {
+          "bytes": 1048577,
+          "sha256": "7b1dae0044e2aaad13db286d0e43683f6643f69fe848669df3aaab55bd173597"
+        },
+        "prefix-reuse.webm": {
+          "bytes": 1070851,
+          "sha256": "095e8079456ed337bc9a6bf0488021da9c3f15bda4d3466669fd9aa767972795"
+        },
+        "prefix-reuse-poster.webp": {
+          "bytes": 75528,
+          "sha256": "7cad2f522940dba6c103426a251bfd7bd14b6e406722bea7f27998188ad02008"
+        }
+      }
+    },
+    "ExactAttention": {
+      "duration_seconds": 21.233,
+      "width": 1200,
+      "height": 900,
+      "fps": 30,
+      "poster_time_seconds": 16.0,
+      "files": {
+        "exact-attention.mp4": {
+          "bytes": 917037,
+          "sha256": "bde5fbf2d1960f141a882e1fc6c17e400055bb5514b4b3702c9b26b778247b1b"
+        },
+        "exact-attention.webm": {
+          "bytes": 1040647,
+          "sha256": "c403b0a93fe2bc3c9e3f5e4705bb25307d7858bebf8141f8bce7cfb26cc4e2f2"
+        },
+        "exact-attention-poster.webp": {
+          "bytes": 74134,
+          "sha256": "1b48594cfbabe3d6dd88bccbc7b8f4b18b3554c0f761b780750e506f490b5427"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en" data-theme="dark" data-language="en" data-blog>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="From memory fragmentation and virtual memory to KV blocks, prefix reuse, DeepSeek attention, and a worked proof that paging preserves the attention calculation.">
+    <meta name="theme-color" content="#0b1020">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://abhiram1809.github.io/blogs/paged-attention/">
+    <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="../../assets/img/R.png">
+    <title>PagedAttention in vLLM: scattered memory, exact attention | Abhiram Sharma</title>
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://abhiram1809.github.io/blogs/paged-attention/">
+    <meta property="og:title" content="PagedAttention in vLLM: scattered memory, exact attention">
+    <meta property="og:description" content="From memory fragmentation and virtual memory to KV blocks, prefix reuse, DeepSeek attention, and a worked proof that paging preserves the attention calculation.">
+    <meta property="og:image" content="https://abhiram1809.github.io/assets/img/og-portfolio.png">
+    <meta property="article:published_time" content="2026-10-03">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="PagedAttention in vLLM: scattered memory, exact attention">
+    <meta name="twitter:description" content="From memory fragmentation and virtual memory to KV blocks, prefix reuse, DeepSeek attention, and a worked proof that paging preserves the attention calculation.">
+    <meta name="twitter:image" content="https://abhiram1809.github.io/assets/img/og-portfolio.png">
+    <script>
+      (() => {
+        const root = document.documentElement;
+        root.classList.add('js');
+        let theme = 'dark';
+        try {
+          if (localStorage.getItem('portfolio-theme') === 'light') theme = 'light';
+          const language = localStorage.getItem('blog-language') || localStorage.getItem('portfolio-language');
+          if (['en', 'de', 'fr', 'es', 'nl', 'hulk'].includes(language)) {
+            root.lang = language === 'hulk' ? 'en' : language;
+            root.dataset.language = language;
+          }
+        } catch {}
+        root.dataset.theme = theme;
+        document.querySelector('meta[name="theme-color"]').content = theme === 'light' ? '#f5f2ea' : '#0b1020';
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/css/style.css?v=20">
+    <script src="../../assets/js/i18n.js?v=5" defer></script>
+    <script src="../../assets/js/blog-hulk.js?v=2" defer></script>
+    <link rel="stylesheet" href="../../assets/css/blog-reading.css?v=2">
+    <script src="../../assets/js/main.js?v=12" defer></script>
+    <link rel="stylesheet" href="../../assets/css/ui-details.css?v=2">
+    <script src="../../assets/js/ui-details.js?v=2" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#article-content">Skip to article</a>
+    <header class="site-header" data-header>
+      <div class="shell nav-shell">
+        <a class="wordmark" href="../../" aria-label="Abhiram Sharma home">AS<span>.</span></a>
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" data-menu-toggle>
+          <span class="sr-only">Open navigation</span><span aria-hidden="true"></span><span aria-hidden="true"></span>
+        </button>
+        <nav class="primary-nav" id="primary-nav" aria-label="Primary navigation" data-nav>
+          <a href="../../#experience">Experience</a><a href="../../#work">Work</a><a href="../../#skills">Toolkit</a><a href="../../#about">About</a><a href="../../#contact">Contact</a>
+        </nav>
+        <div class="display-controls">
+        <button class="theme-toggle" type="button" aria-label="Switch to light theme" title="Switch to light theme" data-theme-toggle>
+          <span class="sr-only">Switch to light theme</span>
+          <svg class="theme-icon theme-icon-sun" aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <circle cx="12" cy="12" r="3.5"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"></path>
+          </svg>
+          <svg class="theme-icon theme-icon-moon" aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7Z"></path>
+          </svg>
+        </button>
+        <div class="language-picker" data-language-picker>
+          <button class="language-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="language-menu" aria-label="Language: English" data-language-toggle>
+            <span class="language-flag" aria-hidden="true" data-current-flag>🇬🇧</span>
+            <span class="language-trigger-copy"><span data-current-language>English</span><small data-current-code>EN</small></span>
+            <svg class="language-chevron" aria-hidden="true" viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m6 8 4 4 4-4"></path></svg>
+          </button>
+          <div class="language-menu" id="language-menu" role="listbox" aria-label="Language" data-language-menu hidden>
+            <button class="language-option" type="button" role="option" aria-selected="true" data-language-option="en"><span class="language-flag" aria-hidden="true">🇬🇧</span><span><strong>English</strong><small>United Kingdom</small></span><span class="language-check" aria-hidden="true">✓</span></button>
+            <button class="language-option" type="button" role="option" aria-selected="false" data-language-option="de"><span class="language-flag" aria-hidden="true">🇩🇪</span><span><strong>Deutsch</strong><small>Deutschland</small></span><span class="language-check" aria-hidden="true">✓</span></button>
+            <button class="language-option" type="button" role="option" aria-selected="false" data-language-option="fr"><span class="language-flag" aria-hidden="true">🇫🇷</span><span><strong>Français</strong><small>France</small></span><span class="language-check" aria-hidden="true">✓</span></button>
+            <button class="language-option" type="button" role="option" aria-selected="false" data-language-option="es"><span class="language-flag" aria-hidden="true">🇪🇸</span><span><strong>Español</strong><small>España</small></span><span class="language-check" aria-hidden="true">✓</span></button>
+            <button class="language-option" type="button" role="option" aria-selected="false" data-language-option="nl"><span class="language-flag" aria-hidden="true">🇳🇱</span><span><strong>Nederlands</strong><small>Nederland</small></span><span class="language-check" aria-hidden="true">✓</span></button>
+            <button class="language-option" type="button" role="option" aria-selected="false" data-language-option="hulk"><span class="language-flag" aria-hidden="true"><img src="../../assets/img/hulk-face.svg" width="24" height="24" alt=""></span><span><strong>Hulk Speak</strong><small>Short sentences. Fast reading.</small></span><span class="language-check" aria-hidden="true">✓</span></button>
+          </div>
+        </div>
+        </div>
+        <a class="nav-cv" href="../../assets/Abhiram-Sharma-CV.pdf" target="_blank" rel="noopener" aria-label="View CV">View CV <span aria-hidden="true">↗</span></a>
+      </div>
+    </header>
+<main id="article-content" class="article-main"><header id="article-introduction" class="article-hero"><div class="article-shell reveal"><a class="button-link article-back" href="../"><span aria-hidden="true">←</span> All notes</a><p class="eyebrow">LLM inference · Memory systems</p><h1>PagedAttention in vLLM: scattered memory, exact attention.</h1><p class="article-dek">How virtual memory inspired a KV cache that can live in scattered blocks and still compute exact attention. Start with the memory problem, then follow every step of the math.</p>
+<div class="article-meta"><time datetime="2026-10-03">October 3, 2026</time><span>18 min read</span></div><p class="reading-mode-hint">Choose Hulk Speak in the language menu for shorter sentences and a faster reading style. Equations stay intact.</p>
+</div></header><article class="article-body article-shell"><p class="article-lead">Memory fragmentation is what happens when free space exists, but the pieces are awkward to use. Before we talk about vLLM, imagine trying to seat six friends together in a room with eight empty chairs scattered across different tables. Enough chairs; no table with six adjacent seats.</p>
+<p>LLM serving has the same kind of problem. Each conversation grows as tokens arrive, and its attention history needs memory. PagedAttention lets that history occupy scattered blocks while the model still attends to the correct sequence. To see why this preserves the mathematics, we first need the operating-system idea it borrows: virtual memory.</p>
+<h2 id="memory-fragmentation">1. Free memory can still be unusable</h2>
+<p>External fragmentation means gaps between live allocations. Suppose a memory pool has free regions of 3 MB, 2 MB, and 3 MB, separated by data that is still in use. An allocator demanding one contiguous 6 MB region cannot satisfy the request from that pool, even though 8 MB is free in total.</p>
+<p>Internal fragmentation means unused space inside an allocation. Reserve room for 100 tokens, then finish after 30: 70 token slots were reserved without useful data. Reserving the maximum possible conversation length for every request also strands capacity that other conversations could have used.</p>
+<p>Fixed-size pages let us assemble a large logical allocation from smaller free pieces. They reduce the need for one huge gap. They do not make waste literally disappear: the last partly filled page can still have unused slots.</p>
+<figure class="article-animation article-animation-video" data-article-video>
+  <video id="fragmentation-animation" width="1200" height="900" controls muted loop playsinline preload="none" poster="../../assets/media/paged-attention/fragmentation-poster.webp" aria-labelledby="fragmentation-caption">
+    <source src="../../assets/media/paged-attention/fragmentation.webm" type="video/webm">
+    <source src="../../assets/media/paged-attention/fragmentation.mp4" type="video/mp4">
+    <a href="../../assets/media/paged-attention/fragmentation.mp4">Watch the animation</a>
+  </video>
+  <figcaption id="fragmentation-caption">Eight MB are free, but the largest gap is only three MB. A six MB contiguous allocation fails; six one MB pages fit the scattered space. Cell sizes are illustrative.</figcaption>
+  <div class="video-controls" data-video-controls hidden>
+    <button class="animation-toggle" type="button" data-video-toggle aria-controls="fragmentation-animation" aria-pressed="false">Play animation</button>
+    <button class="animation-toggle" type="button" data-video-fullscreen aria-controls="fragmentation-animation">Full screen</button>
+  </div>
+</figure>
+<h2 id="virtual-memory">2. Virtual memory gives an application an address space</h2>
+<p>A program uses virtual addresses: addresses in its own view of memory. Physical RAM is divided into equal-size frames; the virtual address space is divided into pages of the same size. A page table maps a virtual page number to a physical frame number. Consecutive virtual pages can map to frames far apart in RAM.</p>
+<p>For a toy page size of 4,096 bytes, virtual address 5,000 lies in page 1 with an offset of 904 bytes. If the page table maps page 1 to physical frame 9, the physical address is 9 × 4,096 + 904 = 37,768. The offset stays the same; only the page’s location changes.</p>
+<pre class="article-code" data-kind="equation" aria-label="Virtual to physical address translation"><code>virtual page = floor(virtual address / page size)
+offset       = virtual address mod page size
+physical address = frame[virtual page] × page size + offset</code></pre>
+<p>Here, floor means round down to a whole number, and mod means the remainder after division. The application can walk through a contiguous virtual array while address translation follows different physical frames. Its entire address space need not be one allocated array; the continuity applies to the particular mapped range it is using.</p>
+<p class="article-source-note">Further reading: <a href="https://pages.cs.wisc.edu/~remzi/OSTEP/vm-paging.pdf" target="_blank" rel="noopener">Operating Systems: Three Easy Pieces — Paging</a>.</p>
+<h2 id="mmu-and-page-tables">3. The MMU translates; the page table stores mappings</h2>
+<p>The memory management unit, or MMU, is hardware that translates addresses. The operating system maintains page tables in RAM; the MMU does not contain every page or all the program’s data. A small hardware cache called the translation lookaside buffer, or TLB, remembers recent translations. On a TLB miss, a page-table walk looks up the mapping.</p>
+<p>If a page is not present, or the access violates permissions, a page fault transfers control to the operating system. The OS can establish a valid mapping, fetch data when appropriate, or reject the access. A TLB miss alone is not a page fault. This separation lets software use simple addresses while the OS manages physical placement and access rights.</p>
+<p class="article-source-note">Further reading: <a href="https://pages.cs.wisc.edu/~remzi/OSTEP/vm-tlbs.pdf" target="_blank" rel="noopener">Operating Systems: Three Easy Pieces — TLBs</a>.</p>
+<h2 id="kv-cache">4. An LLM’s growing memory is its KV cache</h2>
+<p>A token is a small piece of text. In each attention layer, the model turns token representations into queries, keys, and values. A query asks what information matters now. A key helps score a stored token’s relevance. A value carries the information that gets mixed into the attention output. These are vectors: ordered lists of numbers.</p>
+<p>During prefill, the model processes the prompt and stores its keys and values. During decode, it generates another token, adds new KV entries, and reuses previous entries. Causal attention ensures earlier tokens cannot depend on future tokens, so their cached entries remain valid as the conversation grows.</p>
+<p>Weights are the learned parameters, normally reused across requests. KV cache is the per-sequence state that grows with context. PagedAttention’s contribution is how that changing state is allocated and read. Modern vLLM also handles model loading, quantization, scheduling, and distributed serving, but paging itself does not change the learned weights.</p>
+<pre class="article-code" data-kind="equation" aria-label="Dense attention KV cache memory estimate"><code>KV bytes ≈ 2 × L × T × Hkv × D × b</code></pre>
+<p>This estimate assumes ordinary dense-attention KV with equal key and value dimensions: 2 for keys plus values, L layers, T cached tokens, Hkv key/value heads, D numbers per head, and b bytes per number. It omits padding, metadata, and workspace. With 32 layers, 4,096 tokens, 8 KV heads, 128 numbers per head, and 2-byte numbers, one sequence needs 536,870,912 bytes: 512 MiB.</p>
+<p class="article-source-note">Further reading: <a href="https://arxiv.org/abs/2309.06180" target="_blank" rel="noopener">The original PagedAttention paper</a>.</p>
+<h2 id="paged-blocks">5. PagedAttention adds a block table</h2>
+<p>vLLM divides a sequence’s KV cache into blocks holding a fixed number of token positions. Each request has a block table mapping logical block numbers to physical cache blocks. The kernel uses that table to read the right keys and values, even when neighboring logical blocks live in distant parts of GPU memory.</p>
+<p>This is an analogy to OS paging, implemented explicitly by the serving engine and attention kernels. vLLM does not ask the CPU’s MMU to remap every KV block into a contiguous array. Logical token order and positional information remain intact; physical adjacency is unnecessary.</p>
+<figure class="kv-page-map"><div class="kv-page-grid"><div><strong>Logical block 0</strong><code>tokens 0–3 → physical block 9</code></div><div><strong>Logical block 1</strong><code>tokens 4–7 → physical block 2</code></div><div><strong>Logical block 2</strong><code>tokens 8–9 → physical block 14</code></div></div><figcaption>One ordered sequence, three scattered cache blocks. The final block has two unused slots. This toy example uses four tokens per block.</figcaption></figure>
+<p>For token position t and block size B, the logical block is floor(t / B) and the slot is t mod B. In the example, token 6 is in logical block 1, slot 2. The table sends the kernel to physical block 2. Real layouts also index the layer, KV head, and vector dimension.</p>
+<p>Blocks are assigned as a sequence grows rather than reserving its maximum output length. Within a uniform block pool, any free block can serve the next allocation. For one unshared sequence, unused tail capacity is at most B − 1 token slots per KV layout. Pool sizing, backend padding, and mixed attention layouts still have their own costs.</p>
+<p class="article-source-note">Further reading: <a href="https://docs.vllm.ai/en/latest/design/paged_attention/" target="_blank" rel="noopener">vLLM’s paged-attention kernel design</a>.</p>
+<figure class="article-animation article-animation-video" data-article-video>
+  <video id="block-mapping-animation" width="1200" height="900" controls muted loop playsinline preload="none" poster="../../assets/media/paged-attention/block-mapping-poster.webp" aria-labelledby="block-mapping-caption">
+    <source src="../../assets/media/paged-attention/block-mapping.webm" type="video/webm">
+    <source src="../../assets/media/paged-attention/block-mapping.mp4" type="video/mp4">
+    <a href="../../assets/media/paged-attention/block-mapping.mp4">Watch the animation</a>
+  </video>
+  <figcaption id="block-mapping-caption">The block table maps logical blocks 0, 1, 2 to physical KV blocks 9, 2, 14. Reads preserve token order 0 through 9. This example uses four tokens per block; the final two slots are unused.</figcaption>
+  <div class="video-controls" data-video-controls hidden>
+    <button class="animation-toggle" type="button" data-video-toggle aria-controls="block-mapping-animation" aria-pressed="false">Play animation</button>
+    <button class="animation-toggle" type="button" data-video-fullscreen aria-controls="block-mapping-animation">Full screen</button>
+  </div>
+</figure>
+<h2 id="prefix-caching-and-eviction">6. Prefix caching reuses work; eviction reclaims space</h2>
+<p>Imagine two requests begin with the same eight token IDs and then ask different questions. With four tokens per block, both can reuse the first two full KV blocks. Their suffixes get separate blocks. Matching text later in a different conversation is insufficient: a token’s KV state depends on its entire preceding context.</p>
+<p>vLLM identifies full reusable blocks using hashes that include the block’s tokens and the preceding prefix, plus relevant context such as adapter identity or multimodal inputs. Reference counts track which requests still use a block. Shared cached content must remain unchanged; diverging writable state needs private storage, with copy-on-write where shared partial blocks are supported.</p>
+<p>When a request finishes, its blocks can become available for allocation while reusable prefix data remains cached. Under pressure, the documented V1 cache manager reclaims eligible zero-reference blocks through an LRU-style free queue. Blocks still referenced by active requests are not casually overwritten. Evicting an idle prefix means a future miss recomputes it; it does not delete context from a running request.</p>
+<p>Paging tackles allocation waste. Prefix sharing tackles duplicated state and repeated prefill. Eviction decides which idle entries survive memory pressure. If active requests themselves cannot fit, scheduling can preempt a request and later recompute its state. These mechanisms improve capacity without treating required attention history as disposable.</p>
+<p class="article-source-note">Further reading: <a href="https://docs.vllm.ai/en/latest/design/prefix_caching/" target="_blank" rel="noopener">vLLM prefix-cache design and eviction</a>.</p>
+<p>Prefix caching mainly saves prompt computation. A new decoded token must still attend to the required cached history. Continuous batching lets completed requests leave and new requests join between steps; better KV utilization makes room for more useful work in those batches.</p>
+<p class="article-source-note">Further reading: <a href="https://docs.vllm.ai/en/latest/features/automatic_prefix_caching/" target="_blank" rel="noopener">vLLM automatic prefix caching</a>.</p>
+<figure class="article-animation article-animation-video" data-article-video>
+  <video id="prefix-reuse-animation" width="1200" height="900" controls muted loop playsinline preload="none" poster="../../assets/media/paged-attention/prefix-reuse-poster.webp" aria-labelledby="prefix-reuse-caption">
+    <source src="../../assets/media/paged-attention/prefix-reuse.webm" type="video/webm">
+    <source src="../../assets/media/paged-attention/prefix-reuse.mp4" type="video/mp4">
+    <a href="../../assets/media/paged-attention/prefix-reuse.mp4">Watch the animation</a>
+  </video>
+  <figcaption id="prefix-reuse-caption">Requests A and B share two full prefix blocks. When A finishes, B keeps its active references. Only A’s now-idle suffix block is reclaimed for a new allocation. This is a schematic ownership example, not a particular LRU queue trace.</figcaption>
+  <div class="video-controls" data-video-controls hidden>
+    <button class="animation-toggle" type="button" data-video-toggle aria-controls="prefix-reuse-animation" aria-pressed="false">Play animation</button>
+    <button class="animation-toggle" type="button" data-video-fullscreen aria-controls="prefix-reuse-animation">Full screen</button>
+  </div>
+</figure>
+<h2 id="attention-families">7. Different attention types change what a block stores</h2>
+<p>Multi-head attention, or MHA, gives each query head its own key and value head. Grouped-query attention, or GQA, lets several query heads share a KV head. Multi-query attention, or MQA, shares one KV head across all query heads. For otherwise equal dimensions, fewer KV heads mean fewer cached numbers.</p>
+<p>A toy model with 32 query heads might use 32 KV heads for MHA, 8 for GQA, or 1 for MQA. Relative KV sizes are then 32:8:1. Paging can organize any of these supported layouts; it does not turn an MHA checkpoint into a GQA checkpoint. The trained architecture defines the head relationships.</p>
+<p class="article-source-note">Further reading: <a href="https://arxiv.org/abs/2305.13245" target="_blank" rel="noopener">The GQA paper</a>.</p>
+<p>DeepSeek’s multi-head latent attention, or MLA, uses a learned compressed representation for KV information, together with positional information. Its kernel works with this model-defined latent state instead of storing a separate full K and V vector for every head. MLA reduces cache size; it does not, by itself, remove dense attention’s quadratic prefill interactions.</p>
+<p class="article-source-note">Further reading: <a href="https://arxiv.org/html/2412.19437v2" target="_blank" rel="noopener">DeepSeek-V3 technical report</a>.</p>
+<p>DeepSeek-V3.2 adds DeepSeek Sparse Attention, or DSA: an indexer selects relevant positions for the larger attention computation. DeepSeek-V4 combines a local sliding window with compressed attention branches. The September 2026 DeepSeek-V4.1-Flash report adds CSA2 with cross-layer KV reuse and FP4 KV caching. These are architecture and precision changes, beyond changing addresses.</p>
+<p class="article-source-note">Further reading: <a href="https://github.com/deepseek-ai/DeepSeek-V3.2-Exp" target="_blank" rel="noopener">DeepSeek-V3.2-Exp</a>.</p>
+<p class="article-source-note">Further reading: <a href="https://github.com/vllm-project/vllm-project.github.io/blob/main/_posts/2026-04-24-deepseek-v4.md" target="_blank" rel="noopener">vLLM’s DeepSeek-V4 attention explanation</a>.</p>
+<p class="article-source-note">Further reading: <a href="https://arxiv.org/abs/2609.19969" target="_blank" rel="noopener">DeepSeek-V4.1-Flash report</a>.</p>
+<p>vLLM needs a compatible attention backend and cache layout for the model and hardware. Its hybrid cache manager handles differing attention requirements, including full-context and sliding-window layers. Specialized kernels such as FlashMLA operate on the layouts their models require. The block-management idea remains useful, but one generic KV shape and kernel cannot cover every architecture.</p>
+<p class="article-source-note">Further reading: <a href="https://docs.vllm.ai/en/latest/design/hybrid_kv_cache_manager/" target="_blank" rel="noopener">vLLM hybrid KV cache manager</a>.</p>
+<p class="article-source-note">Further reading: <a href="https://github.com/deepseek-ai/FlashMLA" target="_blank" rel="noopener">DeepSeek FlashMLA kernels</a>.</p>
+<p>At the October 3, 2026 source check, vLLM’s official DeepSeek-V4.1-Flash recipe requires a nightly image. Support for a new attention architecture is version-specific; the block-management concept alone does not establish that an older installed release can run that model.</p>
+<p class="article-source-note">Further reading: <a href="https://github.com/vllm-project/recipes/blob/main/models/deepseek-ai/DeepSeek-V4.1-Flash.yaml" target="_blank" rel="noopener">vLLM’s DeepSeek-V4.1-Flash recipe</a>.</p>
+<h2 id="attention-complexity">8. Smaller KV cache does not automatically mean linear attention</h2>
+<p>Let n be sequence length. Dense prefill compares n queries with up to n keys, giving O(n²) attention work for fixed head dimensions. Doubling n roughly quadruples the pairwise work. A single dense decode step has only one new query against n stored keys, giving O(n); generating many steps adds those growing costs together.</p>
+<p>A sparse attention stage that reads at most k selected entries per query costs O(nk) during prefill and O(k) per decode query, with fixed dimensions. If k stays fixed, that stage scales linearly with n. But selection can still scan growing history, and compressed or windowed branches have their own costs. This is a stage-level calculation, not proof that every DeepSeek model’s entire inference is linear.</p>
+<p>Paging itself preserves the chosen attention rule and its asymptotic arithmetic. It changes allocation and access. Sparse attention changes which positions participate; latent compression changes representation; quantization changes precision. Exactness from rearranging blocks should be evaluated against the same model, attention mask, and numeric precision.</p>
+<p>In V3.2’s reference implementation, the indexer scores queries against the preceding key history before choosing top-k positions. At fixed index dimensions, that retains an O(n²) score-selection component over a full prompt. This is a complexity inference from the code, not a latency benchmark; sparse main attention still reduces the more expensive work.</p>
+<p class="article-source-note">Further reading: <a href="https://github.com/deepseek-ai/DeepSeek-V3.2-Exp/blob/main/inference/model.py" target="_blank" rel="noopener">DeepSeek-V3.2 reference indexer</a>.</p>
+<h2 id="matrix-multiplication">9. Matrix multiplication, one row at a time</h2>
+<p>A matrix is a rectangular table of numbers. To multiply matrices A and B, take one row from A and one column from B, multiply matching entries, and add them. A’s column count must equal B’s row count. Entry Cᵢⱼ uses row i and column j; the index r runs over the shared dimension.</p>
+<pre class="article-code" data-kind="equation" aria-label="Beginner matrix multiplication example"><code>C = A × B
+Cᵢⱼ = Σᵣ Aᵢᵣ Bᵣⱼ
+
+             [3  4]
+[1  2]   ×   [5  6]   = [13  16]
+
+first output  = 1 × 3 + 2 × 5 = 13
+second output = 1 × 4 + 2 × 6 = 16</code></pre>
+<p>The symbol Σ means “add all these terms.” The same multiplication can be split across two blocks: [1] × [3, 4] + [2] × [5, 6] = [3, 4] + [10, 12] = [13, 16]. Splitting the storage does not omit a multiplication or a contribution.</p>
+<h2 id="exact-attention-example">10. Exact attention across two scattered pages</h2>
+<p>For one query row q, stack the cached keys as rows of K and the values as rows of V. Kᵀ means transpose: turn K’s rows into columns. The query-key multiplication gives one score per token. Divide by √d, the square root of the key dimension d, then use softmax to turn scores into positive weights summing to one. Finally multiply those weights by V.</p>
+<pre class="article-code" data-kind="equation" aria-label="Scaled dot product attention and softmax"><code>s = q Kᵀ / √d
+aᵢ = exp(sᵢ) / Σⱼ exp(sⱼ)
+o = a V = Σᵢ aᵢ vᵢ</code></pre>
+<p>Here s is the score row, a is the attention-weight row, and o is the output row. exp(x), also written eˣ, raises the constant e ≈ 2.71828 to x. ln is its inverse, so exp(ln 3) = 3. We choose logarithms below to make the weights easy to check. All four positions are visible to this query; a causal kernel would mask any future or unfilled positions.</p>
+<p class="article-source-note">Further reading: <a href="https://arxiv.org/abs/1706.03762" target="_blank" rel="noopener">Attention Is All You Need</a>.</p>
+<pre class="article-code" data-kind="equation" aria-label="Four token query keys values and attention weights"><code>d = 2                 q = [√2, 0]
+
+    [0      1]             [1  0]
+K = [ln 2   0]         V = [0  2]
+    [ln 3   1]             [3  1]
+    [ln 4  −1]             [2  4]
+
+q Kᵀ / √2 = [0, ln 2, ln 3, ln 4]
+exp(scores) = [1, 2, 3, 4]
+a = [1, 2, 3, 4] / 10</code></pre>
+<p>For example, the third dot product is √2 × ln 3 + 0 × 1. Dividing by √2 leaves ln 3. Softmax’s denominator is 1 + 2 + 3 + 4 = 10. The final multiplication takes the weighted sum of the four value rows:</p>
+<pre class="article-code" data-kind="equation" aria-label="Contiguous attention output"><code>o = (1×[1,0] + 2×[0,2] + 3×[3,1] + 4×[2,4]) / 10
+  = ([1,0] + [0,4] + [9,3] + [8,16]) / 10
+  = [18,23] / 10
+  = [1.8,2.3]</code></pre>
+<p>For this separate worked example, use two tokens per page. Store the first two KV rows in physical page 9 and the last two in physical page 2. The block table preserves their logical positions. Each page can calculate its unnormalized value sum N and its weight sum Z independently. We then add the sums before dividing. This can be processed in tiles or split across parallel workers; it need not be a separate kernel call for every page.</p>
+<pre class="article-code" data-kind="equation" aria-label="Paged attention exact output from block sums"><code>page A: Zₐ = 1 + 2 = 3
+        Nₐ = 1×[1,0] + 2×[0,2] = [1,4]
+
+page B: Zᵦ = 3 + 4 = 7
+        Nᵦ = 3×[3,1] + 4×[2,4] = [17,19]
+
+o = (Nₐ + Nᵦ) / (Zₐ + Zᵦ)
+  = [18,23] / 10
+  = [1.8,2.3]</code></pre>
+<p>There is no approximation here: the split calculation includes the same terms as the contiguous calculation. Physical location is absent from the equation. The example computes one head’s attention output; the model’s remaining layers and output projection turn that result into next-token logits and probabilities.</p>
+<aside class="article-callout"><strong>Do not average page-local softmax outputs.</strong><p>Page A alone produces [1/3, 4/3]; page B alone produces [17/7, 19/7]. Their plain average is about [1.381, 2.024], which is wrong. Their correct weights are 3/10 and 7/10, because the pages carry different shares of the global denominator. One shared softmax normalization is essential.</p>
+</aside><figure class="article-animation article-animation-video" data-article-video>
+  <video id="exact-attention-animation" width="1200" height="900" controls muted loop playsinline preload="none" poster="../../assets/media/paged-attention/exact-attention-poster.webp" aria-labelledby="exact-attention-caption">
+    <source src="../../assets/media/paged-attention/exact-attention.webm" type="video/webm">
+    <source src="../../assets/media/paged-attention/exact-attention.mp4" type="video/mp4">
+    <a href="../../assets/media/paged-attention/exact-attention.mp4">Watch the animation</a>
+  </video>
+  <figcaption id="exact-attention-caption">Each value row is multiplied by its unnormalized attention weight. Page sums [1,4] and [17,19] combine into [18,23]; dividing once by the global weight sum 10 gives [1.8,2.3], exactly as in the contiguous calculation. This separate example uses two tokens per page.</figcaption>
+  <div class="video-controls" data-video-controls hidden>
+    <button class="animation-toggle" type="button" data-video-toggle aria-controls="exact-attention-animation" aria-pressed="false">Play animation</button>
+    <button class="animation-toggle" type="button" data-video-fullscreen aria-controls="exact-attention-animation">Full screen</button>
+  </div>
+</figure>
+<h2 id="stable-softmax">11. Stable block merging keeps the same normalization</h2>
+<p>Real scores can be large enough that exp overflows. Subtracting one common maximum m from every score prevents this without changing softmax: the factor exp(−m) cancels between numerator and denominator. A block can store its maximum mᵦ, shifted weight sum zᵦ, and shifted weighted-value sum uᵦ. These summaries can be merged exactly in real arithmetic.</p>
+<pre class="article-code" data-kind="equation" aria-label="Numerically stable merge of block attention summaries"><code>For each block b:
+  mᵦ = max of its scores
+  zᵦ = Σᵢ exp(sᵢ − mᵦ)
+  uᵦ = Σᵢ exp(sᵢ − mᵦ) vᵢ
+
+Merge blocks:
+  m = maxᵦ mᵦ
+  z = Σᵦ exp(mᵦ − m) zᵦ
+  u = Σᵦ exp(mᵦ − m) uᵦ
+  o = u / z</code></pre>
+<p>The subscript b names a block; i runs over tokens inside it. max chooses the largest number. In our example, page A has mₐ = ln 2, zₐ = 1.5, and uₐ = [0.5, 2]. Page B has mᵦ = ln 4, zᵦ = 1.75, and uᵦ = [4.25, 4.75]. At the shared maximum ln 4, rescale A by 1/2 and B by 1.</p>
+<pre class="article-code" data-kind="equation" aria-label="Stable merge reproduces the same attention result"><code>z = 0.5 × 1.5 + 1 × 1.75 = 2.5
+u = 0.5 × [0.5,2] + [4.25,4.75] = [4.5,5.75]
+o = [4.5,5.75] / 2.5 = [1.8,2.3]</code></pre>
+<p>This proves that partitioning KV into blocks does not require dropping tokens or estimating attention. It does not promise bit-for-bit equality between arbitrary GPU executions. Floating-point sums can round differently when kernels, batch sizes, or reduction orders change. Quantized KV introduces a separate precision tradeoff, and sampling can select different tokens even from the same probabilities.</p>
+<p>The precise claim is that paging adds no approximation to the model’s specified attention. Compare the same model, mask, KV precision, and decoding settings. For repeatable outputs, also control backend behavior and scheduling; vLLM documents batch-invariance support and its limits.</p>
+<p class="article-source-note">Further reading: <a href="https://docs.vllm.ai/en/v0.19.1/features/batch_invariance/" target="_blank" rel="noopener">vLLM batch invariance</a>.</p>
+<h2 id="what-to-remember">12. The useful distinction</h2>
+<ul class="article-bullets"><li>Fragmentation is about unusable gaps or unused reserved capacity. Paging makes small allocations easier to place.</li><li>Virtual memory separates logical addresses from physical storage. An MMU translates using page-table mappings and cached TLB entries.</li><li>PagedAttention preserves logical token order while KV blocks occupy scattered locations. It changes storage access, not the attention definition.</li><li>Prefix caching shares already computed state. Eviction reclaims eligible idle blocks; it does not silently discard required active context.</li><li>MHA, GQA, MLA, and sparse or compressed attention define different state and computation. Model-compatible backends must respect those definitions.</li><li>Blocked matrix multiplication and globally normalized softmax reproduce the same mathematical attention result. Paging adds no approximation.</li></ul><p class="article-source-note">Sources checked on October 3, 2026. The worked numbers and diagrams are illustrative; block sizes, supported backends, and cache policies depend on the installed vLLM version.</p>
+<div class="article-end-actions"><a class="button-link" href="../">More engineering notes <span aria-hidden="true">↗</span></a></div></article></main>
+    <footer class="site-footer"><div class="shell"><span>© <span data-current-year>2026</span> Abhiram Sharma</span><a href="../">More writing</a></div></footer>
+  </body>
+</html>

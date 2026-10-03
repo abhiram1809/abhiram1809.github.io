@@ -40,9 +40,9 @@
     </script>
     <link rel="stylesheet" href="assets/css/style.css?v=20">
     <script src="assets/js/i18n.js?v=4" defer></script>
-    <script src="assets/js/main.js?v=10" defer></script>
+    <script src="assets/js/main.js?v=12" defer></script>
     <link rel="stylesheet" href="assets/css/ui-details.css?v=2">
-    <script src="assets/js/ui-details.js?v=1" defer></script>
+    <script src="assets/js/ui-details.js?v=2" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
@@ -206,6 +206,12 @@
       <section class="section writing-section" id="writing" aria-labelledby="blogs-title">
         <div class="shell writing-grid">
           <div class="section-intro reveal"><p class="eyebrow">06 / Blogs</p><h2 id="blogs-title">Latest posts.</h2><p>Notes on systems I build, how they work, and the tradeoffs behind them.</p></div>
+          <article class="writing-card reveal">
+            <p class="writing-card-label"><time datetime="2026-10-03">October 3, 2026</time><span>LLM inference · Memory systems</span></p>
+            <h3>PagedAttention in vLLM: scattered memory, exact attention</h3>
+            <p>Memory fragmentation, virtual memory, KV blocks, prefix reuse, and the exact math behind paged attention.</p>
+            <a href="blogs/paged-attention/">Read “PagedAttention in vLLM: scattered memory, exact attention” <b aria-hidden="true">↗</b></a>
+          </article>
           <article class="writing-card reveal">
             <p class="writing-card-label"><time datetime="2026-10-02">October 2, 2026</time><span>Inference engineering · Agent skill</span></p>
             <h3>Inference tuning starts with a workload</h3>

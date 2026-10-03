@@ -6,9 +6,10 @@
     de: { contents: 'Auf dieser Seite', intro: 'Einleitung', copy: 'Kopieren', copied: 'Kopiert', error: 'Text unten auswählen und kopieren.', terminal: 'Terminal', prompt: 'Agent-Prompt', equation: 'Gleichung', snippet: 'Codebeispiel' },
     fr: { contents: 'Sur cette page', intro: 'Introduction', copy: 'Copier', copied: 'Copié', error: 'Sélectionnez et copiez le texte ci-dessous.', terminal: 'Terminal', prompt: 'Consigne pour l’agent', equation: 'Équation', snippet: 'Extrait de code' },
     es: { contents: 'En esta página', intro: 'Introducción', copy: 'Copiar', copied: 'Copiado', error: 'Selecciona y copia el texto de abajo.', terminal: 'Terminal', prompt: 'Instrucción para el agente', equation: 'Ecuación', snippet: 'Fragmento de código' },
-    nl: { contents: 'Op deze pagina', intro: 'Inleiding', copy: 'Kopiëren', copied: 'Gekopieerd', error: 'Selecteer en kopieer de tekst hieronder.', terminal: 'Terminal', prompt: 'Agentprompt', equation: 'Vergelijking', snippet: 'Codefragment' }
+    nl: { contents: 'Op deze pagina', intro: 'Inleiding', copy: 'Kopiëren', copied: 'Gekopieerd', error: 'Selecteer en kopieer de tekst hieronder.', terminal: 'Terminal', prompt: 'Agentprompt', equation: 'Vergelijking', snippet: 'Codefragment' },
+    hulk: { contents: 'Hulk jump to', intro: 'Start here', copy: 'Copy', copied: 'Hulk copied', error: 'Select text. Copy it.', terminal: 'Terminal', prompt: 'Agent prompt', equation: 'Hulk math', snippet: 'Code' }
   };
-  const text = () => copy[document.documentElement.lang] || copy.en;
+  const text = () => copy[document.documentElement.dataset.language] || copy.en;
   const header = document.querySelector('[data-header]');
   const navLinks = [...document.querySelectorAll('[data-nav] a')];
   const pageSections = [...document.querySelectorAll('main > section[id]')];

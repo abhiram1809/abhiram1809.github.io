@@ -1,21 +1,24 @@
 (() => {
   document.documentElement.classList.add('js');
 
-  const supportedLanguages = ['en', 'de', 'fr', 'es', 'nl'];
-  const localeNames = { en: 'en-US', de: 'de-DE', fr: 'fr-FR', es: 'es-ES', nl: 'nl-NL' };
+  const isBlog = document.documentElement.hasAttribute('data-blog');
+  const supportedLanguages = ['en', 'de', 'fr', 'es', 'nl', ...(isBlog ? ['hulk'] : [])];
+  const localeNames = { en: 'en-US', de: 'de-DE', fr: 'fr-FR', es: 'es-ES', nl: 'nl-NL', hulk: 'en-US' };
   const languageInfo = {
     en: { name: 'English', code: 'EN', flag: '🇬🇧' },
     de: { name: 'Deutsch', code: 'DE', flag: '🇩🇪' },
     fr: { name: 'Français', code: 'FR', flag: '🇫🇷' },
     es: { name: 'Español', code: 'ES', flag: '🇪🇸' },
-    nl: { name: 'Nederlands', code: 'NL', flag: '🇳🇱' }
+    nl: { name: 'Nederlands', code: 'NL', flag: '🇳🇱' },
+    hulk: { name: 'Hulk Speak', code: 'HULK', icon: true }
   };
   const messages = {
     en: { language: 'Language', light: 'Switch to light theme', dark: 'Switch to dark theme', open: 'Open navigation', close: 'Close navigation', copied: 'Email address copied.', copyError: 'Copy unavailable. Use the email link above.' },
     de: { language: 'Sprache', light: 'Zum hellen Design wechseln', dark: 'Zum dunklen Design wechseln', open: 'Navigation öffnen', close: 'Navigation schließen', copied: 'E-Mail-Adresse kopiert.', copyError: 'Kopieren nicht verfügbar. Verwenden Sie den E-Mail-Link oben.' },
     fr: { language: 'Langue', light: 'Passer au thème clair', dark: 'Passer au thème sombre', open: 'Ouvrir la navigation', close: 'Fermer la navigation', copied: 'Adresse e-mail copiée.', copyError: 'Copie indisponible. Utilisez le lien e-mail ci-dessus.' },
     es: { language: 'Idioma', light: 'Cambiar al tema claro', dark: 'Cambiar al tema oscuro', open: 'Abrir la navegación', close: 'Cerrar la navegación', copied: 'Dirección de correo copiada.', copyError: 'No se puede copiar. Usa el enlace de correo de arriba.' },
-    nl: { language: 'Taal', light: 'Schakel naar licht thema', dark: 'Schakel naar donker thema', open: 'Navigatie openen', close: 'Navigatie sluiten', copied: 'E-mailadres gekopieerd.', copyError: 'Kopiëren is niet beschikbaar. Gebruik de e-maillink hierboven.' }
+    nl: { language: 'Taal', light: 'Schakel naar licht thema', dark: 'Schakel naar donker thema', open: 'Navigatie openen', close: 'Navigatie sluiten', copied: 'E-mailadres gekopieerd.', copyError: 'Kopiëren is niet beschikbaar. Gebruik de e-maillink hierboven.' },
+    hulk: { language: 'Reading mode', light: 'Hulk want light', dark: 'Hulk want dark', open: 'Open menu', close: 'Close menu', copied: 'Hulk copied email.', copyError: 'Copy failed. Use email link.' }
   };
   const dictionaries = window.PORTFOLIO_I18N || {};
   const videoControlUpdates = [];
@@ -28,7 +31,7 @@
     const node = walker.currentNode;
     const parent = node.parentElement;
     const key = normalize(node.nodeValue);
-    if (!key || parent?.closest('script, style, svg, code, pre, .theme-toggle, .menu-toggle, .language-picker, [data-copy-status], [data-video-controls]')) continue;
+    if (!key || parent?.closest('script, style, svg, code, pre, .theme-toggle, .menu-toggle, .language-picker, [data-no-i18n], [data-copy-status], [data-video-controls]')) continue;
     localizedTextNodes.push({ node, key, original: node.nodeValue });
   }
 
@@ -50,6 +53,7 @@
   const languageMenu = document.querySelector('[data-language-menu]');
   const languageOptions = [...document.querySelectorAll('[data-language-option]')];
   const currentFlag = document.querySelector('[data-current-flag]');
+  const hulkIcon = document.querySelector('[data-language-option="hulk"] img');
   const currentLanguageName = document.querySelector('[data-current-language]');
   const currentLanguageCode = document.querySelector('[data-current-code]');
   const menuButton = document.querySelector('[data-menu-toggle]');
@@ -77,20 +81,22 @@
     if (hiddenLabel) hiddenLabel.textContent = label;
   };
 
-  let languageCloseTimer;
+  let languageCloseTimer, languageOpenFrame;
   const openLanguageMenu = (focusSelected = false) => {
     if (!languagePicker || !languageMenu || !languageToggle) return;
     clearTimeout(languageCloseTimer);
+    cancelAnimationFrame(languageOpenFrame);
     languageMenu.hidden = false;
     languageToggle.setAttribute('aria-expanded', 'true');
-    requestAnimationFrame(() => languagePicker.classList.add('is-open'));
-    if (focusSelected) {
-      requestAnimationFrame(() => languageOptions.find((option) => option.getAttribute('aria-selected') === 'true')?.focus({ preventScroll: true }));
-    }
+    languageOpenFrame = requestAnimationFrame(() => {
+      languagePicker.classList.add('is-open');
+      if (focusSelected) languageOptions.find((option) => option.getAttribute('aria-selected') === 'true')?.focus({ preventScroll: true });
+    });
   };
 
   const closeLanguageMenu = (restoreFocus = false) => {
     if (!languagePicker || !languageMenu || !languageToggle) return;
+    cancelAnimationFrame(languageOpenFrame);
     languagePicker.classList.remove('is-open');
     languageToggle.setAttribute('aria-expanded', 'false');
     clearTimeout(languageCloseTimer);
@@ -115,10 +121,14 @@
     localizedAttributes.forEach(({ element, name, original }) => element.setAttribute(name, currentLanguage === 'en' ? original : (dictionary[original] || original)));
     metadata.forEach(({ element, original }) => { element.content = currentLanguage === 'en' ? original : (dictionary[original] || original); });
     document.title = currentLanguage === 'en' ? originalTitle : (dictionary[originalTitle] || originalTitle);
-    document.documentElement.lang = currentLanguage;
+    // Hulk Speak is an English reading style, not an ISO language code.
+    document.documentElement.lang = currentLanguage === 'hulk' ? 'en' : currentLanguage;
     document.documentElement.dataset.language = currentLanguage;
     const selectedLanguage = languageInfo[currentLanguage];
-    if (currentFlag) currentFlag.textContent = selectedLanguage.flag;
+    if (currentFlag) {
+      if (selectedLanguage.icon && hulkIcon) currentFlag.replaceChildren(hulkIcon.cloneNode(true));
+      else currentFlag.textContent = selectedLanguage.flag;
+    }
     if (currentLanguageName) currentLanguageName.textContent = selectedLanguage.name;
     if (currentLanguageCode) currentLanguageCode.textContent = selectedLanguage.code;
     if (languageToggle) languageToggle.setAttribute('aria-label', `${messages[currentLanguage].language}: ${selectedLanguage.name}`);
@@ -134,13 +144,13 @@
     videoControlUpdates.forEach((update) => update());
     document.dispatchEvent(new CustomEvent('portfolio:languagechange'));
     if (persist) {
-      try { localStorage.setItem('portfolio-language', currentLanguage); } catch {}
+      try { localStorage.setItem(isBlog ? 'blog-language' : 'portfolio-language', currentLanguage); } catch {}
     }
   };
 
   applyLanguage(currentLanguage, false);
   languageToggle?.addEventListener('click', () => {
-    if (languagePicker?.classList.contains('is-open')) closeLanguageMenu();
+    if (languageToggle.getAttribute('aria-expanded') === 'true') closeLanguageMenu();
     else openLanguageMenu();
   });
   languageToggle?.addEventListener('keydown', (event) => {

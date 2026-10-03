@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+  <title>Hulk comic face</title>
+  <g stroke="#15231b" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
+    <path fill="#63bd45" d="M24 43 18 48l2 26 10 5 4 23 18 16h24l18-16 4-23 10-5 2-26-6-5-10-22H34z"/>
+    <path fill="#88d956" stroke="none" d="M36 45h56v35L80 99H50L36 79z"/>
+    <path fill="#398d35" stroke="none" d="m31 49 5 28 12 23 12 15H50l-16-14-5-24-8-4-1-24zm65 1-5 29-12 22-12 14h12l15-15 5-23 9-5 1-23z"/>
+    <path fill="#182820" d="m25 48-3-22 13-14 12 4 8-9 13 8 12-5 9 9 14 2 7 17-7 15-8-20-12 8-11-10-10 9-11-9-11 12-8-7z"/>
+    <path fill="#f7f3d5" d="m36 54 21 7-5 10H37zm56 0-21 7 5 10h15z"/>
+    <path d="m33 51 24 8m38-8-24 8" stroke-width="8"/>
+    <path d="m45 61 1 6m36-6-1 6" stroke-width="6"/>
+    <path d="m60 65-5 15 9 4 9-4-5-15" stroke="#2d7130" stroke-width="4"/>
+    <path fill="#f7f3d5" d="m43 92 9-5h24l9 5-7 11H50z"/>
+    <path d="M46 96h36m-20-8v14m12-14v14" stroke-width="3"/>
+    <path d="m49 109 15 3 15-3" stroke="#2d7130" stroke-width="4"/>
+  </g>
+</svg>

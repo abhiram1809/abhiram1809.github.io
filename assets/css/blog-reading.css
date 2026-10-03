@@ -1,0 +1,17 @@
+/* Blog-only reading modes and the paged-attention illustrations. */
+.language-flag img{display:block;width:24px;height:24px;object-fit:contain}
+.reading-mode-hint{max-width:62ch;margin-top:24px;color:var(--muted);font-size:.86rem;line-height:1.6}
+.article-source-note{color:var(--muted);font-size:.84rem;line-height:1.6}
+.kv-page-map{margin:32px 0;padding:20px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface)}
+.kv-page-grid{display:grid;gap:12px}
+.kv-page-grid>div{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 18px;padding:16px;border:1px solid var(--line);border-radius:10px;background:var(--canvas)}
+.kv-page-grid strong{color:var(--ink);font-size:.95rem}
+.kv-page-grid code{overflow-wrap:anywhere;font-size:.8rem!important}
+.kv-page-map figcaption{margin-top:16px;color:var(--muted);font-size:.86rem;line-height:1.6}
+:root[data-blog][data-language="hulk"]{--accent:#a3df77;--accent-soft:#1b2d21;--accent-solid:#477e2b;--accent-solid-hover:#396721}
+:root[data-blog][data-language="hulk"][data-theme="light"]{--accent:#35651d;--accent-soft:#e6efd9;--accent-solid:#477e2b;--accent-solid-hover:#396721}
+[data-blog][data-language="hulk"] .article-body{max-width:68ch;line-height:1.85}
+[data-blog][data-language="hulk"] .article-body>p{max-width:58ch;margin-bottom:32px}
+[data-blog][data-language="hulk"] .article-body h2{line-height:1.12}
+[data-blog][data-language="hulk"] .blog-card>p{line-height:1.8}
+@media(max-width:690px){.kv-page-map{padding:12px}.kv-page-grid>div{padding:12px}.kv-page-grid code{font-size:.74rem!important}}
