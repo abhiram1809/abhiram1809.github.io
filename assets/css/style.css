@@ -151,7 +151,8 @@ html[data-language="nl"] .language-trigger{width:174px}
 .hobbies-intro h3{margin-bottom:16px;font-size:clamp(1.8rem,3vw,2.6rem);line-height:1.05;letter-spacing:-.05em}
 .hobbies-intro>p:not(.eyebrow){max-width:34ch;margin-bottom:24px;color:var(--muted)}
 .hobby-tags{display:flex;flex-wrap:wrap;gap:8px}
-.hobby-tags span{padding:7px 12px;border:1px solid var(--line);border-radius:999px;color:var(--body-copy);font-size:.78rem;font-weight:600}
+.hobby-tags span{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border:1px solid var(--line);border-radius:999px;color:var(--body-copy);font-size:.78rem;font-weight:600}
+.hobby-tags svg{width:16px;height:16px;flex:none;color:var(--accent)}
 .chess-card{--chess-accent:#e7c58b;--chess-border:#685940;--chess-square:rgba(231,197,139,.08);--chess-piece-line:#282333;position:relative;overflow:hidden;padding:28px 30px 18px;border:1px solid var(--chess-border);border-radius:var(--radius);background:linear-gradient(125deg,var(--surface),color-mix(in srgb,var(--surface) 87%,var(--chess-accent)));box-shadow:var(--card-shadow)}
 :root[data-theme="light"] .chess-card{--chess-accent:#80571e;--chess-border:#cab898;--chess-square:rgba(128,87,30,.07);--chess-piece-line:#fff6e7}
 .chess-card-heading{display:flex;align-items:center;justify-content:space-between;gap:16px}
