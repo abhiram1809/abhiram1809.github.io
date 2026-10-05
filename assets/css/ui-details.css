@@ -1,31 +1,25 @@
 /* Interaction references: Rare UI. See README.md for component links. */
 html { scroll-padding-top: 100px; }
 
-/* A quiet segmented navigation; the current section lifts out of the group. */
-.primary-nav { gap: 0; align-items: center; }
+/* Quiet navigation with a stable, accented current-section pill. */
+.primary-nav { gap: 3px; align-items: center; }
 .primary-nav a {
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 40px;
   padding: 8px 12px;
-  background: color-mix(in srgb, var(--surface) 75%, transparent);
+  border-radius: 8px;
+  background: transparent;
   white-space: nowrap;
-  transition: color .18s ease, background .18s ease, transform .22s ease, margin .22s ease, border-radius .22s ease;
+  transition: color .18s ease, background .18s ease, box-shadow .18s ease;
 }
-.primary-nav a:first-child { border-radius: 10px 0 0 10px; }
-.primary-nav a:last-child { border-radius: 0 10px 10px 0; }
-.primary-nav a:has(+ [aria-current]) { border-radius: 0 10px 10px 0; }
-.primary-nav a[aria-current] + a { border-radius: 10px 0 0 10px; }
-.primary-nav a:first-child:has(+ [aria-current]), .primary-nav a[aria-current] + a:last-child { border-radius: 10px; }
 .primary-nav a:hover { background: var(--accent-soft); }
 .primary-nav a[aria-current] {
-  margin-inline: 5px;
-  border-radius: 999px;
+  border-radius: 8px;
   background: var(--accent-soft);
-  color: var(--accent);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 25%, transparent);
-  transform: translateY(-2px);
+  color: var(--ink);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent);
 }
 .primary-nav a:focus-visible { position: relative; z-index: 1; }
 

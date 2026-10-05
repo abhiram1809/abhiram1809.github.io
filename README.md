@@ -20,8 +20,8 @@ for the scene plan, source, and reproducible media exports.
 The navigation and article details are original, dependency-free implementations
 inspired by [Rare UI](https://www.rareui.com/):
 
-- [Gooey Nav](https://www.rareui.com/components/gooeynav): a softly separated
-  current navigation item, adapted to the portfolio header and mobile menu.
+- [Gooey Nav](https://www.rareui.com/components/gooeynav): a subtle current-section
+  pill, adapted to the portfolio header and mobile menu.
 - [Scroll Progress](https://www.rareui.com/components/scrollprogressindicator): an
   article progress ring with a collapsible section index.
 - [Code Block](https://www.rareui.com/components/codeblock): an accent-colored
@@ -32,5 +32,19 @@ existing theme tokens, support all five site languages, retain semantic links
 and selectable code, and honor reduced-motion preferences. Source content
 remains readable without JavaScript.
 
-Decorative orbs, gravity letters, app sidebars, and input widgets were left out:
-the portfolio benefits most from clear navigation and readable engineering notes.
+## Themes and home-page motion
+
+The shared palette uses black and charcoal with orange borders and motion in dark
+mode, and warm light gray, beige, and gray in light mode. Browser chrome and the
+saved theme preference stay synchronized across the portfolio and blog pages.
+
+`home-motion.css` and `home-motion.js` load only on the home page. A faint glow
+and dot grid follow a fine pointer with easing; rendering stops once settled,
+when the pointer leaves, or when the tab is hidden. Touch pointers and reduced
+motion disable the background. The experience timeline fills between role
+markers as you scroll and reveals each role's labeled technology icons. Its
+content is readable without JavaScript and under reduced-motion preferences.
+
+Technology logos reuse the local toolkit SVG sprite. Capability icons in
+`experience-icons.svg` illustrate the labels already listed for each role; they
+do not add claims about tools used during those periods.

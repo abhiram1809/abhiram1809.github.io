@@ -65,7 +65,7 @@
   const updateThemeControl = (theme) => {
     const actionLabel = theme === 'dark' ? messages[currentLanguage].light : messages[currentLanguage].dark;
     document.documentElement.dataset.theme = theme;
-    if (themeMeta) themeMeta.content = theme === 'light' ? '#f5f2ea' : '#0b1020';
+    if (themeMeta) themeMeta.content = theme === 'light' ? '#f2f1ee' : '#0c0c0c';
     if (!themeButton) return;
     themeButton.setAttribute('aria-label', actionLabel);
     themeButton.setAttribute('title', actionLabel);
