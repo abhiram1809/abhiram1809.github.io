@@ -35,8 +35,9 @@ remains readable without JavaScript.
 ## Themes and home-page motion
 
 The shared palette uses black and charcoal with orange borders and motion in dark
-mode, and warm light gray, beige, and gray in light mode. Browser chrome and the
-saved theme preference stay synchronized across the portfolio and blog pages.
+mode, and light gray surfaces, beige accents, and gray text in light mode.
+Browser chrome and the saved theme preference stay synchronized across the
+portfolio and blog pages.
 
 `home-motion.css` and `home-motion.js` load only on the home page. A faint glow
 and dot grid follow a fine pointer with easing; rendering stops once settled,

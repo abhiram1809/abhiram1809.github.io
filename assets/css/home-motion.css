@@ -5,7 +5,7 @@
 .pointer-glow{background:radial-gradient(circle,color-mix(in srgb,var(--accent) 8%,transparent),transparent 68%)}
 .pointer-grid{background-image:radial-gradient(color-mix(in srgb,var(--accent) 42%,transparent) .8px,transparent .8px);background-size:32px 32px;mask-image:radial-gradient(circle,black,transparent 65%)}
 .home-atmosphere.is-tracking .pointer-glow,.home-atmosphere.is-tracking .pointer-grid{opacity:1}
-:root[data-theme="light"] .pointer-glow{background:radial-gradient(circle,rgba(170,151,120,.13),transparent 68%)}
+:root[data-theme="light"] .pointer-glow{background:radial-gradient(circle,rgba(170,151,120,.065),transparent 68%)}
 [data-home] .hero::before{display:none}
 [data-home] .hero{padding-top:clamp(72px,9vw,120px);padding-bottom:72px}
 [data-home] .hero-grid{grid-template-columns:minmax(0,1.3fr) minmax(300px,.7fr);gap:clamp(44px,6vw,88px)}
@@ -44,3 +44,21 @@
 @media(max-width:690px){[data-home] .hero{padding-top:54px;padding-bottom:48px}[data-home] .hero-grid{grid-template-columns:1fr;gap:36px}[data-home] h1{font-size:clamp(2.9rem,11.5vw,4.4rem);max-width:13ch}[data-home] .hero-evidence{justify-self:start;max-width:100%}[data-home] .portrait-frame img{height:300px;object-position:center 30%}[data-home] .lede{font-size:1rem}[data-home] .availability{font-size:.86rem}.timeline-item{grid-template-columns:1fr;gap:20px;padding:30px 0 32px 27px}.timeline-meta{grid-template-columns:1fr;gap:6px}.timeline-item::before{top:35px}.timeline::before,.timeline::after{top:40px}.timeline .tags{gap:6px}.timeline .tags span{padding-inline:8px}.timeline article ul{font-size:.9rem}}
 @media(hover:none),(pointer:coarse){.home-atmosphere{display:none}}
 @media(prefers-reduced-motion:reduce){.home-atmosphere{display:none}.js .timeline-item.reveal article,.js .timeline-item.reveal .timeline-meta,.js .timeline-item .tags span{opacity:1;transform:none}.timeline::after{transform:none;opacity:.3}}
+
+/* A lighter editorial balance, scoped so dark mode retains its composition. */
+:root[data-theme="light"] [data-home] .hero{padding-block:clamp(64px,7.5vw,96px)}
+:root[data-theme="light"] [data-home] h1{max-width:none;font-size:clamp(3rem,5vw,4.8rem);font-weight:600;line-height:1.08;letter-spacing:-.045em}
+:root[data-theme="light"] [data-home] .hero-grid{grid-template-columns:minmax(0,1.25fr) minmax(300px,.75fr);gap:clamp(40px,6vw,80px)}
+:root[data-theme="light"] [data-home] .hero-evidence{max-width:380px;padding:12px;border:1px solid #d9d2c6;border-radius:20px;background:#e9e3d8;box-shadow:0 16px 32px rgba(48,48,37,.055)}
+:root[data-theme="light"] [data-home] .portrait-frame{min-height:0;border:0;border-radius:11px;background:#f6f3ec;box-shadow:none}
+:root[data-theme="light"] [data-home] .portrait-frame img{height:340px;filter:saturate(.65) contrast(1.01);object-position:center 24%}
+:root[data-theme="light"] [data-home] .portrait-frame::after{display:none}
+:root[data-theme="light"] [data-home] .portrait-frame p{position:static;margin:0;padding:15px 8px;text-align:center;color:#5c5d55;font-size:.62rem;letter-spacing:.09em;font-weight:600;line-height:1.5}
+:root[data-theme="light"] [data-home] .lede{max-width:52ch;margin-bottom:28px;font-size:1.06rem;color:var(--body-copy)}
+:root[data-theme="light"] [data-home] .availability{margin:0 0 28px;padding-left:14px;border-left:2px solid #c5b79e;font-size:.87rem;line-height:1.7}
+:root[data-theme="light"] [data-home] .hero-facts{max-width:580px;margin-top:36px;border-color:#d3d8d2}
+:root[data-theme="light"] [data-home] .timeline .tags span{background:#eeeae2;border-color:#dfd8cb;color:#515952}
+:root[data-theme="light"] [data-home] .timeline .tags svg{color:#60695f}
+:root[data-theme="light"] .home-atmosphere.is-tracking .pointer-grid{opacity:.32}
+@media(max-width:900px) and (min-width:691px){:root[data-theme="light"] [data-home] .hero-grid{grid-template-columns:minmax(0,1.2fr) minmax(230px,.8fr);gap:28px}:root[data-theme="light"] [data-home] h1{font-size:clamp(2.6rem,5.7vw,3.9rem)}:root[data-theme="light"] [data-home] .portrait-frame img{height:310px}}
+@media(max-width:690px){:root[data-theme="light"] [data-home] .hero{padding-block:48px}:root[data-theme="light"] [data-home] .hero-grid{grid-template-columns:1fr;gap:32px}:root[data-theme="light"] [data-home] h1{font-size:clamp(2.65rem,10.5vw,3.8rem);line-height:1.1}:root[data-theme="light"] [data-home] .hero-evidence{max-width:380px}:root[data-theme="light"] [data-home] .portrait-frame img{height:300px}:root[data-theme="light"] [data-home] .lede{font-size:1rem}}
