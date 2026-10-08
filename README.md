@@ -39,11 +39,15 @@ mode, and light gray surfaces, beige accents, and gray text in light mode.
 Browser chrome and the saved theme preference stay synchronized across the
 portfolio and blog pages.
 
-`home-motion.css` and `home-motion.js` load only on the home page. A faint glow
-and dot grid follow a fine pointer with easing; rendering stops once settled,
-when the pointer leaves, or when the tab is hidden. Touch pointers and reduced
-motion disable the background. The experience timeline fills between role
-markers as you scroll and reveals each role's labeled technology icons. Its
+`home-motion.css` and `home-motion.js` load only on the home page. An elastic
+point lattice responds to a fine pointer and sends out ripples on clicks. Canvas
+resolution and node count are bounded, connections use adjacent nodes, and
+rendering stops once the field settles or the tab is hidden. Touch pointers and
+reduced motion disable the background and release its canvas backing store.
+Both themes share the hero layout, portrait mat, crop, and unfiltered photo;
+switching themes changes the palette without moving or recoloring the portrait.
+
+The experience timeline fills between role markers as you scroll and reveals each role's labeled technology icons. Its
 content is readable without JavaScript and under reduced-motion preferences.
 
 Technology logos reuse the local toolkit SVG sprite. Capability icons in
