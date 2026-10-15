@@ -15,6 +15,10 @@ includes four Manim scenes with playback controls, reduced-motion posters, and
 English/Hulk Speak captions. See [rendering instructions](animations/paged-attention/README.md)
 for the scene plan, source, and reproducible media exports.
 
+The RX 560X article includes three original Manim GIFs covering memory residency,
+independent batching, and signed-zero exactness. Each has a pause control and
+static reduced-motion/no-JavaScript poster. See [source and rendering instructions](animations/legacy-hardware/README.md).
+
 ## UI design references
 
 The navigation and article details are original, dependency-free implementations

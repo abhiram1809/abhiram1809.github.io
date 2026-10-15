@@ -1,0 +1,190 @@
+{
+  "description": "Selected fields from local RX 560X experimental artifacts, transcribed for this article. Not a new benchmark run or a claim for upstream PR #101. Full local raw artifacts are not included.",
+  "published_date": "2026-10-15",
+  "model": {
+    "id": "mlx-community/Qwen3.5-2B-MLX-4bit",
+    "revision": "93760be4f1f69842a46bc13dbdc0f19e291392a3",
+    "safetensors_sha256": "713fe7e5d3c3965f7106b0d0ee17615f7869c23c8d327996df8c1196fbcf07d5"
+  },
+  "latest_experimental_run": {
+    "source_file": "batch128-embed-gpu-source56.json",
+    "source_sha256": "80ef5d8f26eba33666f92aba3e1ba967533fd201a4440bbdb10dad18e407f56d",
+    "utc_timestamp": "2026-10-14T14:19:58Z",
+    "recorded_revision": {
+      "head": "7c5cbba54656d9e5ec9fa8875c9c6727786ed794",
+      "dirty_status": "M build.rs\n M scripts/compile_shaders.sh\n M src/device.rs\n M src/pipeline.rs\n M src/qwen35_batch.rs\n?? shaders/q35_embed_mlx4.comp",
+      "diff_sha256": "0b8cac383bc513ce5ba3ef2688ce080c2ccdbeff20b84322dbb51414f795f265"
+    },
+    "subsequently_saved_checkpoint": "8326bcf",
+    "extension_sha256": "8487f913db74c3ecfea6bf1b409a9e845b541547d5090d7ea082bfa6e98317f1",
+    "config_sha256": "beb7fc5a6e0405fe332821cf1a8ef7b69bb390a8c8933171647de5579debf949",
+    "device_info": {
+      "name": "AMD Radeon RX 560 Series (RADV POLARIS11)",
+      "vendor_id": 4098,
+      "device_type": "discrete",
+      "api_version": "1.4.354",
+      "driver_version": 109060097,
+      "total_memory_bytes": 4294967296
+    },
+    "batch_size": 128,
+    "prompt_lengths": [
+      16,
+      24,
+      32
+    ],
+    "decode_steps": 8,
+    "warmup": 1,
+    "repeat": 3,
+    "greedy_only": true,
+    "compact_linear_state": true,
+    "runtime_environment": {
+      "VLLM_VULKAN_ATTN": "sg",
+      "VLLM_VULKAN_DENSE_Q4_RESIDENT": "1",
+      "VLLM_VULKAN_DEVICE_WEIGHTS": "1",
+      "VLLM_VULKAN_GEMM_DEVICE_ACTS": "1",
+      "VLLM_VULKAN_GEMM_F16ALIGNED": "0",
+      "VLLM_VULKAN_GEMM_GROUP64": "1",
+      "VLLM_VULKAN_GEMM_HEAD128": "1",
+      "VLLM_VULKAN_GEMM_HEAD_REG32": "1",
+      "VLLM_VULKAN_GEMM_NO_BOUNDS": "1",
+      "VLLM_VULKAN_GEMM_POLARIS": "1",
+      "VLLM_VULKAN_GEMM_PREFETCH": "1",
+      "VLLM_VULKAN_GEMM_PREFETCH8": "0",
+      "VLLM_VULKAN_GEMM_QUANT": "1",
+      "VLLM_VULKAN_GEMM_SPLIT_K": "1",
+      "VLLM_VULKAN_MLX4_BF16_SCALES": "1",
+      "VLLM_VULKAN_MLX4_POLARIS_GEOM": "1",
+      "VLLM_VULKAN_PROFILE": "0",
+      "VLLM_VULKAN_Q35_ATTN_SPLIT": "1",
+      "VLLM_VULKAN_Q35_BATCH_ATTN_PREPARE": "1",
+      "VLLM_VULKAN_Q35_BATCH_COLS": "1",
+      "VLLM_VULKAN_Q35_BATCH_EMBED_GPU": "1",
+      "VLLM_VULKAN_Q35_BATCH_FULL_GPU": "1",
+      "VLLM_VULKAN_Q35_BATCH_GDN": "1",
+      "VLLM_VULKAN_Q35_BATCH_HEAD_PARTIAL": "1",
+      "VLLM_VULKAN_Q35_BATCH_INDEPENDENT_PROJECTIONS": "1",
+      "VLLM_VULKAN_Q35_BATCH_KV": "1",
+      "VLLM_VULKAN_Q35_BATCH_KV_SLABS": "1",
+      "VLLM_VULKAN_Q35_BATCH_LINEAR_FUSED": "1",
+      "VLLM_VULKAN_Q35_BATCH_NATIVE_KV": "1",
+      "VLLM_VULKAN_Q35_BATCH_VRAM_PERCENT": "98",
+      "VLLM_VULKAN_Q35_DENSE_1CB": "1",
+      "VLLM_VULKAN_Q35_EMBED_FAST64": "1",
+      "VLLM_VULKAN_Q35_EMBED_PACKED": "1",
+      "VLLM_VULKAN_Q35_FULL_GPU": "1",
+      "VLLM_VULKAN_Q35_GDN_KERNEL": "conv_k2",
+      "VLLM_VULKAN_Q35_GDN_SCAN_KERNEL": "conv_k1",
+      "VLLM_VULKAN_Q35_GREEDY_FUSED": "1",
+      "VLLM_VULKAN_Q35_GREEDY_GPU": "1",
+      "VLLM_VULKAN_Q35_LMHEAD_PACKED": "1",
+      "VLLM_VULKAN_Q35_PREFILL_FULL_GPU": "1",
+      "VLLM_VULKAN_Q35_SEGMENTS": "1",
+      "VLLM_VULKAN_Q35_STATE_VRAM": "1",
+      "VLLM_VULKAN_Q35_TRUE_VRAM": "1",
+      "VLLM_VULKAN_Q35_TSTAMP": "0",
+      "VLLM_VULKAN_QWEN35_GPU": "1",
+      "VLLM_VULKAN_QWEN35_PREFILL_COLS": "0",
+      "VLLM_VULKAN_QWEN35_RESIDENT": "1",
+      "VLLM_VULKAN_SPEC_ATTN_FLASH": "0"
+    },
+    "verification_passed": true,
+    "measurements": [
+      {
+        "batch_size": 128,
+        "decode_steps_per_sequence": 8,
+        "counted_output_tokens": 1024,
+        "decode_seconds": 3.237461606,
+        "aggregate_tokens_per_second": 316.29718730940834,
+        "untimed_prompt_setup_seconds": 12.536699191,
+        "prompt_setup_begin_unix": 1791987768.5818398,
+        "prompt_setup_end_unix": 1791987781.1185453,
+        "decode_begin_unix": 1791987781.1186292,
+        "decode_end_unix": 1791987784.356093,
+        "generated_ids_sha256": "0518e9c4a4962c7984fe223f44763be5e7f3cd16f6d29b13f35186b0106faf0c"
+      },
+      {
+        "batch_size": 128,
+        "decode_steps_per_sequence": 8,
+        "counted_output_tokens": 1024,
+        "decode_seconds": 3.234360385,
+        "aggregate_tokens_per_second": 316.60046442227247,
+        "untimed_prompt_setup_seconds": 12.533894964,
+        "prompt_setup_begin_unix": 1791987784.45202,
+        "prompt_setup_end_unix": 1791987796.9859192,
+        "decode_begin_unix": 1791987796.9859672,
+        "decode_end_unix": 1791987800.220329,
+        "generated_ids_sha256": "0518e9c4a4962c7984fe223f44763be5e7f3cd16f6d29b13f35186b0106faf0c"
+      },
+      {
+        "batch_size": 128,
+        "decode_steps_per_sequence": 8,
+        "counted_output_tokens": 1024,
+        "decode_seconds": 3.231837323,
+        "aggregate_tokens_per_second": 316.84763113307235,
+        "untimed_prompt_setup_seconds": 12.512975013,
+        "prompt_setup_begin_unix": 1791987800.3164613,
+        "prompt_setup_end_unix": 1791987812.8294396,
+        "decode_begin_unix": 1791987812.8294823,
+        "decode_end_unix": 1791987816.0613215,
+        "generated_ids_sha256": "0518e9c4a4962c7984fe223f44763be5e7f3cd16f6d29b13f35186b0106faf0c"
+      }
+    ],
+    "median_aggregate_tokens_per_second": 316.60046442227247,
+    "median_per_sequence_tokens_per_second": 2.4734411282990036,
+    "timing_notes": [
+      "Prompt setup, reset, model load and correctness checks are excluded from decode timing.",
+      "Aggregate throughput counts B*steps actual per-slot forward/argmax outputs.",
+      "Each slot has its own unequal-length prompt, convolution, recurrent state, KV and position.",
+      "Per-sequence latency is observed at synchronous batch return; individual GPU row completion is unobserved.",
+      "Single-sequence logit oracle uses identical teacher-forced inputs; inactive slots are parked then resumed.",
+      "Slot0 reset/reseed checks that all other live sequence states remain unchanged.",
+      "Rust greedy argmax excludes B*vocab logit marshalling from the timed API.",
+      "EOS does not end the fixed-step workload; reported throughput is not prompt throughput."
+    ],
+    "max_seq_len": 48
+  },
+  "other_observations": [
+    {
+      "source_file": "baseline.json",
+      "source_sha256": "30a484bdce9a5a4415f6e4828cfb75d798174f9bed4857285938028fdfad324b",
+      "reported_tokens_per_second": 23.825,
+      "scope": "historical single-stream decode before normalization correction"
+    },
+    {
+      "source_file": "canonical-final-prompt64.json",
+      "source_sha256": "91c947d9cd5f0af817384897fd77a6e11d269bcadae016c0973896aa19cc7a99",
+      "reported_tokens_per_second": 58.08,
+      "scope": "canonical single-stream decode, prompt64"
+    },
+    {
+      "source_file": "prefill-native-selection-128.json",
+      "source_sha256": "cc6b0f07c3a8a00345ccb54bbcf2b8c90bb7fd4c737f13e63aa34cd544f7f7ef",
+      "reported_tokens_per_second": 350.105,
+      "scope": "prompt128 prefill with native first-token selection"
+    },
+    {
+      "source_file": "batch-canonical-final.json",
+      "source_sha256": "a5b7b2fac9355daa0a3ffe7c5b67e1cf822fd5a27ae41a2722f2b0af333452f2",
+      "reported_tokens_per_second": 259.632,
+      "scope": "canonical batch64 aggregate decode"
+    }
+  ],
+  "portable_pr": {
+    "url": "https://github.com/ericcurtin/vllm-vulkan/pull/101",
+    "merged_date": "2026-10-15",
+    "cpu_embedding_median_speedup": 2.553,
+    "embedding_values_bit_identical": 508559360,
+    "cpu_suite_passed": 300,
+    "vulkan_conformance_passed_per_adapter": 12,
+    "full_model_throughput_measured": false
+  },
+  "limitations": [
+    "Historical checkpoints differ in normalization, APIs, workload and flags. They are observations, not a controlled cumulative speedup series.",
+    "316.600 is aggregate across 128 short-context sequences, not single-user output speed.",
+    "Theoretical hardware boundary remains unproven."
+  ],
+  "source_document_hashes": {
+    "RX560X_PROGRESS.md": "84b7729149774d0b88f233703c5990cbb740a6a0dd188ec10f5bf0506a1871f8",
+    "portable-vulkan-optimizations/docs/general-optimizations.md": "e557e56e581e196324fe89ff85f75719b0b198636876887db02202b0efca2ac5"
+  }
+}

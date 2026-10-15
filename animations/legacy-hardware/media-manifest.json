@@ -1,0 +1,57 @@
+{
+  "renderer": "Manim Community 0.21.0",
+  "font": "Kalam (existing repository assets)",
+  "scenes": {
+    "MemoryResidency": {
+      "duration_seconds": 14.458008,
+      "width": 800,
+      "height": 534,
+      "gif_fps": 12,
+      "poster_time_seconds": 8.5,
+      "files": {
+        "memory-residency.gif": {
+          "bytes": 1719210,
+          "sha256": "aeefc341973b0a54f7c7236bd11bf3eb59585ee6ce70d6b6d7a0c59cbfab980e"
+        },
+        "memory-residency-still.webp": {
+          "bytes": 33726,
+          "sha256": "afd59c9be8a0dd02e8a0d9ea73cffcaed139df47ee083a4e225311738667246e"
+        }
+      }
+    },
+    "IndependentBatch": {
+      "duration_seconds": 12.624349,
+      "width": 800,
+      "height": 534,
+      "gif_fps": 12,
+      "poster_time_seconds": 9,
+      "files": {
+        "independent-batch.gif": {
+          "bytes": 1885668,
+          "sha256": "2c5b090b2c11c8229b5884b6dced3ad5d316a32f2aa1550b4c7e8105705025ff"
+        },
+        "independent-batch-still.webp": {
+          "bytes": 34950,
+          "sha256": "87fe4894a49207a316cb76df02b86f137625c9161cd272907ff307b2bab2249a"
+        }
+      }
+    },
+    "SignedZero": {
+      "duration_seconds": 12.583333,
+      "width": 800,
+      "height": 534,
+      "gif_fps": 12,
+      "poster_time_seconds": 8.8,
+      "files": {
+        "signed-zero.gif": {
+          "bytes": 1901203,
+          "sha256": "908b372927d0cf7719dbf89059fc64408729b6c2be4a259f1184ffc028ae60d6"
+        },
+        "signed-zero-still.webp": {
+          "bytes": 35994,
+          "sha256": "d04f6777e404e0db3149d6ca30f0518899183d73d5fd154fd2edfebd8de1e02b"
+        }
+      }
+    }
+  }
+}

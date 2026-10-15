@@ -1,0 +1,12 @@
+.legacy-table-wrap{margin:32px 0;overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+.legacy-table{width:100%;border-collapse:collapse;text-align:left;font-size:.88rem;line-height:1.55}
+.legacy-table caption{padding:18px;text-align:left;color:var(--muted);font-size:.85rem}
+.legacy-table th,.legacy-table td{padding:16px;border-top:1px solid var(--line);vertical-align:top}
+.legacy-table thead th{color:var(--accent);font-family:var(--mono);font-size:.72rem;text-transform:uppercase}
+.legacy-table tbody th{color:var(--ink);font-weight:650;min-width:150px}
+.legacy-table td:nth-child(2){min-width:140px;color:var(--ink)}
+.legacy-table td:last-child{min-width:180px}
+.legacy-table-wrap:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+
+.legacy-animation img{aspect-ratio:800/534;object-fit:contain}
+.legacy-animation picture{background:#171717}

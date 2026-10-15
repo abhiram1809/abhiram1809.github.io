@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en" data-theme="dark" data-language="en" data-blog>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="The RX 560X journey: VRAM surprises, Vulkan kernels, exactness bugs, 316.60 aggregate tokens/s, and a merged upstream contribution.">
+    <meta name="theme-color" content="#0c0c0c">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://abhiram1809.github.io/blogs/pushing-legacy-hardware/">
+    <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="../../assets/img/R.png">
+    <title>Pushing the limits of legacy hardware | Abhiram Sharma</title>
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://abhiram1809.github.io/blogs/pushing-legacy-hardware/">
+    <meta property="og:title" content="Pushing the limits of legacy hardware">
+    <meta property="og:description" content="The RX 560X journey: VRAM surprises, Vulkan kernels, exactness bugs, 316.60 aggregate tokens/s, and a merged upstream contribution.">
+    <meta property="og:image" content="https://abhiram1809.github.io/assets/img/og-portfolio.png">
+    <meta property="article:published_time" content="2026-09-25">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Pushing the limits of legacy hardware">
+    <meta name="twitter:description" content="The RX 560X journey: VRAM surprises, Vulkan kernels, exactness bugs, 316.60 aggregate tokens/s, and a merged upstream contribution.">
+    <meta name="twitter:image" content="https://abhiram1809.github.io/assets/img/og-portfolio.png">
+    <script>
+      (() => {
+        const root = document.documentElement;
+        root.classList.add('js');
+        let theme = 'dark';
+        try {
+          if (localStorage.getItem('portfolio-theme') === 'light') theme = 'light';
+          const language = localStorage.getItem('blog-language') || localStorage.getItem('portfolio-language');
+          if (['en', 'de', 'fr', 'es', 'nl', 'hulk'].includes(language)) {
+            root.lang = language === 'hulk' ? 'en' : language;
+            root.dataset.language = language;
+          }
+        } catch {}
+        root.dataset.theme = theme;
+        document.querySelector('meta[name="theme-color"]').content = theme === 'light' ? '#f5f6f5' : '#0c0c0c';
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/css/style.css?v=22">
+    <script src="../../assets/js/i18n.js?v=2" defer></script>
+    <script src="../../assets/js/blog-hulk.js?v=4" defer></script>
+    <link rel="stylesheet" href="../../assets/css/blog-reading.css?v=2">
+    <link rel="stylesheet" href="../../assets/css/legacy-hardware.css?v=2">
+    <script src="../../assets/js/main.js?v=14" defer></script>
+    <link rel="stylesheet" href="../../assets/css/ui-details.css?v=3">
+    <script src="../../assets/js/ui-details.js?v=2" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#article-content">Skip to article</a>
+    <header class="site-header" data-header>
+      <div class="shell nav-shell">
+        <a class="wordmark" href="../../" aria-label="Abhiram Sharma home">AS<span>.</span></a>
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" data-menu-toggle>
+          <span class="sr-only">Open navigation</span><span aria-hidden="true"></span><span aria-hidden="true"></span>
+        </button>
+        <nav class="primary-nav" id="primary-nav" aria-label="Primary navigation" data-nav>
+          <a href="../../#experience">Experience</a><a href="../../#work">Work</a><a href="../../#skills">Toolkit</a><a href="../../#about">About</a><a href="../../#contact">Contact</a>
+        </nav>
+        <div class="display-controls">
+        <button class="theme-toggle" type="button" aria-label="Switch to light theme" title="Switch to light theme" data-theme-toggle>
+          <span class="sr-only">Switch to light theme</span>
+          <svg class="theme-icon theme-icon-sun" aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <circle cx="12" cy="12" r="3.5"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"></path>
+          </svg>
+          <svg class="theme-icon theme-icon-moon" aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7Z"></path>
+          </svg>
+        </button>
+        <div class="language-picker" data-language-picker>
+          <button class="language-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="language-menu" aria-label="Language: English" data-language-toggle>
+            <span class="language-flag" aria-hidden="true" data-current-flag>🇬🇧</span>
+            <span class="language-trigger-copy"><span data-current-language>English</span><small data-current-code>EN</small></span>
+            <svg class="language-chevron" aria-hidden="true" viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m6 8 4 4 4-4"></path></svg>
+          </button>
+          <div class="language-menu" id="language-menu" role="listbox" aria-label="Language" data-language-menu hidden>
+            <button class="language-option" type="button" role="option" aria-selected="true" data-language-option="en"><span class="language-flag" aria-hidden="true">🇬🇧</span><span><strong>English</strong><small>United Kingdom</small></span><span class="language-check" aria-hidden="true">✓</span></button>
+            <button class="language-option" type="button" role="option" aria-selected="false" data-language-option="de"><span class="language-flag" aria-hidden="true">🇩🇪</span><span><strong>Deutsch</strong><small>Deutschland</small></span><span class="language-check" aria-hidden="true">✓</span></button>
+            <button class="language-option" type="button" role="option" aria-selected="false" data-language-option="fr"><span class="language-flag" aria-hidden="true">🇫🇷</span><span><strong>Français</strong><small>France</small></span><span class="language-check" aria-hidden="true">✓</span></button>
+            <button class="language-option" type="button" role="option" aria-selected="false" data-language-option="es"><span class="language-flag" aria-hidden="true">🇪🇸</span><span><strong>Español</strong><small>España</small></span><span class="language-check" aria-hidden="true">✓</span></button>
+            <button class="language-option" type="button" role="option" aria-selected="false" data-language-option="nl"><span class="language-flag" aria-hidden="true">🇳🇱</span><span><strong>Nederlands</strong><small>Nederland</small></span><span class="language-check" aria-hidden="true">✓</span></button>
+            <button class="language-option" type="button" role="option" aria-selected="false" data-language-option="hulk"><span class="language-flag" aria-hidden="true"><img src="../../assets/img/hulk-face.svg" width="24" height="24" alt=""></span><span><strong>Hulk Speak</strong><small>Short sentences. Fast reading.</small></span><span class="language-check" aria-hidden="true">✓</span></button>
+          </div>
+        </div>
+        </div>
+        <a class="nav-cv" href="../../assets/Abhiram-Sharma-CV.pdf" target="_blank" rel="noopener" aria-label="View CV">View CV <span aria-hidden="true">↗</span></a>
+      </div>
+    </header>
+    <main id="article-content" class="article-main">
+      <header id="article-introduction" class="article-hero"><div class="article-shell reveal">
+        <a class="button-link article-back" href="../"><span aria-hidden="true">←</span> All notes</a>
+        <p class="eyebrow">Vulkan · Inference engineering · Open source</p>
+        <h1>Pushing the limits of legacy hardware.</h1>
+        <p class="article-dek">An RX 560X, 4 GiB of VRAM, and a long road from profiling surprises to a merged vllm-vulkan contribution.</p>
+        <div class="article-meta"><time datetime="2026-10-15">October 15, 2026</time><span>14 min read</span></div>
+        <div class="article-actions"><a class="button button-primary" href="https://github.com/ericcurtin/vllm-vulkan/pull/101" target="_blank" rel="noopener">View merged PR #101 <span aria-hidden="true">↗</span></a><a class="button button-secondary" href="#results">Explore the results <span aria-hidden="true">↓</span></a></div>
+      </div></header>
+      <article class="article-body article-shell">
+        <p class="article-lead">I wanted to find out how much useful LLM inference I could get out of the GPU I already had: an AMD Radeon RX 560X with 4 GiB of VRAM. The challenge was to push Qwen3.5-2B through vllm-vulkan, implement the missing execution paths, and keep measuring until I could explain what was holding it back.</p>
+        <p>The work stretched across memory placement, quantized matrix kernels, recurrent state, attention, batching, CPU overhead, and floating-point edge cases. I used Codex throughout the investigation, with reference implementations, saved benchmark artifacts, and repeated hardware measurements deciding which changes survived. On October 15, 2026, the portable part of that work landed upstream in <a href="https://github.com/ericcurtin/vllm-vulkan/pull/101">vllm-vulkan PR #101</a>.</p>
+        <aside class="article-callout"><strong>Two outcomes, with different scopes.</strong><p>The experimental RX 560X branch reached 316.60 aggregate decode tokens/s across 128 short-context sequences. The merged PR contains portable runtime fixes and a measured 2.55× CPU embedding-decoding speedup. Full-model throughput was not measured for that PR branch.</p></aside>
+
+        <h2 id="the-machine">Start with the machine that actually exists</h2>
+        <p>The driver identified the discrete GPU as RADV Polaris11. A read-only kernel/libdrm query reported 14 active compute units, even though using a nominal 16-unit RX 560 specification would have made the theoretical numbers look better. This adapter had no FP16 arithmetic available to the tested runtime, so the model ran with FP32 arithmetic and packed INT4 weights.</p>
+        <p>I pinned <a href="https://huggingface.co/mlx-community/Qwen3.5-2B-MLX-4bit/tree/93760be4f1f69842a46bc13dbdc0f19e291392a3">the MLX 4-bit Qwen3.5-2B checkpoint</a>, kept its group-64 affine codes, and reused its tied embedding/output matrix. BF16 scale and bias storage was allowed only when the coefficients were exactly representable. This was text inference; the vision path was outside the benchmark.</p>
+        <div class="article-system-map" aria-label="Experimental hardware and workload">
+          <div><span>HARDWARE</span><strong>RX 560X · 4 GiB</strong><p>14 active compute units; RADV Polaris11.</p></div>
+          <div><span>EXECUTION</span><strong>INT4 weights · FP32 math</strong><p>Group-64 packed codes and verified affine coefficients.</p></div>
+          <div><span>BEST BATCH OBSERVATION</span><strong>316.60 aggregate tokens/s</strong><p>128 independent sequences; short context; greedy decode.</p></div>
+          <div><span>UPSTREAM</span><strong>PR #101 merged</strong><p>Portable CPU and Vulkan runtime improvements.</p></div>
+        </div>
+
+        <h2 id="memory-placement">The first big win was hiding in memory placement</h2>
+        <p>The initial single-stream decode measurement was 23.825 tokens/s. Profiling later showed recurrent-layer processing consuming roughly 9 ms per token. Fusing convolution, normalization, and GatedDeltaNet recurrence looked promising, but isolated kernel timings failed to explain why the full model was so much slower.</p>
+        <p>I tested warm-cache assumptions, deliberately evicted state, captured real model inputs, and replayed them in a fresh Vulkan context. The same recurrent update took about 0.041 ms in the replay and 0.506 ms inside the loaded model. That pointed the investigation toward the runtime around the kernel.</p>
+        <p>DRM fdinfo supplied the missing evidence: roughly 33 MB requested as VRAM was actually resident in system memory. The allocation's device-local, host-visible, host-coherent flags had not established physical residency. Those buffers were crossing a very different memory path from the one the microbenchmark exercised.</p>
+        <div class="article-system-map" aria-label="Memory residency investigation">
+          <div><span>OBSERVED PROBLEM</span><strong>Requested VRAM ≠ resident VRAM</strong><p>Mapped allocations spilled into GTT/system memory inside the model.</p></div>
+          <div><span>VERIFIED CHANGE</span><strong>Explicit VRAM + CPU mirrors</strong><p>Unmapped GPU buffers, synchronized copies, and residency telemetry.</p></div>
+        </div>
+        <p>Explicit unmapped VRAM and synchronized CPU mirrors brought requested and resident totals into agreement. Recurrent GPU time fell from about 9 ms to 0.8 ms per token. One early run reached 59.546 tokens/s.</p>
+        <p>Then prefix restoration failed. Ordinary generation was correct, but prefix export serialized a stale CPU mirror of the recurrent state. Refreshing the mirror from VRAM fixed the lifecycle path. All 54 reset/import comparisons passed, including replacing a different prefix at the same length. The corrected build measured 56.117 tokens/s in its later session; I kept the earlier 59.546 result labeled as an observation from the build with the prefix bug.</p>
+
+        <figure class="article-animation legacy-animation" data-article-animation>
+          <picture>
+            <source media="all" srcset="../../assets/media/legacy-hardware/memory-residency-still.webp">
+            <img id="memory-residency-animation" src="../../assets/media/legacy-hardware/memory-residency-still.webp" data-animation-src="../../assets/media/legacy-hardware/memory-residency.gif" data-still-src="../../assets/media/legacy-hardware/memory-residency-still.webp" width="800" height="534" loading="lazy" decoding="async" alt="Recurrent state moves from system RAM to RX 560X VRAM, with a synchronized CPU mirror.">
+          </picture>
+          <figcaption>A schematic of the residency fix: recurrent state moves from system memory into explicit VRAM, while the CPU mirror is refreshed before prefix export. Historical recurrent GPU time fell from about 9 to 0.8 ms per token; the blocks do not encode allocation sizes.</figcaption>
+          <button class="animation-toggle" type="button" data-animation-toggle aria-controls="memory-residency-animation" aria-pressed="true" hidden>Pause / resume animation</button>
+        </figure>
+
+        <h2 id="correctness">Correctness had to reach beyond plausible text</h2>
+        <p>A model producing readable text was too weak a test. I compared full logits against an independent Transformers FP32 implementation of the same quantized checkpoint, and exercised recurrent state, attention caches, positions, masks, reset, prefix import, and switching execution paths.</p>
+        <p>Those comparisons exposed an inherited normalization discrepancy: GatedDeltaNet's L2 epsilon was being added to the mean of squared values instead of their sum. Correcting it changed the reference semantics, so saved prefixes also needed a new fingerprint. The canonical runtime matched all 14 checked Transformers argmax values with maximum relative L2 logit error about 2.81×10⁻⁶.</p>
+        <p>That correction also changed how I reported results. Measurements from before the fix stayed historical. Later canonical results had their own source revision, flags, and numerical checks. A speed table is easier to read when it hides these distinctions, but less useful to anyone trying to reproduce it.</p>
+
+        <h2 id="gpu-graph">Build the execution path, then share the weights</h2>
+        <p>The experiment grew into a complete dense GPU forward path: fused recurrent operations, tiled short-context attention, quantized matrix specializations, device intermediates, and native greedy selection. The principal decode graph recorded all 24 layers into one GPU submission. Full GPU prefill reduced one measured path from 157 submissions to one; native first-token selection later avoided sending the entire vocabulary back through Python.</p>
+        <p>For aggregate throughput, independent batching let sequences reuse one weight set. Each slot kept its own convolution window, recurrent state, KV cache, and position. Tests parked and resumed rows, reset one slot without disturbing its neighbors, and switched between GPU and existing execution paths.</p>
+        <p>Batch 64 reached a canonical unprofiled median of 259.632 aggregate tokens/s. Wider output-head tiles, aligned matrix specializations, split-K work, and validated four-weight prefetching each needed shape checks and matched timing. Increasing the batch size could consume more VRAM and produce worse throughput; it was never an automatic win.</p>
+        <p>The output head offered another memory saving. Greedy decoding only needs the winning vocabulary index, so an optional fused reduction retained tile maxima and original indices. At batch 128, its output temporary fell from 121.25 MiB to about 1.9 MiB. This became an explicit greedy-only API contract: requesting full logits or an unavailable fallback had to fail before changing live state.</p>
+
+        <figure class="article-animation legacy-animation" data-article-animation>
+          <picture>
+            <source media="all" srcset="../../assets/media/legacy-hardware/independent-batch-still.webp">
+            <img id="independent-batch-animation" src="../../assets/media/legacy-hardware/independent-batch-still.webp" data-animation-src="../../assets/media/legacy-hardware/independent-batch.gif" data-still-src="../../assets/media/legacy-hardware/independent-batch-still.webp" width="800" height="534" loading="lazy" decoding="async" alt="Shared packed weights feed independent KV and recurrent states; 316.60 aggregate tokens/s divided across 128 sequences gives about 2.473 per sequence.">
+          </picture>
+          <figcaption>One weight set serves independent sequence states. Four lanes are illustrative. The measured 128-sequence run reached 316.60 aggregate decode tokens/s, about 2.473 per sequence and 404 ms per batch return, at capacity 48 with prompts of 16/24/32 tokens and eight timed decode steps.</figcaption>
+          <button class="animation-toggle" type="button" data-animation-toggle aria-controls="independent-batch-animation" aria-pressed="true" hidden>Pause / resume animation</button>
+        </figure>
+
+        <h2 id="failed-experiments">The attractive ideas that did not win</h2>
+        <p>Several changes passed their numerical checks and still lost on the hardware. XOR shared-memory bank mapping moved a head kernel from 51.637 to 75.934 ms. Padding moved another comparison from 52.011 to 54.504 ms. Driver assembly showed separate LDS reads where the original bank-conflict hypothesis had assumed paired reads; the address transformations added instructions without buying the expected benefit.</p>
+        <p>A compatible half-storage loader used packed integer reads and FP32 expansion because the existing FP16-arithmetic shader could not run on this adapter. It passed the reference checks, but the fastest measured half-storage head was slightly slower than INT4: 48.090 versus 47.938 ms at batch 64. Eight-weight loading, operand preloading, and dense gate/up fusion also delivered small or absent end-to-end gains and stayed experimental.</p>
+        <p>Some large or repeated dispatch experiments triggered graphics-ring timeouts and soft recovery. I bounded benchmark submissions and reran conformance after recovery. The cause remained unresolved; later successful checks did not establish long-run reliability for those larger workloads.</p>
+
+        <h2 id="short-context">Use short context to change the state cost</h2>
+        <p>For short contexts, I implemented an explicit compact FP32 history for GatedDeltaNet: normalized keys, delta vectors, and decay factors instead of the full recurrent matrix. The formulation is mathematically equivalent, but regrouping floating-point operations required fresh error checks. It passed 390 CPU/dense-GPU comparisons through 64 steps, including masks and resumed slots.</p>
+        <p>A matched batch-64 comparison improved from 274.252 to 298.520 aggregate tokens/s with identical generated IDs. At batch 128, capacity 48, and prompts of 16, 24, or 32 tokens, the compact-state checkpoint reached 308.873 aggregate tokens/s. Longer contexts kept the dense representation; the compact implementation's capacity limit was part of its contract.</p>
+        <p>Next came CPU recording overhead. Batched attention preparation removed 762 row dispatches per batch-128 step. Shared KV allocations and batched KV writing/attention decoding removed another 1,524. Together they removed 2,286 dispatches while preserving live row/batched switching. Their matched throughput gains were modest—1.14% and 0.63%—because GPU matrix execution still dominated.</p>
+
+        <h2 id="embedding">Half a billion values, and one negative zero</h2>
+        <p>CPU embedding decoding still allocated an intermediate FP16 vector before producing FP32 values. A direct decoder eliminated that temporary and used shifts and masks for the common four-bit, group-64 layout. It preserved the separate affine operations and the inherited FP16 round-trip. Every one of the checkpoint's 508,559,360 embedding values matched the original decoder bit for bit.</p>
+        <p>The experimental CPU specialization reduced its isolated median decode cost by roughly half. A six-run same-model comparison improved total batch throughput by 1.51%, with clock and GPU-time variation also contributing. That distinction mattered: a large local speedup can have a small whole-model effect.</p>
+        <p>Moving embedding lookup onto the GPU reused the resident tied weights and replaced hidden-vector uploads with token IDs. The stress fixtures then caught a tiny negative coefficient turning into positive zero. Exactness required explicit FP32 denormal, signed-zero, and round-to-nearest-even controls, together with device-property gates and CPU fallbacks.</p>
+        <p>After the fix, both coefficient formats matched all checkpoint values exactly and all 1,968 standalone fixtures passed. A paired full-model comparison improved from 314.769 to 317.010 aggregate tokens/s, primarily through host-side savings. Fresh unprofiled runs produced 316.297, 316.600, and 316.848 tokens/s: a median of 316.600, with identical IDs and matching requested/resident VRAM observations.</p>
+
+        <figure class="article-animation legacy-animation" data-article-animation>
+          <picture>
+            <source media="all" srcset="../../assets/media/legacy-hardware/signed-zero-still.webp">
+            <img id="signed-zero-animation" src="../../assets/media/legacy-hardware/signed-zero-still.webp" data-animation-src="../../assets/media/legacy-hardware/signed-zero.gif" data-still-src="../../assets/media/legacy-hardware/signed-zero-still.webp" width="800" height="534" loading="lazy" decoding="async" alt="CPU negative zero and GPU positive zero have different FP16 sign bits; preservation controls restore the exact CPU result.">
+          </picture>
+          <figcaption>The embedding accessor rounds through FP16, where negative zero is 0x8000 and positive zero is 0x0000. Supported denormal and signed-zero controls preserved the required result. All 508,559,360 checkpoint values matched CPU bits in each coefficient format; unsupported devices retain CPU decoding.</figcaption>
+          <button class="animation-toggle" type="button" data-animation-toggle aria-controls="signed-zero-animation" aria-pressed="true" hidden>Pause / resume animation</button>
+        </figure>
+
+        <h2 id="results">Read the numbers with their workload attached</h2>
+        <div class="legacy-table-wrap" role="region" tabindex="0" aria-label="Measured workloads and scope">
+          <table class="legacy-table"><caption>Selected observations from the local experimental branch</caption><thead><tr><th scope="col">Workload</th><th scope="col">Measured rate</th><th scope="col">Scope</th></tr></thead><tbody>
+            <tr><th scope="row">Initial single-stream decode</th><td>23.825 tokens/s</td><td>Historical baseline, before canonical normalization correction.</td></tr>
+            <tr><th scope="row">Canonical single-stream decode</th><td>58.080 tokens/s</td><td>Prompt 64; median; profiling disabled.</td></tr>
+            <tr><th scope="row">Native prefill + first-token selection</th><td>350.105 prompt tokens/s</td><td>Prompt 128; five repetitions; native selection API.</td></tr>
+            <tr><th scope="row">Canonical batch 64 decode</th><td>259.632 aggregate tokens/s</td><td>Independent sequences; five repetitions; profiling disabled.</td></tr>
+            <tr><th scope="row">Latest compact batch 128 decode</th><td>316.600 aggregate tokens/s</td><td>Capacity 48; prompts 16/24/32; eight decode steps; three repetitions.</td></tr>
+          </tbody></table>
+        </div>
+        <p>At 128 sequences, 316.60 aggregate tokens/s is about 2.473 tokens/s per sequence, or about 404 ms per batch step. It is a short-context throughput result. Loading, tokenization, seeding, reference validation, and warmup were excluded; EOS did not shorten the fixed-step workload. These rows span different source checkpoints and sessions, so they do not form a controlled cumulative speedup comparison.</p>
+        <p>The <a href="../../assets/data/rx560x-results.json">measurement record</a> preserves selected benchmark fields, source-file hashes, checkpoint identity, and timing notes. The experimental source checkpoint was saved as <code>8326bcf</code>. Its native graph, kernels, and APIs were separate from the portable PR.</p>
+
+        <h2 id="upstream">Turn a machine-specific investigation into an upstream contribution</h2>
+        <p>I extracted the changes that improved the existing runtime without selecting Polaris tiles, a fixed device index, or the experimental Qwen batch graph. The CPU decoder retained exact rounding. Descriptor recording used bounded stack arrays. Pipeline creation checked enabled capabilities and loaded aligned SPIR-V words. Explicit memory dependencies covered compute, transfers, and host reads.</p>
+        <p>Review exposed interactions that the first extraction missed. Filtering unsupported shaders also meant GEMM callers had to choose an available FP32 fallback with its matching tile geometry. That fallback still expected F16 input, so callers needed weight-format guards, the correct model's CPU weights, and format-aware GPU paths when lean-host mode omitted host tensors. The shared, Qwen, and Gemma paths all needed attention.</p>
+        <p>Other fixes gated typed subgroup operations, made copied snapshots visible to host reads across submission modes, and deduplicated descriptor setup for zero-offset and offset entry points. The final portable CPU benchmark measured 2.553× median embedding-decoder speedup over eight alternating runs. It was a separate benchmark from the experimental branch's earlier roughly 2× result.</p>
+        <p>Final validation recorded 300 combined Gemma/Qwen CPU tests and 12 Vulkan conformance tests on each adapter, exercising 18 quantized kernels on RX 560X and 20 on Vega 8. Default and supported feature-slice build checks passed; the existing optional debug-api feature still referenced a missing source file. The <a href="https://github.com/ericcurtin/vllm-vulkan/blob/main/docs/general-optimizations.md">upstream evaluation document</a> records the scope and reproduction commands. <a href="https://github.com/ericcurtin/vllm-vulkan/pull/101">PR #101 merged on October 15, 2026</a>.</p>
+
+        <h2 id="the-limit">Pushing the limit also means admitting where it is unproven</h2>
+        <p>A checksum-verified bulk VRAM read measured 85.621 GB/s. Streaming the active weights, recurrent state, and context-64 KV once suggested an optimistic single-stream bandwidth ceiling around 78 tokens/s for that layout. It excluded unpacking, arithmetic, dependencies, launches, and CPU work. Batching changed the calculation because weights could be reused.</p>
+        <p>The actual 14-unit count also changed the raw FP32 peak calculation. Later assembly showed no spills in the selected output head, but static register counts and nominal FLOPS could not establish a cycle-level bound. Matrix execution remained dominant. I had not proved that the final branch was near the global theoretical limit.</p>
+        <p>What I did have was a much more capable inference path on a 4 GiB legacy GPU, a record of the changes that helped and failed, and portable improvements accepted upstream. The satisfying part was tracing a missing fraction of a millisecond all the way from physical residency or a signed zero to a result I could defend.</p>
+        <div class="article-end-actions"><a class="button button-primary" href="https://github.com/ericcurtin/vllm-vulkan/pull/101" target="_blank" rel="noopener">View merged PR #101 <span aria-hidden="true">↗</span></a><a class="button-link" href="../../assets/data/rx560x-results.json">Inspect measurement record <span aria-hidden="true">↗</span></a></div>
+      </article>
+    </main>
+    <footer class="site-footer"><div class="shell"><span>© <span data-current-year>2026</span> Abhiram Sharma</span><a href="../">More writing</a></div></footer>
+  </body>
+</html>
