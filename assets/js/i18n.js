@@ -1812,3 +1812,60 @@ window.PORTFOLIO_I18N = {
     "Pause animation": "Animatie pauzeren"
   }
 };
+
+/* Technical articles published with Zilliz. */
+Object.assign(window.PORTFOLIO_I18N.de, {
+  "Technical articles · Zilliz": "Technische Artikel · Zilliz",
+  "Published with Zilliz.": "Bei Zilliz veröffentlicht.",
+  "My technical articles on LLM reliability and vector databases.": "Meine technischen Artikel über die Zuverlässigkeit von LLMs und Vektordatenbanken.",
+  "View my Zilliz author page": "Meine Zilliz-Autorenseite ansehen",
+  "Zilliz · LLM reliability": "Zilliz · LLM-Zuverlässigkeit",
+  "Decoding LLM Hallucinations: A Deep Dive into Language Model Errors": "LLM-Halluzinationen entschlüsseln: Sprachmodellfehler im Detail",
+  "Why language models hallucinate, and how self-evaluation, reference checks, uncertainty, and consistency can help detect errors.": "Warum Sprachmodelle halluzinieren und wie Selbstbewertung, Referenzprüfungen, Unsicherheit und Konsistenz helfen können, Fehler zu erkennen.",
+  "Read on Zilliz": "Auf Zilliz lesen",
+  "Zilliz · Vector databases": "Zilliz · Vektordatenbanken",
+  "Spring AI and Milvus: Using Milvus as a Spring AI Vector Store": "Spring AI und Milvus: Milvus als Vektorspeicher für Spring AI nutzen",
+  "A practical walkthrough of connecting Spring AI to Milvus for vector storage and similarity search.": "Eine praktische Anleitung, um Spring AI für Vektorspeicherung und Ähnlichkeitssuche mit Milvus zu verbinden."
+});
+
+Object.assign(window.PORTFOLIO_I18N.fr, {
+  "Technical articles · Zilliz": "Articles techniques · Zilliz",
+  "Published with Zilliz.": "Articles publiés chez Zilliz.",
+  "My technical articles on LLM reliability and vector databases.": "Mes articles techniques sur la fiabilité des LLM et les bases de données vectorielles.",
+  "View my Zilliz author page": "Voir ma page d’auteur Zilliz",
+  "Zilliz · LLM reliability": "Zilliz · Fiabilité des LLM",
+  "Decoding LLM Hallucinations: A Deep Dive into Language Model Errors": "Décrypter les hallucinations des LLM : comprendre les erreurs des modèles de langage",
+  "Why language models hallucinate, and how self-evaluation, reference checks, uncertainty, and consistency can help detect errors.": "Pourquoi les modèles de langage hallucinent, et comment l’autoévaluation, les références, l’incertitude et la cohérence peuvent aider à détecter les erreurs.",
+  "Read on Zilliz": "Lire sur Zilliz",
+  "Zilliz · Vector databases": "Zilliz · Bases de données vectorielles",
+  "Spring AI and Milvus: Using Milvus as a Spring AI Vector Store": "Spring AI et Milvus : utiliser Milvus comme stockage vectoriel pour Spring AI",
+  "A practical walkthrough of connecting Spring AI to Milvus for vector storage and similarity search.": "Un guide pratique pour connecter Spring AI à Milvus afin de stocker des vecteurs et rechercher par similarité."
+});
+
+Object.assign(window.PORTFOLIO_I18N.es, {
+  "Technical articles · Zilliz": "Artículos técnicos · Zilliz",
+  "Published with Zilliz.": "Publicado en Zilliz.",
+  "My technical articles on LLM reliability and vector databases.": "Mis artículos técnicos sobre fiabilidad de LLM y bases de datos vectoriales.",
+  "View my Zilliz author page": "Ver mi página de autor en Zilliz",
+  "Zilliz · LLM reliability": "Zilliz · Fiabilidad de LLM",
+  "Decoding LLM Hallucinations: A Deep Dive into Language Model Errors": "Descifrando las alucinaciones de los LLM: los errores de los modelos de lenguaje a fondo",
+  "Why language models hallucinate, and how self-evaluation, reference checks, uncertainty, and consistency can help detect errors.": "Por qué alucinan los modelos de lenguaje y cómo la autoevaluación, las referencias, la incertidumbre y la consistencia ayudan a detectar errores.",
+  "Read on Zilliz": "Leer en Zilliz",
+  "Zilliz · Vector databases": "Zilliz · Bases de datos vectoriales",
+  "Spring AI and Milvus: Using Milvus as a Spring AI Vector Store": "Spring AI y Milvus: usar Milvus como almacén vectorial de Spring AI",
+  "A practical walkthrough of connecting Spring AI to Milvus for vector storage and similarity search.": "Una guía práctica para conectar Spring AI con Milvus para almacenar vectores y buscar por similitud."
+});
+
+Object.assign(window.PORTFOLIO_I18N.nl, {
+  "Technical articles · Zilliz": "Technische artikelen · Zilliz",
+  "Published with Zilliz.": "Gepubliceerd bij Zilliz.",
+  "My technical articles on LLM reliability and vector databases.": "Mijn technische artikelen over LLM-betrouwbaarheid en vectordatabases.",
+  "View my Zilliz author page": "Mijn Zilliz-auteurspagina bekijken",
+  "Zilliz · LLM reliability": "Zilliz · LLM-betrouwbaarheid",
+  "Decoding LLM Hallucinations: A Deep Dive into Language Model Errors": "LLM-hallucinaties ontrafelen: een grondige blik op taalmodelfouten",
+  "Why language models hallucinate, and how self-evaluation, reference checks, uncertainty, and consistency can help detect errors.": "Waarom taalmodellen hallucineren en hoe zelfevaluatie, referentiecontroles, onzekerheid en consistentie fouten kunnen helpen opsporen.",
+  "Read on Zilliz": "Lezen op Zilliz",
+  "Zilliz · Vector databases": "Zilliz · Vectordatabases",
+  "Spring AI and Milvus: Using Milvus as a Spring AI Vector Store": "Spring AI en Milvus: Milvus gebruiken als vectoropslag voor Spring AI",
+  "A practical walkthrough of connecting Spring AI to Milvus for vector storage and similarity search.": "Een praktische uitleg om Spring AI met Milvus te verbinden voor vectoropslag en zoeken op gelijkenis."
+});

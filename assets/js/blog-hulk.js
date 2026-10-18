@@ -456,3 +456,18 @@ Object.assign(window.PORTFOLIO_I18N.hulk, {
   "The embedding accessor rounds through FP16, where negative zero is 0x8000 and positive zero is 0x0000. Supported denormal and signed-zero controls preserved the required result. All 508,559,360 checkpoint values matched CPU bits in each coefficient format; unsupported devices retain CPU decoding.": "FP16 negative zero:0x8000. Positive zero:0x0000. Sign bits differ. Supported denormal and signed-zero controls fix result. All508,559,360 values match CPU bits in each coefficient format. Unsupported devices use CPU.",
   "Pause / resume animation": "Pause / play animation"
 });
+
+/* Technical articles published with Zilliz. */
+Object.assign(window.PORTFOLIO_I18N.hulk, {
+  "Technical articles · Zilliz": "Hulk writes for Zilliz",
+  "Published with Zilliz.": "Hulk published with Zilliz.",
+  "My technical articles on LLM reliability and vector databases.": "Hulk writes about reliable LLMs. And vector databases.",
+  "View my Zilliz author page": "See Hulk on Zilliz",
+  "Zilliz · LLM reliability": "Zilliz · Reliable LLMs",
+  "Decoding LLM Hallucinations: A Deep Dive into Language Model Errors": "LLM hallucinations. Why models make errors.",
+  "Why language models hallucinate, and how self-evaluation, reference checks, uncertainty, and consistency can help detect errors.": "Models make things up. Check their own answers. Check references, uncertainty, and consistency. Find errors.",
+  "Read on Zilliz": "Read on Zilliz",
+  "Zilliz · Vector databases": "Zilliz · Vector databases",
+  "Spring AI and Milvus: Using Milvus as a Spring AI Vector Store": "Spring AI and Milvus. Store vectors together.",
+  "A practical walkthrough of connecting Spring AI to Milvus for vector storage and similarity search.": "Connect Spring AI to Milvus. Store vectors. Search for similar ones."
+});
