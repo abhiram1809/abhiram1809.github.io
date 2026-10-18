@@ -9,6 +9,52 @@
   const context = canvas?.getContext('2d');
   let scrollFrame = 0;
 
+  const contactEmail = document.querySelector('#contact .contact-email');
+  let contactFrame = 0;
+  let contactJump;
+  const cancelContactCue = () => {
+    cancelAnimationFrame(contactFrame);
+    contactFrame = 0;
+    contactJump?.cancel();
+  };
+  document.querySelectorAll('a[href="#contact"]').forEach((link) => {
+    link.addEventListener('click', (event) => {
+      if (!contactEmail || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      event.preventDefault();
+      cancelContactCue();
+      if (location.hash !== '#contact') history.pushState(null, '', '#contact');
+      contactEmail.scrollIntoView({ behavior: reducedMotion.matches ? 'instant' : 'smooth', block: 'center' });
+      const started = performance.now();
+      let previousTop = null;
+      let stableFrames = 0;
+      // Wait for arrival, including the contact section's reveal transition.
+      // This also works in browsers without the scrollend event.
+      const waitForArrival = () => {
+        const rect = contactEmail.getBoundingClientRect();
+        const visible = rect.top >= 0 && rect.bottom <= innerHeight;
+        stableFrames = visible && previousTop !== null && Math.abs(rect.top - previousTop) < .5 ? stableFrames + 1 : 0;
+        previousTop = rect.top;
+        if (stableFrames >= 5) {
+          contactFrame = 0;
+          contactEmail.focus({ preventScroll: true });
+          if (!reducedMotion.matches) contactJump = contactEmail.animate([
+            { transform: 'translateY(0)', offset: 0 },
+            { transform: 'translateY(-32px)', offset: .16, easing: 'ease-in' },
+            { transform: 'translateY(0)', offset: .36, easing: 'ease-out' },
+            { transform: 'translateY(-18px)', offset: .51, easing: 'ease-in' },
+            { transform: 'translateY(0)', offset: .68, easing: 'ease-out' },
+            { transform: 'translateY(-8px)', offset: .81, easing: 'ease-in' },
+            { transform: 'translateY(0)', offset: 1 }
+          ], { duration: 1100, easing: 'ease-out' });
+        } else if (performance.now() - started < 5000) contactFrame = requestAnimationFrame(waitForArrival);
+      };
+      contactFrame = requestAnimationFrame(waitForArrival);
+    });
+  });
+  window.addEventListener('wheel', cancelContactCue, { passive: true });
+  window.addEventListener('touchmove', cancelContactCue, { passive: true });
+  reducedMotion.addEventListener('change', cancelContactCue);
+
   if (context) {
     const pointer = { x: 0, y: 0, active: false };
     let points = [];
@@ -34,7 +80,7 @@
       const ease = 1 - Math.exp(-elapsed / 55);
       lastTime = time;
       let settling = false;
-      ripples = ripples.filter((ripple) => time - ripple.time < 950);
+      ripples = ripples.filter((ripple) => time - ripple.time < ripple.duration);
       context.clearRect(0, 0, width, height);
       context.fillStyle = color;
       context.strokeStyle = color;
@@ -57,11 +103,11 @@
           }
         }
         for (const ripple of ripples) {
-          const age = (time - ripple.time) / 950;
+          const age = (time - ripple.time) / ripple.duration;
           const dx = point.x - ripple.x;
           const dy = point.y - ripple.y;
           const distance = Math.hypot(dx, dy);
-          const wave = Math.exp(-(((distance - age * 420) / 32) ** 2)) * (1 - age);
+          const wave = Math.exp(-(((distance - age * ripple.reach) / 48) ** 2)) * Math.min(1, (1 - age) * 5);
           targetX += dx / Math.max(1, distance) * wave * 16;
           targetY += dy / Math.max(1, distance) * wave * 16;
           influence = Math.max(influence, wave * .8);
@@ -119,11 +165,11 @@
       width = innerWidth;
       height = innerHeight;
       // Bound both backing-store resolution and node count on large displays.
-      const scale = Math.min(devicePixelRatio || 1, 1.5);
+      const scale = Math.min(devicePixelRatio || 1, finePointer.matches ? 1.5 : 1);
       canvas.width = Math.round(width * scale);
       canvas.height = Math.round(height * scale);
       context.setTransform(scale, 0, 0, scale, 0, 0);
-      const spacing = Math.max(44, Math.sqrt(width * height / 1100));
+      const spacing = Math.max(44, Math.sqrt(width * height / (finePointer.matches ? 1100 : 650)));
       columns = Math.ceil(width / spacing) + 1;
       const rows = Math.ceil(height / spacing) + 1;
       points = Array.from({ length: columns * rows }, (_, index) => ({
@@ -140,7 +186,7 @@
       schedule();
     };
     const syncAvailability = () => {
-      enabled = finePointer.matches && !reducedMotion.matches && !document.hidden;
+      enabled = !reducedMotion.matches && !document.hidden;
       if (enabled) {
         readPalette();
         resize();
@@ -151,21 +197,23 @@
         pointer.active = false;
         ripples = [];
         atmosphere.classList.remove('is-tracking');
-        // Release the viewport-sized backing store on touch/reduced-motion devices.
+        // Release the backing store while hidden or under reduced motion.
         canvas.width = canvas.height = 1;
       }
     };
     window.addEventListener('pointermove', (event) => {
-      if (!enabled || event.pointerType === 'touch') return;
+      if (!enabled || !finePointer.matches || event.pointerType === 'touch') return;
       pointer.x = event.clientX;
       pointer.y = event.clientY;
       pointer.active = true;
       atmosphere.classList.add('is-tracking');
       schedule();
     }, { passive: true });
-    window.addEventListener('pointerdown', (event) => {
-      if (!enabled || event.pointerType === 'touch' || event.button !== 0) return;
-      ripples.push({ x: event.clientX, y: event.clientY, time: performance.now() });
+    window.addEventListener('click', (event) => {
+      if (!enabled || event.button !== 0 || event.detail === 0) return;
+      // Reach every corner from the click, with room for the wave to fade out.
+      const reach = Math.hypot(Math.max(event.clientX, width - event.clientX), Math.max(event.clientY, height - event.clientY)) + 120;
+      ripples.push({ x: event.clientX, y: event.clientY, time: performance.now(), reach, duration: Math.max(1200, reach / .85) });
       ripples = ripples.slice(-4);
       schedule();
     }, { passive: true });

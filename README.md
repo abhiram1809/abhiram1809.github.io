@@ -3,6 +3,13 @@
 Static HTML, CSS, and JavaScript, published with GitHub Pages.
 Preview locally with `python3 -m http.server 4173`.
 
+Blog prose, captions, metadata, and accessibility labels are available in English,
+German, French, Spanish, and Dutch. Shared translations live in `assets/js/i18n.js`;
+`assets/js/blog-i18n.js` completes the article-specific copy and loads before
+`main.js`. When adding or editing an article, update all four translation
+dictionaries using the exact English text as keys. Code, equations, technical
+identifiers, and published source titles retain their original notation.
+
 Blog pages also offer **Hulk Speak**, a hand-written English reading style with
 shorter sentences. It covers the archive and every published article, preserving
 code, equations, source titles, and technical names. The `blog-language` preference
@@ -44,15 +51,23 @@ Browser chrome and the saved theme preference stay synchronized across the
 portfolio and blog pages.
 
 `home-motion.css` and `home-motion.js` load only on the home page. An elastic
-point lattice responds to a fine pointer and sends out ripples on clicks. Canvas
+point lattice responds to a fine pointer and sends a wave to every viewport corner
+on a click or tap, including over sections with opaque backgrounds. Its layer
+passes all input through to the page. Canvas
 resolution and node count are bounded, connections use adjacent nodes, and
-rendering stops once the field settles or the tab is hidden. Touch pointers and
-reduced motion disable the background and release its canvas backing store.
+rendering stops once the field settles or the tab is hidden. Touch devices use a
+smaller rendering budget and react to taps without tracking swipes. Reduced
+motion and hidden tabs disable the background and release its backing store.
 Both themes share the hero layout, portrait mat, crop, and unfiltered photo;
 switching themes changes the palette without moving or recoloring the portrait.
 
 The experience timeline fills between role markers as you scroll and reveals each role's labeled technology icons. Its
 content is readable without JavaScript and under reduced-motion preferences.
+
+Contact links scroll the email action into view and cue it on arrival with
+three decreasing jumps. The cue can replay on subsequent clicks and yields to
+manual scrolling; reduced motion focuses the link without jumping. Mobile service
+and project rows allow both horizontal swipes and vertical page scrolling.
 
 Technology logos reuse the local toolkit SVG sprite. Capability icons in
 `experience-icons.svg` illustrate the labels already listed for each role; they
