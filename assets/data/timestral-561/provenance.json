@@ -1,0 +1,20 @@
+{
+  "published": "2026-10-23",
+  "experiment": "direction-confidence-465",
+  "model": "mistralai/Timestral-209M",
+  "model_revision": "9874d252ab0aae16f7f7c999f98f98d6ad7d8365",
+  "note": "Unmodified saved experiment artifacts. The historical directory and ZIP names retain the 465-trade target; the completed run contains 561 executions.",
+  "sha256": {
+    "summary.csv": "a39a2c11b10397434c88902ca951ae8f5817b2d26eddc989b55d556cfede081b",
+    "executed_trades.csv": "448d374cabe0b86465e34f7153947de4002a4debe3890f8b109d3d346e821b00",
+    "forecast_metrics.csv": "c2f35aad96c464e1fef9b9255995bd36426e3ff3fd664ebbfb597185cfce986a",
+    "configuration.json": "a42b7ac5bd95e369622f3db9830fab1d064364279238a5668d7994ded703c52a",
+    "audit.json": "fe54a1d65de5961b12688049987fcceac9da6205832fb72134eb3dcd425a126d",
+    "PROTOCOL.md": "3e21075af9ddee7f67cac6ebcbdb439b297a4e4eb729ec47767d45a71ab6fe27",
+    "winner_sensitivity.csv": "c64f6f65957777c1ca205224e2b6c4945449ae350f4c36361014a7d79d2d560c",
+    "ecb-check-2008-09.csv": "3f48169ebb9557a5fb101188dafa034f04b3086325f31c57ae9ee6a5d85224a0",
+    "ecb-check-source.json": "b4a18caa28f89c5e4837840a1dda1d9cce41314e78263499f627372ac0b2063f",
+    "corrected-465-results.zip": "3ce9caf897df2e9ecae113eef2922b5c49d431e66cd4038751ee1c6f1d4b0ca4",
+    "equity.png": "5104dd94073d82363c0f41afef620cc5585b79a7b417a7d7dd776d74ec228cc3"
+  }
+}

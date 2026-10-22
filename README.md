@@ -26,6 +26,12 @@ The RX 560X article includes three original Manim GIFs covering memory residency
 independent batching, and signed-zero exactness. Each has a pause control and
 static reduced-motion/no-JavaScript poster. See [source and rendering instructions](animations/legacy-hardware/README.md).
 
+The [Timestral experiment](blogs/timestral-561-trades/) documents the completed
+561-trade directional-confidence run. Its result table comes from the saved
+summary; unmodified ledgers, metrics, protocol, audit, equity curves, and research
+bundle live in `assets/data/timestral-561/`. `provenance.json` records their SHA-256
+hashes. The original `465` archive name refers to the target, not the final count.
+
 ## UI design references
 
 The navigation and article details are original, dependency-free implementations

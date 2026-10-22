@@ -1,0 +1,29 @@
+{
+  "status": "passed",
+  "target": 465,
+  "executed": 561,
+  "target_reached": true,
+  "unique_trades": true,
+  "original_gates": [
+    0.55,
+    0.6,
+    0.7
+  ],
+  "source_hashes_unchanged": true,
+  "checks": [
+    "unique case and origin keys",
+    "complete historical trades, skips excluded",
+    "past-only calibration with strict embargo",
+    "minimum support and original leverage gates",
+    "calibration estimates reconstructed from prior model predictions",
+    "fee and funding identities",
+    "separate account compounding",
+    "original experiment hashes preserved",
+    "fixed full-round stopping rule"
+  ],
+  "independently_rebuilt_calibration_windows": 45,
+  "source_quality_verified": false,
+  "posthoc_daily_quote_review_flags": 12,
+  "directly_executed_flagged_intervals": 1,
+  "source_quality_note": "Arithmetic and chronology pass; extreme Yahoo quotes remain uncorrected, including their effect on later contexts and calibration."
+}

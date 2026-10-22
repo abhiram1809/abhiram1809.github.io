@@ -1,0 +1,5 @@
+{
+  "url": "https://data-api.ecb.europa.eu/service/data/EXR/D.USD.EUR.SP00.A?startPeriod=2008-09-05&endPeriod=2008-09-10&format=csvdata",
+  "purpose": "Independent reference-fixing comparison only; not substituted into Yahoo backtest",
+  "timestamp_comparability": "ECB reference fixing and Yahoo daily closing quotes have different observation times"
+}

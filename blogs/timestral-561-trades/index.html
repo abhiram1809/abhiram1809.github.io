@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en" data-theme="dark" data-language="en" data-blog>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Nine simulated accounts, 561 executed trades, and a fragile FX winner: what my Timestral-209M experiments actually showed.">
+    <meta name="theme-color" content="#0c0c0c">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://abhiram1809.github.io/blogs/timestral-561-trades/">
+    <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="../../assets/img/R.png">
+    <title>Timestral after 561 trades: confidence meets trading costs | Abhiram Sharma</title>
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://abhiram1809.github.io/blogs/timestral-561-trades/">
+    <meta property="og:title" content="Timestral after 561 trades: confidence meets trading costs">
+    <meta property="og:description" content="Nine simulated accounts, 561 executed trades, and a fragile FX winner: what my Timestral-209M experiments actually showed.">
+    <meta property="og:image" content="https://abhiram1809.github.io/assets/img/og-portfolio.png">
+    <meta property="article:published_time" content="2026-10-23">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Timestral after 561 trades: confidence meets trading costs">
+    <meta name="twitter:description" content="Nine simulated accounts, 561 executed trades, and a fragile FX winner: what my Timestral-209M experiments actually showed.">
+    <meta name="twitter:image" content="https://abhiram1809.github.io/assets/img/og-portfolio.png">
+    <script>
+      (() => {
+        const root = document.documentElement;
+        root.classList.add('js');
+        let theme = 'dark';
+        try {
+          if (localStorage.getItem('portfolio-theme') === 'light') theme = 'light';
+          const language = localStorage.getItem('blog-language') || localStorage.getItem('portfolio-language');
+          if (['en', 'de', 'fr', 'es', 'nl', 'hulk'].includes(language)) {
+            root.lang = language === 'hulk' ? 'en' : language;
+            root.dataset.language = language;
+          }
+        } catch {}
+        root.dataset.theme = theme;
+        document.querySelector('meta[name="theme-color"]').content = theme === 'light' ? '#f5f6f5' : '#0c0c0c';
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/css/style.css?v=24">
+    <script src="../../assets/js/i18n.js?v=3" defer></script>
+    <script src="../../assets/js/blog-i18n.js?v=2" defer></script>
+    <script src="../../assets/js/blog-hulk.js?v=6" defer></script>
+    <link rel="stylesheet" href="../../assets/css/blog-reading.css?v=2">
+    <link rel="stylesheet" href="../../assets/css/legacy-hardware.css?v=2">
+    <script src="../../assets/js/main.js?v=14" defer></script>
+    <link rel="stylesheet" href="../../assets/css/ui-details.css?v=3">
+    <script src="../../assets/js/ui-details.js?v=2" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#article-content">Skip to article</a>
+    <header class="site-header" data-header>
+      <div class="shell nav-shell">
+        <a class="wordmark" href="../../" aria-label="Abhiram Sharma home">AS<span>.</span></a>
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" data-menu-toggle>
+          <span class="sr-only">Open navigation</span><span aria-hidden="true"></span><span aria-hidden="true"></span>
+        </button>
+        <nav class="primary-nav" id="primary-nav" aria-label="Primary navigation" data-nav>
+          <a href="../../#experience">Experience</a><a href="../../#work">Work</a><a href="../../#skills">Toolkit</a><a href="../../#about">About</a><a href="../../#contact">Contact</a>
+        </nav>
+        <div class="display-controls">
+        <button class="theme-toggle" type="button" aria-label="Switch to light theme" title="Switch to light theme" data-theme-toggle>
+          <span class="sr-only">Switch to light theme</span>
+          <svg class="theme-icon theme-icon-sun" aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <circle cx="12" cy="12" r="3.5"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"></path>
+          </svg>
+          <svg class="theme-icon theme-icon-moon" aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7Z"></path>
+          </svg>
+        </button>
+        <div class="language-picker" data-language-picker>
+          <button class="language-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="language-menu" aria-label="Language: English" data-language-toggle>
+            <span class="language-flag" aria-hidden="true" data-current-flag>🇬🇧</span>
+            <span class="language-trigger-copy"><span data-current-language>English</span><small data-current-code>EN</small></span>
+            <svg class="language-chevron" aria-hidden="true" viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m6 8 4 4 4-4"></path></svg>
+          </button>
+          <div class="language-menu" id="language-menu" role="listbox" aria-label="Language" data-language-menu hidden>
+            <button class="language-option" type="button" role="option" aria-selected="true" data-language-option="en"><span class="language-flag" aria-hidden="true">🇬🇧</span><span><strong>English</strong><small>United Kingdom</small></span><span class="language-check" aria-hidden="true">✓</span></button>
+            <button class="language-option" type="button" role="option" aria-selected="false" data-language-option="de"><span class="language-flag" aria-hidden="true">🇩🇪</span><span><strong>Deutsch</strong><small>Deutschland</small></span><span class="language-check" aria-hidden="true">✓</span></button>
+            <button class="language-option" type="button" role="option" aria-selected="false" data-language-option="fr"><span class="language-flag" aria-hidden="true">🇫🇷</span><span><strong>Français</strong><small>France</small></span><span class="language-check" aria-hidden="true">✓</span></button>
+            <button class="language-option" type="button" role="option" aria-selected="false" data-language-option="es"><span class="language-flag" aria-hidden="true">🇪🇸</span><span><strong>Español</strong><small>España</small></span><span class="language-check" aria-hidden="true">✓</span></button>
+            <button class="language-option" type="button" role="option" aria-selected="false" data-language-option="nl"><span class="language-flag" aria-hidden="true">🇳🇱</span><span><strong>Nederlands</strong><small>Nederland</small></span><span class="language-check" aria-hidden="true">✓</span></button>
+            <button class="language-option" type="button" role="option" aria-selected="false" data-language-option="hulk"><span class="language-flag" aria-hidden="true"><img src="../../assets/img/hulk-face.svg" width="24" height="24" alt=""></span><span><strong>Hulk Speak</strong><small>Short sentences. Fast reading.</small></span><span class="language-check" aria-hidden="true">✓</span></button>
+          </div>
+        </div>
+        </div>
+        <a class="nav-cv" href="../../assets/Abhiram-Sharma-CV.pdf?v=0df7ad3ceb1d" target="_blank" rel="noopener" aria-label="View CV">View CV <span aria-hidden="true">↗</span></a>
+      </div>
+    </header>
+    <main id="article-content" class="article-main">
+      <header id="article-introduction" class="article-hero"><div class="article-shell reveal">
+        <a class="button-link article-back" href="../"><span aria-hidden="true">←</span> All notes</a>
+        <p class="eyebrow">Time series · Model evaluation</p><h1>Timestral after 561 trades: confidence meets trading costs</h1><p class="article-dek">I gave Timestral 250 closing prices, let confidence size the next trade, and followed the money through fees, calibration, and a suspicious quote.</p>
+        <div class="article-meta"><time datetime="2026-10-23">October 23, 2026</time><span>8 min read</span></div>
+        <div class="article-actions"><a class="button button-primary" href="#results">Explore the results <span aria-hidden="true">↓</span></a><a class="button button-secondary" href="../../assets/data/timestral-561/corrected-465-results.zip">Download research bundle (5.7 MB)</a></div>
+      </div></header>
+      <article class="article-body article-shell">
+        <p class="article-lead">I wanted to know whether a time-series foundation model could do something useful with market prices: predict the next move, skip weak signals, and take larger positions when its confidence was higher. The latest experiment completed 561 simulated trades across Reliance, SPY, and EUR/USD. It did not establish a reliable trading edge.</p>
+        <p>Five accounts lost money. Three stayed in cash. EUR/USD daily gained 7.08%, but removing its largest winning trade changed that result to −4.28%. That trade also depended on a Yahoo quote that differed sharply from an independent reference. The interesting result was the distance between a plausible forecast and a defensible trading strategy.</p>
+        <aside class="article-callout"><strong>561 completed simulated trades; 30,312 skipped signals. No live orders.</strong></aside>
+        <h2 id="setup">One model, nine separate experiments</h2>
+        <p>I used Mistral’s Timestral-209M checkpoint with FP32 inference and symmetric averaging. Each forecast consumed 250 closing prices and predicted the next close. The model produces 21 quantiles; the median chose long or short, while the quantile distribution supplied a raw directional probability.</p>
+        <p><a href="https://huggingface.co/mistralai/Timestral-209M/tree/9874d252ab0aae16f7f7c999f98f98d6ad7d8365">Official Timestral model card</a> · <code>9874d252ab0aa</code></p>
+        <p>Reliance represented an Indian equity, SPY a U.S. equity ETF, and EUR/USD a currency pair. Each ran on minute, hourly, and daily bars from saved Yahoo Finance snapshots. These are three instruments, not comprehensive tests of their markets. Each of the nine accounts began with 100,000 in its quote currency: INR for Reliance and USD for the other two.</p>
+        <p>The target was at least 465 executions combined. Each round advanced 128 candidate bars per active case; the run stopped after the first complete round that reached the target. After 28 rounds, 30,873 signals had produced 561 trades. The extra trades came from finishing that round, not from duplicating observations.</p>
+        <p>The accounts cover different calendar spans. Daily Reliance runs from February 1998 to March 2012, daily SPY from April 1995 to June 2009, and daily EUR/USD from January 2006 to November 2019. Intraday samples cover portions of 2024–2026. “Latest” describes the experiment, not a common recent trading window. I do not add INR and USD balances into a portfolio return.</p>
+        <h2 id="confidence">The question hidden inside “confidence”</h2>
+        <p>Earlier runs tried fixed 1× positions and then confidence gates. With the original frozen calibration of after-cost profit probability, the available eligible history produced just one execution under the 55% / 60% / 70% gates. Lower-gate replays explored trade scarcity separately. The 561-trade run changes both the calibration update rule and the event being predicted.</p>
+        <p>Here, confidence means the probability that the forecast direction is correct. It does not mean the probability of making money after fees. I kept the original leverage gates and built a custom rolling estimator around Timestral’s quantiles. This confidence rule is part of my experiment, not an official Mistral trading feature.</p>
+        <p>At each decision, I used the preceding 300 forecast origins whose outcomes had already exited strictly before the new entry. Raw directional probabilities went into ten fixed bins. If the matching bin had N observations and W correct directions, the smoothed estimate was (W + 1) / (N + 2). A bin needed 20 observations; otherwise it fell back to the valid past window. Insufficient total support gave 50%, which skipped the trade.</p>
+        <p>Below 55%, stay in cash. From 55% to below 60%, use 1×. From 60% to below 70%, use 2×. At 70% or above, use 3×. An unchanged forecast median skips; an unchanged realized price counts as a directional miss. The completed run used 537 trades at 1×, 24 at 2×, and none at 3×.</p>
+        <h2 id="results">What happened to the accounts</h2>
+        <div class="legacy-table-wrap" role="region" tabindex="0" aria-label="What happened to the accounts"><table class="legacy-table"><caption>Independent accounts, each starting at 100,000. Returns include the experiment’s fees, financing, and borrow costs; they are not annualized.</caption><thead><tr><th scope="col">Instrument</th><th scope="col">Bars</th><th scope="col">Trades</th><th scope="col">Ending balance</th><th scope="col">Net return</th><th scope="col">Max drawdown</th></tr></thead><tbody><tr><th scope="row">Reliance</th><td>Minute</td><td>8</td><td>98,484.70 INR</td><td>-1.52%</td><td>-1.52%</td></tr><tr><th scope="row">Reliance</th><td>Hourly</td><td>0</td><td>100,000.00 INR</td><td>+0.00%</td><td>0.00%</td></tr><tr><th scope="row">Reliance</th><td>Daily</td><td>9</td><td>78,149.73 INR</td><td>-21.85%</td><td>-21.85%</td></tr><tr><th scope="row">SPY</th><td>Minute</td><td>256</td><td>77,858.92 USD</td><td>-22.14%</td><td>-22.14%</td></tr><tr><th scope="row">SPY</th><td>Hourly</td><td>107</td><td>88,477.65 USD</td><td>-11.52%</td><td>-11.77%</td></tr><tr><th scope="row">SPY</th><td>Daily</td><td>11</td><td>97,820.08 USD</td><td>-2.18%</td><td>-2.97%</td></tr><tr><th scope="row">EUR/USD</th><td>Minute</td><td>0</td><td>100,000.00 USD</td><td>+0.00%</td><td>0.00%</td></tr><tr><th scope="row">EUR/USD</th><td>Hourly</td><td>0</td><td>100,000.00 USD</td><td>+0.00%</td><td>0.00%</td></tr><tr><th scope="row">EUR/USD</th><td>Daily</td><td>170</td><td>107,077.69 USD</td><td>+7.08%</td><td>-7.72%</td></tr></tbody></table></div><p><a href="../../assets/data/timestral-561/summary.csv">Account summary (CSV)</a> · <a href="../../assets/data/timestral-561/equity.png">View account equity curves</a></p>
+        <h2 id="costhead">Correct direction can still lose money</h2>
+        <p>Every selected signal opened at the current close and closed at the next observed close. Even consecutive signals in the same direction reopened and paid again. The simulation charged 10 basis points per fill for Reliance, 5 for SPY, and 2 for FX, plus 8% annual financing on exposure above 1× and 3% annual short borrow. Entry fees reduced investable exposure.</p>
+        <p>SPY minute makes the problem concrete. Its 256 selected trades got the direction right 51.17% of the time, but only 1.17% made money after costs. The same selected trades returned +1.08% without costs and −22.14% with them. Fees alone totaled $23,106.35. Repeatedly paying to capture tiny moves overwhelmed the forecast.</p>
+        <h2 id="metricshead">Forecast quality deserves its own scorecard</h2>
+        <p>I measured errors on next-bar fractional returns against a no-change forecast, rather than relying on price-level R². Median return MAE was worse than no-change in eight of nine cases; daily EUR/USD improved by only 0.58%. Meanwhile, mean quantile loss improved by 21.75–30.92%, and the nominal 80% intervals covered about 79.21–82.59% of outcomes.</p>
+        <p>Those distributional results use a weak probabilistic baseline: every baseline quantile equals the current close. Better quantile loss and reasonable marginal interval coverage do not establish a profitable direction signal. Brier scores also stayed near 0.25 in most cases, the score of a constant 50% forecast. The lower EUR/USD minute score needs context: 54.66% of realized prices were unchanged, and unchanged prices count as misses.</p>
+        <h2 id="winnerhead">The winning account needed the hardest inspection</h2>
+        <p>EUR/USD daily ended at $107,077.69 after 170 trades. Its largest winner, from September 8 to September 9, 2008, returned 11.86% on that trade. Omitting it from compounding leaves the account at −4.28%. This is a sensitivity check, not a repaired backtest.</p>
+        <p>For the September 8 entry, Yahoo supplied approximately 1.5050 USD per EUR; the saved ECB reference was 1.4214, a difference of about 5.9%. Reference fixings and daily closes occur at different times, so they need not match exactly. This discrepancy is still large enough to make the apparent edge unconvincing.</p>
+        <p>The audit flagged 12 extreme daily intervals, one directly traded. I kept the original inputs and reported the problem. Removing one trade cannot repair contaminated price histories: suspect bars also enter later 250-price contexts and 300-origin calibration windows. Validating the quotes and rerunning those dependent forecasts is still necessary.</p>
+        <h2 id="limitshead">What I would require before trusting the strategy</h2>
+        <p>The saved audit passed trade uniqueness, account arithmetic, chronology, source-hash checks, and 45 independently rebuilt calibration windows. It explicitly did not verify source-quote quality. Passing those checks means the simulation follows its rules; it does not validate the economic assumptions.</p>
+        <p>I redesigned the method after seeing earlier results, so this is retrospective strategy research. Possible overlap with model pretraining, adjusted historical prices, and ideal same-close fills all limit the conclusion. The simulation omits inference latency, taxes, cash interest, FX carry, and intrabar margin liquidation. A next observed bar can also span a weekend or market closure.</p>
+        <p>My next experiment would validate the price feed first, freeze the strategy before seeing a fresh holdout period, and use executable fills with realistic costs. I would compare both forecasting and account returns against simple baselines. The lesson from these 561 trades is that confidence must name an event, costs must be paid explicitly, and the most attractive result must survive scrutiny of its inputs.</p>
+        <h2 id="evidence">Inspect the evidence</h2>
+        <p>The saved artifacts below preserve the completed run. The archive retains its original “465” filename because that was the target; its ledger contains all 561 executed trades. It includes input data, scripts, and the report. Source hashes identify the copies published with this post.</p><ul><li><a href="../../assets/data/timestral-561/executed_trades.csv">All 561 trades (CSV)</a></li><li><a href="../../assets/data/timestral-561/forecast_metrics.csv">Forecast metrics (CSV)</a></li><li><a href="../../assets/data/timestral-561/PROTOCOL.md">Strategy protocol</a></li><li><a href="../../assets/data/timestral-561/audit.json">Audit record</a></li><li><a href="../../assets/data/timestral-561/ecb-check-2008-09.csv">Saved ECB reference check</a></li><li><a href="../../assets/data/timestral-561/provenance.json">Artifact hashes</a></li><li><a href="../../assets/data/timestral-561/corrected-465-results.zip">Download research bundle (5.7 MB)</a></li></ul></article></main>
+<footer class="site-footer"><div class="shell"><span>© <span data-current-year>2026</span> Abhiram Sharma</span><a href="../">More writing</a></div></footer>
+  </body>
+</html>

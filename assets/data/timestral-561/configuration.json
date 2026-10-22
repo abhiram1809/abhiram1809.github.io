@@ -1,0 +1,43 @@
+{
+  "target": 465,
+  "target_scope": "at least 465 executed trades combined across nine independent cases",
+  "gates": [
+    0.55,
+    0.6,
+    0.7
+  ],
+  "context": 250,
+  "calibration_window": 300,
+  "calibration": "Causal rolling Beta(1,1) histogram of directional correctness",
+  "bins": [
+    0.0,
+    0.1,
+    0.2,
+    0.30000000000000004,
+    0.4,
+    0.5,
+    0.6000000000000001,
+    0.7000000000000001,
+    0.8,
+    0.9,
+    1.0
+  ],
+  "minimum_support": 20,
+  "fallback": "All prior 300 non-flat predictions if bin has fewer than 20; probability 0.5 if total support below 20",
+  "leverage_probability_constraint": "All exposure levels use the same directional probability; exposure does not change price direction",
+  "embargo": "Most recent calibration outcome exits strictly before the current entry bar",
+  "refit": "Counts update with each newly completed past observation; no future labels",
+  "stopping_rule": "Process 128 next chronological signals per active case per round; stop at the end of the first full round with >=465 executions, or exhausted data",
+  "accounts": "Independent 100000 quote-currency accounts; combined count is not a pooled chronological portfolio",
+  "no_tuning_by_profit": true,
+  "no_threshold_relaxation": true,
+  "model_revision": "9874d252ab0aae16f7f7c999f98f98d6ad7d8365",
+  "costs": "Unchanged: per-fill 10/5/2 bps, annual financing 8% above 1x, short borrow 3%",
+  "original_experiment_preserved": true,
+  "confidence_event": "Model median direction is correct at the next close; exact zero movement is not a success",
+  "profit_probability": "Separate diagnostic: estimate positive net P&L at each exposure; never relabel it directional confidence",
+  "raw_score": "Quantile-CDF probability that price moves in the median-predicted direction",
+  "methodology_change": "Explicit event-definition redesign after observing trade scarcity; neither old frozen calibration nor a clean untouched study",
+  "calibration_updates": true,
+  "no_return_hyperparameter_search": true
+}

@@ -1869,3 +1869,31 @@ Object.assign(window.PORTFOLIO_I18N.nl, {
   "Spring AI and Milvus: Using Milvus as a Spring AI Vector Store": "Spring AI en Milvus: Milvus gebruiken als vectoropslag voor Spring AI",
   "A practical walkthrough of connecting Spring AI to Milvus for vector storage and similarity search.": "Een praktische uitleg om Spring AI met Milvus te verbinden voor vectoropslag en zoeken op gelijkenis."
 });
+
+Object.assign(window.PORTFOLIO_I18N.de, {
+  "Timestral after 561 trades: confidence meets trading costs": "Timestral nach 561 Trades: Konfidenz trifft Handelskosten",
+  "Nine simulated accounts, 561 executed trades, and a fragile FX winner: what my Timestral-209M experiments actually showed.": "Neun simulierte Konten, 561 ausgeführte Trades und ein fragiler FX-Gewinn: Was meine Timestral-209M-Experimente tatsächlich zeigten.",
+  "Time series · Model evaluation": "Zeitreihen · Modellevaluation",
+  "Read the Timestral experiment": "Das Timestral-Experiment lesen"
+});
+
+Object.assign(window.PORTFOLIO_I18N.fr, {
+  "Timestral after 561 trades: confidence meets trading costs": "Timestral après 561 trades : la confiance face aux coûts",
+  "Nine simulated accounts, 561 executed trades, and a fragile FX winner: what my Timestral-209M experiments actually showed.": "Neuf comptes simulés, 561 trades exécutés et un gain FX fragile : ce que mes expériences Timestral-209M ont réellement montré.",
+  "Time series · Model evaluation": "Séries temporelles · Évaluation de modèles",
+  "Read the Timestral experiment": "Lire l’expérience Timestral"
+});
+
+Object.assign(window.PORTFOLIO_I18N.es, {
+  "Timestral after 561 trades: confidence meets trading costs": "Timestral tras 561 operaciones: confianza frente a costes",
+  "Nine simulated accounts, 561 executed trades, and a fragile FX winner: what my Timestral-209M experiments actually showed.": "Nueve cuentas simuladas, 561 operaciones ejecutadas y una ganancia frágil en FX: lo que mostraron mis experimentos con Timestral-209M.",
+  "Time series · Model evaluation": "Series temporales · Evaluación de modelos",
+  "Read the Timestral experiment": "Leer el experimento de Timestral"
+});
+
+Object.assign(window.PORTFOLIO_I18N.nl, {
+  "Timestral after 561 trades: confidence meets trading costs": "Timestral na 561 trades: vertrouwen ontmoet handelskosten",
+  "Nine simulated accounts, 561 executed trades, and a fragile FX winner: what my Timestral-209M experiments actually showed.": "Negen gesimuleerde rekeningen, 561 uitgevoerde trades en een kwetsbare FX-winst: wat mijn Timestral-209M-experimenten werkelijk lieten zien.",
+  "Time series · Model evaluation": "Tijdreeksen · Modelevaluatie",
+  "Read the Timestral experiment": "Lees het Timestral-experiment"
+});
