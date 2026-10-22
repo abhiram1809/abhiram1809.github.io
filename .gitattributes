@@ -1,2 +1,5 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Preserve the exact research downloads so their recorded SHA-256 hashes remain valid.
+assets/data/timestral-561/* -text
