@@ -17,6 +17,13 @@ is separate from `portfolio-language`, so choosing it never changes the main
 portfolio. Add new blog readings to `assets/js/blog-hulk.js`; source HTML remains
 the complete English article and works without JavaScript.
 
+The language picker always translates from that English source. Its initializer
+runs once so repeated script execution cannot capture already-translated text or
+attach competing click handlers. Pages using the picker opt out of automatic
+browser translation (`translate="no"` and `notranslate`) to keep it from rewriting
+the selected copy. Keep shared script versions aligned across the blog pages
+when deploying translation changes.
+
 The Hulk Speak picker uses an original comic face SVG. The PagedAttention blog
 includes four Manim scenes with playback controls, reduced-motion posters, and
 English/Hulk Speak captions. See [rendering instructions](animations/paged-attention/README.md)

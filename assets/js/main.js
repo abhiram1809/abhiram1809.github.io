@@ -1,4 +1,8 @@
 (() => {
+  // Keep one English source snapshot and one set of language-picker listeners.
+  // Running this script again after localization would capture translated copy.
+  if (window.PORTFOLIO_UI_INITIALIZED) return;
+  window.PORTFOLIO_UI_INITIALIZED = true;
   document.documentElement.classList.add('js');
 
   const isBlog = document.documentElement.hasAttribute('data-blog');
