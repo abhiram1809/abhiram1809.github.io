@@ -39,6 +39,17 @@ summary; unmodified ledgers, metrics, protocol, audit, equity curves, and resear
 bundle live in `assets/data/timestral-561/`. `provenance.json` records their SHA-256
 hashes. The original `465` archive name refers to the target, not the final count.
 
+The [decision-model market experiment](blogs/decision-model-market/) explains the
+AAPL head fine-tune on Vulkan, its forecast baselines, and the later exploratory
+allocation replay. Three responsive HTML/CSS diagrams preserve accessible text
+and reflow on phones. Their interactive controls explain overnight gaps,
+head-only training, and the cost of replaying frozen positions. The replay uses
+lossless per-session arrays derived from the saved ledger. Source and reproduction
+instructions are public in [D-Trade](https://github.com/abhiram1809/D-Trade).
+Selected metrics, configuration, protocol and audit records
+live in `assets/data/decision-model-market/`, with hashes in `provenance.json`.
+The article reports retrospective research, including the losing net returns.
+
 ## UI design references
 
 The navigation and article details are original, dependency-free implementations

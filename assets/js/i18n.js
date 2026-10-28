@@ -1897,3 +1897,33 @@ Object.assign(window.PORTFOLIO_I18N.nl, {
   "Time series · Model evaluation": "Tijdreeksen · Modelevaluatie",
   "Read the Timestral experiment": "Lees het Timestral-experiment"
 });
+
+/* Latest writing card: decision-model market experiment. */
+Object.assign(window.PORTFOLIO_I18N.de, {
+  "Fine-tuning a decision model for markets: better forecasts, no trading edge": "Ein Entscheidungsmodell für Märkte feinabstimmen: bessere Prognosen, kein Handelsvorteil",
+  "100 daily candles, 5,120 Vulkan-trained weights, and 454 AAPL sessions: what improved, what failed, and why costs changed the result.": "100 Tageskerzen, 5.120 mit Vulkan trainierte Gewichte und 454 AAPL-Sitzungen: Was besser wurde, was scheiterte und warum Kosten das Ergebnis änderten.",
+  "Decision models · Vulkan training": "Entscheidungsmodelle · Vulkan-Training",
+  "October 28, 2026": "28. Oktober 2026",
+  "Read the decision-model experiment": "Das Entscheidungsmodell-Experiment lesen"
+});
+Object.assign(window.PORTFOLIO_I18N.fr, {
+  "Fine-tuning a decision model for markets: better forecasts, no trading edge": "Affiner un modèle de décision pour les marchés : de meilleures prévisions, aucun avantage de trading",
+  "100 daily candles, 5,120 Vulkan-trained weights, and 454 AAPL sessions: what improved, what failed, and why costs changed the result.": "100 bougies quotidiennes, 5 120 poids entraînés avec Vulkan et 454 séances AAPL : progrès, échecs et effet des coûts sur le résultat.",
+  "Decision models · Vulkan training": "Modèles de décision · Entraînement Vulkan",
+  "October 28, 2026": "28 octobre 2026",
+  "Read the decision-model experiment": "Lire l’expérience sur les modèles de décision"
+});
+Object.assign(window.PORTFOLIO_I18N.es, {
+  "Fine-tuning a decision model for markets: better forecasts, no trading edge": "Ajustar un modelo de decisión para los mercados: mejores pronósticos, sin ventaja de trading",
+  "100 daily candles, 5,120 Vulkan-trained weights, and 454 AAPL sessions: what improved, what failed, and why costs changed the result.": "100 velas diarias, 5.120 pesos entrenados con Vulkan y 454 sesiones de AAPL: qué mejoró, qué falló y por qué los costes cambiaron el resultado.",
+  "Decision models · Vulkan training": "Modelos de decisión · Entrenamiento Vulkan",
+  "October 28, 2026": "28 de octubre de 2026",
+  "Read the decision-model experiment": "Leer el experimento del modelo de decisión"
+});
+Object.assign(window.PORTFOLIO_I18N.nl, {
+  "Fine-tuning a decision model for markets: better forecasts, no trading edge": "Een beslismodel voor markten fijn afstemmen: betere voorspellingen, geen handelsvoordeel",
+  "100 daily candles, 5,120 Vulkan-trained weights, and 454 AAPL sessions: what improved, what failed, and why costs changed the result.": "100 dagelijkse candles, 5.120 met Vulkan getrainde gewichten en 454 AAPL-sessies: wat verbeterde, wat faalde en waarom kosten de uitkomst veranderden.",
+  "Decision models · Vulkan training": "Beslismodellen · Vulkan-training",
+  "October 28, 2026": "28 oktober 2026",
+  "Read the decision-model experiment": "Lees het beslismodelexperiment"
+});

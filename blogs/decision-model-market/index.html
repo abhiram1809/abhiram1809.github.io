@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en" translate="no" class="notranslate" data-theme="dark" data-language="en" data-blog>
+  <head>
+    <meta charset="utf-8">
+    <meta name="google" content="notranslate">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="100 daily candles, 5,120 Vulkan-trained weights, and 454 AAPL sessions: what improved, what failed, and why costs changed the result.">
+    <meta name="theme-color" content="#0c0c0c">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://abhiram1809.github.io/blogs/decision-model-market/">
+    <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="../../assets/img/R.png">
+    <title>Fine-tuning a decision model for markets: better forecasts, no trading edge | Abhiram Sharma</title>
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://abhiram1809.github.io/blogs/decision-model-market/">
+    <meta property="og:title" content="Fine-tuning a decision model for markets: better forecasts, no trading edge">
+    <meta property="og:description" content="100 daily candles, 5,120 Vulkan-trained weights, and 454 AAPL sessions: what improved, what failed, and why costs changed the result.">
+    <meta property="og:image" content="https://abhiram1809.github.io/assets/img/og-portfolio.png">
+    <meta property="article:published_time" content="2026-10-28">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Fine-tuning a decision model for markets: better forecasts, no trading edge">
+    <meta name="twitter:description" content="100 daily candles, 5,120 Vulkan-trained weights, and 454 AAPL sessions: what improved, what failed, and why costs changed the result.">
+    <meta name="twitter:image" content="https://abhiram1809.github.io/assets/img/og-portfolio.png">
+    <script>
+      (() => {
+        const root = document.documentElement;
+        root.classList.add('js');
+        let theme = 'dark';
+        try {
+          if (localStorage.getItem('portfolio-theme') === 'light') theme = 'light';
+          const language = localStorage.getItem('blog-language') || localStorage.getItem('portfolio-language');
+          if (['en', 'de', 'fr', 'es', 'nl', 'hulk'].includes(language)) {
+            root.lang = language === 'hulk' ? 'en' : language;
+            root.dataset.language = language;
+          }
+        } catch {}
+        root.dataset.theme = theme;
+        document.querySelector('meta[name="theme-color"]').content = theme === 'light' ? '#f5f6f5' : '#0c0c0c';
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/css/style.css?v=24">
+    <script src="../../assets/js/i18n.js?v=9" defer></script>
+    <script src="../../assets/js/blog-i18n.js?v=5" defer></script>
+    <script src="../../assets/js/blog-hulk.js?v=9" defer></script>
+    <link rel="stylesheet" href="../../assets/css/blog-reading.css?v=2">
+    <link rel="stylesheet" href="../../assets/css/decision-market.css?v=2">
+    <script src="../../assets/js/main.js?v=15" defer></script>
+    <link rel="stylesheet" href="../../assets/css/ui-details.css?v=3">
+    <script src="../../assets/js/ui-details.js?v=2" defer></script>
+    <script src="../../assets/js/decision-market.js?v=1" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#article-content">Skip to article</a>
+    <header class="site-header" data-header>
+      <div class="shell nav-shell">
+        <a class="wordmark" href="../../" aria-label="Abhiram Sharma home">AS<span>.</span></a>
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" data-menu-toggle>
+          <span class="sr-only">Open navigation</span><span aria-hidden="true"></span><span aria-hidden="true"></span>
+        </button>
+        <nav class="primary-nav" id="primary-nav" aria-label="Primary navigation" data-nav>
+          <a href="../../#experience">Experience</a><a href="../../#work">Work</a><a href="../../#skills">Toolkit</a><a href="../../#about">About</a><a href="../../#contact">Contact</a>
+        </nav>
+        <div class="display-controls">
+        <button class="theme-toggle" type="button" aria-label="Switch to light theme" title="Switch to light theme" data-theme-toggle>
+          <span class="sr-only">Switch to light theme</span>
+          <svg class="theme-icon theme-icon-sun" aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <circle cx="12" cy="12" r="3.5"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"></path>
+          </svg>
+          <svg class="theme-icon theme-icon-moon" aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7Z"></path>
+          </svg>
+        </button>
+        <div class="language-picker" data-language-picker>
+          <button class="language-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="language-menu" aria-label="Language: English" data-language-toggle>
+            <span class="language-flag" aria-hidden="true" data-current-flag>🇬🇧</span>
+            <span class="language-trigger-copy"><span data-current-language>English</span><small data-current-code>EN</small></span>
+            <svg class="language-chevron" aria-hidden="true" viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m6 8 4 4 4-4"></path></svg>
+          </button>
+          <div class="language-menu" id="language-menu" role="listbox" aria-label="Language" data-language-menu hidden>
+            <button class="language-option" type="button" role="option" aria-selected="true" data-language-option="en"><span class="language-flag" aria-hidden="true">🇬🇧</span><span><strong>English</strong><small>United Kingdom</small></span><span class="language-check" aria-hidden="true">✓</span></button>
+            <button class="language-option" type="button" role="option" aria-selected="false" data-language-option="de"><span class="language-flag" aria-hidden="true">🇩🇪</span><span><strong>Deutsch</strong><small>Deutschland</small></span><span class="language-check" aria-hidden="true">✓</span></button>
+            <button class="language-option" type="button" role="option" aria-selected="false" data-language-option="fr"><span class="language-flag" aria-hidden="true">🇫🇷</span><span><strong>Français</strong><small>France</small></span><span class="language-check" aria-hidden="true">✓</span></button>
+            <button class="language-option" type="button" role="option" aria-selected="false" data-language-option="es"><span class="language-flag" aria-hidden="true">🇪🇸</span><span><strong>Español</strong><small>España</small></span><span class="language-check" aria-hidden="true">✓</span></button>
+            <button class="language-option" type="button" role="option" aria-selected="false" data-language-option="nl"><span class="language-flag" aria-hidden="true">🇳🇱</span><span><strong>Nederlands</strong><small>Nederland</small></span><span class="language-check" aria-hidden="true">✓</span></button>
+            <button class="language-option" type="button" role="option" aria-selected="false" data-language-option="hulk"><span class="language-flag" aria-hidden="true"><img src="../../assets/img/hulk-face.svg" width="24" height="24" alt=""></span><span><strong>Hulk Speak</strong><small>Short sentences. Fast reading.</small></span><span class="language-check" aria-hidden="true">✓</span></button>
+          </div>
+        </div>
+        </div>
+        <a class="nav-cv" href="../../assets/Abhiram-Sharma-CV.pdf?v=0df7ad3ceb1d" target="_blank" rel="noopener" aria-label="View CV">View CV <span aria-hidden="true">↗</span></a>
+      </div>
+    </header>
+<main id="article-content" class="article-main dm-article">
+        <header id="article-introduction" class="article-hero"><div class="article-shell reveal"><a class="button-link article-back" href="../"><span aria-hidden="true">←</span> All notes</a><p class="eyebrow">Decision models · Vulkan training</p>
+        <h1>Fine-tuning a decision model for markets: better forecasts, no trading edge</h1><p class="article-dek">100 daily candles, 5,120 Vulkan-trained weights, and 454 AAPL sessions: what improved, what failed, and why costs changed the result.</p>
+        <div class="article-meta"><time datetime="2026-10-28">October 28, 2026</time><span>9 min read</span></div><div class="article-actions"><a class="button button-primary" href="#results">Explore the results <span aria-hidden="true">↓</span></a><a class="button button-secondary" href="https://github.com/abhiram1809/D-Trade">View experiment on GitHub</a></div></div></header>
+        <article class="article-body article-shell"><p class="article-lead">I built a market experiment around a small decision model: give it 100 completed daily candles and available news, ask for probabilities over the next session’s return, then fine-tune it on my GPU. The model improved. The trading strategy still lost money.</p>
+        <p class="">That gap is the story. On 454 AAPL sessions, fine-tuning reduced five-bin log loss from 1.5906 to 1.5348. A simple class-frequency baseline scored 1.5268, and a numeric classifier scored 1.4980. Better than the original checkpoint was a real improvement, but it was not enough to establish an edge.</p>
+        <aside class="article-callout"><strong>A working Vulkan fine-tune. A measurable forecast improvement. No demonstrated trading advantage.</strong></aside>
+        <h2 id="decisions">What a decision model actually decides</h2>
+        <p class="">A decision model takes evidence and a typed question, then returns probabilities over allowed answers. For this experiment, those answers were five return ranges. That gives software a bounded distribution to score and act on, without asking it to interpret a paragraph of market commentary.</p>
+        <p class="">Laya uses a bidirectional encoder and option scoring. d3-edge maps a prompt representation to answer codes. Jev is a hosted system offering typed probabilistic decisions. Their interfaces make decisions easier to consume; they do not guarantee accurate probabilities on financial data.</p>
+        <p class="dm-source-links"><a href="https://huggingface.co/convaiinnovations/laya">Laya</a> · <a href="https://huggingface.co/vllm-sr/d3-edge">d3-edge</a> · <a href="https://typesafe.ai/blog/introducing-system-one-models-and-jev?render=full">Jev</a></p>
+        <p class="">I compared open checkpoints below 800 million parameters on a predetermined 2024 validation sample. d3-edge won that comparison, with log loss of 1.5023 versus Laya’s 1.6891. Its measured package contained 594,582,720 parameters. Jev could not be verified under the parameter ceiling or fine-tuned locally, so it remained background rather than a measured candidate.</p>
+        <h2 id="target">Define the target before touching the model</h2>
+        <p class="">The dataset contained 268,166 examples across 34 instruments spanning US, Indian and other global markets, plus FX. I chose daily bars to obtain a long history, including 10,752 distinct AAPL training examples. The broader dataset provided context and diagnostics; the actual fine-tune used AAPL only.</p>
+        <p class="">Each origin retained 100 completed OHLCV candles. The model saw a compact rendering of all 100 close-to-close returns in integer basis points, trailing volatility and a numeric narrative, alongside eligible headlines. Retaining candles in the dataset and feeding every raw candle field to the model are different things.</p>
+        <figure class="dm-figure"><div class="dm-figure-heading"><span class="dm-figure-number" data-no-i18n>01 /</span><h3>The forecast starts at the next open</h3></div><div class="dm-timeline"><div class="dm-history"><span class="dm-kicker">PAST INFORMATION</span><strong>100 completed daily candles</strong><div class="dm-candles" aria-hidden="true"><i style="--h:20px;--offset:0px"></i><i style="--h:37px;--offset:11px"></i><i style="--h:54px;--offset:2px"></i><i style="--h:33px;--offset:13px"></i><i style="--h:50px;--offset:4px"></i><i style="--h:29px;--offset:15px"></i><i style="--h:46px;--offset:6px"></i><i style="--h:25px;--offset:17px"></i><i style="--h:42px;--offset:8px"></i><i style="--h:21px;--offset:19px"></i><i style="--h:38px;--offset:10px"></i><i style="--h:55px;--offset:1px"></i><i style="--h:34px;--offset:12px"></i><i style="--h:51px;--offset:3px"></i><i style="--h:30px;--offset:14px"></i><i style="--h:47px;--offset:5px"></i><i style="--h:26px;--offset:16px"></i><i style="--h:43px;--offset:7px"></i><i style="--h:22px;--offset:18px"></i><i style="--h:39px;--offset:9px"></i><i style="--h:56px;--offset:0px"></i><i style="--h:35px;--offset:11px"></i><i style="--h:52px;--offset:2px"></i><i style="--h:31px;--offset:13px"></i><i style="--h:48px;--offset:4px"></i><i style="--h:27px;--offset:15px"></i><i style="--h:44px;--offset:6px"></i><i style="--h:23px;--offset:17px"></i><i style="--h:40px;--offset:8px"></i><i style="--h:57px;--offset:19px"></i><i style="--h:36px;--offset:10px"></i><i style="--h:53px;--offset:1px"></i><i style="--h:32px;--offset:12px"></i><i style="--h:49px;--offset:3px"></i><i style="--h:28px;--offset:14px"></i></div><span>Signal formed after today’s close</span></div><div class="dm-gap"><span aria-hidden="true">→</span><strong>Overnight gap</strong><small>Outside the target</small></div><div class="dm-session"><span class="dm-kicker">NEXT SESSION</span><strong>Open → close</strong><div class="dm-target-line" aria-hidden="true"><i></i><span></span><i></i></div><span>One intraday exposure</span></div></div>
+          <div class="dm-controls" data-dm-timeline hidden>
+            <p class="dm-control-intro">Try changing the overnight gap and the next session separately.</p>
+            <div class="dm-slider-grid">
+              <label for="dm-overnight">Overnight move (%)<output for="dm-overnight" data-dm-value="overnight" data-no-i18n>+3.00%</output><input id="dm-overnight" type="range" min="-5" max="5" step="0.25" value="3"></label>
+              <label for="dm-intraday">Session move (%)<output for="dm-intraday" data-dm-value="intraday" data-no-i18n>+1.00%</output><input id="dm-intraday" type="range" min="-3" max="3" step="0.25" value="1"></label>
+            </div>
+            <p class="dm-demo-prices"><span>Illustrative prices: previous close → next open → next close</span><strong data-dm-prices data-no-i18n>100.00 → 103.00 → 104.03</strong></p>
+            <div class="dm-readouts" role="status" aria-live="polite" aria-atomic="true">
+              <div><span>Target: log(close/open)</span><strong data-dm-target data-no-i18n>+0.995%</strong></div>
+              <div><span>Close-to-close return</span><strong data-dm-total data-no-i18n>+4.03%</strong></div>
+              <div><span>Return bin</span><strong data-dm-bin data-no-i18n>Up</strong></div>
+            </div>
+            <p class="dm-control-note">Trailing volatility is fixed at 2% here. Only the session move changes the forecast target and its bin.</p>
+            <button class="dm-reset" type="button" data-dm-reset="timeline">Reset example</button>
+          </div><figcaption>Daily inputs, intraday target. Entry is the following session’s open; exit is its close. The overnight move is excluded. Candles are schematic, not observed prices.</figcaption>
+        </figure>
+        <p class="">The target was log(close/open) for the next session, divided by trailing 100-return daily volatility, with a 0.001 floor. Five bins used boundaries at −1, −0.25, +0.25 and +1 sigma. The middle bin meant a small move, not an exactly unchanged price. This was a range classification problem, not a price target around today’s close.</p>
+        <p class="">Training targets ended on December 29, 2023. Validation used 2024; test targets came from 2025 through October 23, 2026. Splitting by target date kept labels across the whole universe on the correct side of each boundary. The 1,246 test examples included a continuous 454-session AAPL series; every other instrument contributed only 24 sampled origins.</p>
+        <h2 id="news">News needs a clock, not just a sentiment score</h2>
+        <p class="">I used archived FNSPID and Yahoo headlines, with conservative availability delays and a 72-hour lookback. The prompt prioritized credible surprises involving earnings, guidance, regulation, disasters, financing or innovation, and downweighted promotion and price recaps. A dramatic headline alone establishes neither surprise nor future price impact.</p>
+        <p class="">The filter was heuristic, not a verified relevance dataset. Missing coverage meant unknown information. Only 454 training examples had headlines, compared with 387 of 454 AAPL test examples, and none in AAPL validation. That shift prevents a clean claim that news filtering helped. It also matters that an overnight announcement’s immediate gap was outside the target.</p>
+        <h2 id="training">What I actually trained on Vulkan</h2>
+        <p class="">The backbone stayed frozen. I updated the first five original answer-code readout rows: 5 × 1,024 = 5,120 weights, under 0.001% of the model. This was head fine-tuning, not LoRA or full-backbone training. Cached FP32 representations came from a mix of CPU and Vulkan extraction, with probability parity checks.</p>
+        <figure class="dm-figure"><div class="dm-figure-heading"><span class="dm-figure-number" data-no-i18n>02 /</span><h3>A frozen encoder, a trainable readout</h3></div><div class="dm-controls dm-walkthrough" data-dm-training hidden>
+            <p class="dm-control-intro">Walk through one training update.</p>
+            <div class="dm-choice-group" role="group" aria-label="Training walkthrough">
+              <button type="button" data-dm-step="encode" aria-pressed="true">1. Encode</button>
+              <button type="button" data-dm-step="score" aria-pressed="false">2. Score</button>
+              <button type="button" data-dm-step="update" aria-pressed="false">3. Update</button>
+            </div>
+          </div><div class="dm-training-flow"><div class="dm-stage"><span class="dm-kicker">FROZEN</span><strong>d3-edge</strong><small>Encode the state and question</small></div><span class="dm-flow-arrow" aria-hidden="true">→</span><div class="dm-stage"><span class="dm-kicker">CACHED</span><strong>1,024 features</strong><small>FP32</small></div><span class="dm-flow-arrow" aria-hidden="true">→</span><div class="dm-stage dm-stage-active"><span class="dm-kicker">TRAINABLE</span><strong>5,120 weights</strong><small>Five answer-code rows</small></div></div><div class="dm-update"><span aria-hidden="true">↳</span><div><strong>Vulkan on Radeon RX 560</strong><span>Forward scores → loss → gradients → Adam updates</span></div></div>
+          <div class="dm-step-explanation" data-dm-explanation role="status" aria-live="polite" aria-atomic="true" data-no-i18n hidden></div><figcaption>Only the readout receives weight updates. The selected checkpoint used 12 epochs and 1,008 GPU updates; an independent Vulkan replay reproduced identical weights.</figcaption>
+        </figure>
+        <p class="">Native Vulkan kernels performed forward scoring, backward gradients and Adam updates on the Radeon RX 560. CPU reference checks covered all three operations. Validation selected the checkpoint and a temperature of 0.8322. The audit then independently replayed the selected 1,008 updates and recovered bitwise-identical weights. That verifies the training procedure, not the market hypothesis.</p>
+        <h2 id="results">The forecast improved, but simple baselines mattered</h2>
+        <div class="dm-table-wrap" role="region" tabindex="0" aria-label="AAPL forecast and allocation results"><table class="dm-table"><caption>AAPL holdout: 454 sessions. Lower five-bin log loss is better. Net returns use the later exploratory allocation rule.</caption><thead><tr><th scope="col">Model</th><th scope="col">Log loss</th><th scope="col">3-class accuracy</th><th scope="col">Net return</th></tr></thead><tbody><tr><th scope="row">Base d3-edge</th><td>1.5906</td><td>32.4%</td><td>−37.11%</td></tr><tr><th scope="row">Fine-tuned d3-edge</th><td>1.5348</td><td>36.1%</td><td>−24.98%</td></tr><tr><th scope="row">Class frequency</th><td>1.5268</td><td>32.8%</td><td>−64.45%</td></tr><tr><th scope="row">Numeric classifier</th><td>1.4980</td><td>38.5%</td><td>−38.30%</td></tr></tbody></table>
+        </div><p class="">Log loss evaluates the probability assigned to the outcome that occurred. It penalizes confident errors. The fine-tuned model’s loss difference versus class frequency was +0.0080, with a paired block-bootstrap 95% interval of [−0.0141, +0.0310]. The interval crossed zero, and the point estimate favored the simpler baseline.</p>
+        <p class="">The pooled 1,246-example loss did improve from 1.5297 to 1.4502, beating frequency at 1.4766. That aggregate deserves context: FX contributed 144 observations, and the non-AAPL panels were sparse. It did not overturn the primary AAPL result or establish a continuous cross-market trading strategy.</p>
+        <h2 id="allocation">Changing the trading rule changed the question</h2>
+        <p class="">The predeclared rule required 55% directional confidence. Every model stayed in cash on every AAPL session. Its 0% return meant zero trades, not successful risk management demonstrated through profitable execution.</p>
+        <p class="">After seeing those results, I ran a requested exploratory replay: sum the two down probabilities, sum the two up probabilities, then choose the largest of down, flat and up. Up takes a full long position; down takes a full short; flat or a tied winner stays in cash. There is no confidence gate and no probability-based position sizing.</p>
+        <figure class="dm-figure"><div class="dm-figure-heading"><span class="dm-figure-number" data-no-i18n>03 /</span><h3>Fine-tuning mostly reversed the bias</h3></div><div class="dm-controls dm-replay-controls" data-dm-replay hidden>
+            <p class="dm-control-intro">Compare the original gate with the later allocation rule, then vary trading costs.</p>
+            <div class="dm-choice-group" role="group" aria-label="Allocation rule">
+              <button type="button" data-dm-rule="highest" aria-pressed="true">Highest probability</button>
+              <button type="button" data-dm-rule="gate" aria-pressed="false">Original 55% gate</button>
+            </div>
+            <label class="dm-cost-label" for="dm-cost">Cost per side (basis points)<output for="dm-cost" data-dm-cost-value data-no-i18n>5</output><input id="dm-cost" type="range" min="0" max="10" step="0.5" value="5"></label>
+          </div><div class="dm-legend"><span><i class="dm-long"></i>Long</span><span><i class="dm-short"></i>Short</span><span><i class="dm-cash"></i>Cash</span></div><div class="dm-position-row"><strong>Base d3-edge</strong><div class="dm-position-bar" aria-hidden="true"><span class="dm-long" style="flex:2"></span><span class="dm-short" style="flex:279"></span><span class="dm-cash" style="flex:173"></span></div><div class="dm-position-counts"><span><b>2</b> Long</span><span><b>279</b> Short</span><span><b>173</b> Cash</span></div></div><div class="dm-position-row"><strong>Fine-tuned d3-edge</strong><div class="dm-position-bar" aria-hidden="true"><span class="dm-long" style="flex:312"></span><span class="dm-short" style="flex:4"></span><span class="dm-cash" style="flex:138"></span></div><div class="dm-position-counts"><span><b>312</b> Long</span><span><b>4</b> Short</span><span><b>138</b> Cash</span></div></div><div class="dm-replay-results" data-dm-replay-results hidden>
+            <div class="dm-readouts" role="status" aria-live="polite" aria-atomic="true">
+              <div><span>Base model net return</span><strong data-dm-net="base" data-no-i18n>−37.11%</strong></div>
+              <div><span>Fine-tuned net return</span><strong data-dm-net="fine_tuned" data-no-i18n>−24.98%</strong></div>
+            </div>
+            <p class="dm-control-note" data-dm-rule-note data-no-i18n></p>
+            <p class="dm-control-note">Costs replay the same 454 saved sessions. Forecasts stay fixed. This does not train a model or validate a new strategy.</p>
+            <button class="dm-reset" type="button" data-dm-reset="replay">Reset replay</button>
+          </div><figcaption>Position counts across the same 454 sessions. The smallest segments remain visible at their true proportions; the counts below each bar carry the precise values.</figcaption>
+        </figure>
+        <p class="">The fine-tuned rule improved net return by 12.14 percentage points, but still lost 24.98%, with a 38.43% maximum drawdown. Its gross compounded return was +2.92%. Charging 5 basis points on entry and exit for each of 316 active sessions changed the outcome dramatically. At twice those costs, it lost 45.33%.</p>
+        <p class="">An always-long open-to-close comparator returned +0.70% after the same standard costs. This was not buy-and-hold: it also exited daily and excluded overnight returns. The replay used synthetic unlevered exposures, without fully modeling borrow fees, financing, taxes, additional slippage or short-sale constraints.</p>
+        <h2 id="conclusion">What the experiment established</h2>
+        <p class="">The engineering result was concrete: a small decision model could preserve the intended context, adapt its readout through Vulkan, and produce reproducible probabilities. The financial result was narrower: adaptation improved the base model but did not establish an AAPL advantage over simple forecasting or trading baselines.</p>
+        <p class="">The test was newer than the fine-tuning data, but foundation pretraining overlap remained unknown. Validation also served several selection tasks, and the allocation replay came after inspection of test results. My next useful test would freeze the model, news policy and execution rule before collecting future sessions, with realistic fills and the same simple baselines alongside it.</p>
+        <h2 id="evidence">Inspect the experiment</h2>
+        <p>The complete source, training code and reproduction instructions are public in <a href="https://github.com/abhiram1809/D-Trade">D-Trade on GitHub</a>.</p>
+        <p class="dm-source-links"><a href="https://github.com/abhiram1809/D-Trade/blob/ff93d1ca1ed2cc1f8e7724378640d3432fdf4ed0/results/REPORT.md">Measured experiment report</a> · <a href="https://github.com/abhiram1809/D-Trade/blob/ff93d1ca1ed2cc1f8e7724378640d3432fdf4ed0/scripts/train_evaluate.py">Training implementation</a> · <a href="https://github.com/abhiram1809/D-Trade/blob/ff93d1ca1ed2cc1f8e7724378640d3432fdf4ed0/scripts/backtest_highest_confidence.py">Allocation replay implementation</a></p>
+        <p class="">These compact snapshots preserve the reported metrics, training scope and audit checks. They contain no raw news archive or model checkpoint. Hashes identify the exact files used for this article.</p>
+        <ul><li><a href="../../assets/data/decision-model-market/summary.json">Forecast summary and uncertainty estimates</a></li><li><a href="../../assets/data/decision-model-market/trading_highest_confidence.json">Allocation replay statistics</a></li><li><a href="../../assets/data/decision-model-market/forecast_metrics.csv">Per-market and per-symbol forecast metrics</a></li><li><a href="../../assets/data/decision-model-market/adapter_config.json">Trainable weights and selected configuration</a></li><li><a href="../../assets/data/decision-model-market/completed_run_audit.json">Training and evaluation audit</a></li><li><a href="../../assets/data/decision-model-market/highest_confidence_audit.json">Independent allocation audit</a></li><li><a href="../../assets/data/decision-model-market/PROTOCOL.md">Original experiment protocol</a></li><li><a href="../../assets/data/decision-model-market/provenance.json">Snapshot hashes</a></li></ul></article></main>
+<footer class="site-footer"><div class="shell"><span>© <span data-current-year>2026</span> Abhiram Sharma</span><a href="../">More writing</a></div></footer>
+  </body>
+</html>

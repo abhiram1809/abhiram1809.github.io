@@ -1,0 +1,22 @@
+{
+  "passed": true,
+  "dataset_sha256": "1033c942a1b3ebc240315b15cc988cf7c5c55a6a4759081fe5d591f2d765386a",
+  "cache_entries_checked": 12646,
+  "extraction_backends": {
+    "legacy_vulkan_fp32": 6849,
+    "cpu_fp32": 5797
+  },
+  "training_distinct_examples": 10752,
+  "test_examples": 1246,
+  "primary_stock_test_examples": 454,
+  "metric_rows_recomputed": 160,
+  "training_epoch_orders_verified": 120,
+  "search_gpu_updates": 10080,
+  "independent_vulkan_checkpoint_replay": {
+    "updates": 1008,
+    "device": "AMD Radeon RX 560 Series (RADV POLARIS11)",
+    "max_weight_difference": 0.0,
+    "bitwise_equal": true
+  },
+  "checked_unix": 1793119474.5431023
+}

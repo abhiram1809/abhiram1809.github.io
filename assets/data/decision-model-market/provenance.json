@@ -1,0 +1,44 @@
+{
+  "article_date": "2026-10-28",
+  "description": "Selected experiment snapshots. No raw news or checkpoint weights included.",
+  "files": {
+    "summary.json": {
+      "source": "results/summary.json",
+      "sha256": "1af8d11482fe7c2bb8d1e9e66b9ef7bcc7492b9e89f48f61abae0aa92134afc5"
+    },
+    "trading_highest_confidence.json": {
+      "source": "results/trading_highest_confidence.json",
+      "sha256": "6faf4d7d227884303050331f66c0392ac51db139c85f1bf35ba7d295ffaeec4c"
+    },
+    "forecast_metrics.csv": {
+      "source": "results/forecast_metrics.csv",
+      "sha256": "53440be60b9ce859044d71d9a166f2c6fc59cb01776fa060ffd7c17f2a9bd6c7"
+    },
+    "completed_run_audit.json": {
+      "source": "results/completed_run_audit.json",
+      "sha256": "eddc69f9ea51efe24aa978b3cf3fc645ad8dedd22430a4970a6ab0927d8d58d1"
+    },
+    "highest_confidence_audit.json": {
+      "source": "results/highest_confidence_audit.json",
+      "sha256": "505956d2344a9591f7a0c8a75ef1ba261c018c9fcdaf48ba93b76e6a3d479571"
+    },
+    "vulkan_parity.json": {
+      "source": "results/vulkan_parity.json",
+      "sha256": "e10a917f3131d3266bf1d6f4a086b48b2801864cf6618f50226dd50876cf8711"
+    },
+    "adapter_config.json": {
+      "source": "models/d3-edge-market-head/adapter_config.json",
+      "sha256": "6b096460eb5c280f91c942206e2d4b1f24f85573ed6187c8af49d73e3e711944"
+    },
+    "PROTOCOL.md": {
+      "source": "docs/PROTOCOL.md",
+      "sha256": "7a0f49eb71351749ab04594a0f344f11288dc21b9602dadaad3f95f4d3c5d785"
+    },
+    "replay-sessions.json": {
+      "source": "Derived from results/highest_confidence_trades.csv, base and fine_tuned rows only",
+      "source_commit": "ff93d1ca1ed2cc1f8e7724378640d3432fdf4ed0",
+      "source_sha256": "88e40b9517d561979e52749bdf9f3fee800cccb29f2c0603bbfe72e5850de924",
+      "sha256": "b31eb4552d6658ba26f53887efc136daf75522a7734d7483512b62b937d35602"
+    }
+  }
+}

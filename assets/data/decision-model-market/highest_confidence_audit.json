@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "allocation_rows_checked": 1816,
+  "sessions_per_model": 454,
+  "models": 4,
+  "frozen_predictions_sha256": "db09862ec8b040d112cf972860315305c69888f7145992c47fbec438cf5ef5c2",
+  "original_gated_results_unchanged": true,
+  "checks": [
+    "independent argmax direction allocation",
+    "cash for flat or tied winner",
+    "per-session gross and net returns",
+    "compounded wealth",
+    "maximum drawdown",
+    "doubled transaction costs",
+    "legacy strategy reproduction"
+  ]
+}

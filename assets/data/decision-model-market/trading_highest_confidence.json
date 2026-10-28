@@ -1,0 +1,166 @@
+{
+  "rule": "highest_probability_direction",
+  "confidence_gate": null,
+  "direction_probabilities": {
+    "down": "p0+p1",
+    "flat": "p2",
+    "up": "p3+p4"
+  },
+  "allocation": "100% long for unique up winner, 100% short for unique down winner; flat or tied winner stays cash",
+  "entry_exit": "Next session open to close, signal from prior completed session; reset exposure daily",
+  "evaluation": "User-requested exploratory replay after the original test; no retraining or probability changes",
+  "source_predictions_sha256": "db09862ec8b040d112cf972860315305c69888f7145992c47fbec438cf5ef5c2",
+  "original_gated_backtest_sha256": "591f0a19e8450e194c9b640f221cf723e04afa5ee4b3c253ea0d7c746d77cbd2",
+  "symbol": "AAPL",
+  "sessions": 454,
+  "target_first": "2025-01-02",
+  "target_last": "2026-10-23",
+  "cost_per_side_bps": 5,
+  "stress_cost_per_side_bps": 10,
+  "models": {
+    "base": {
+      "standard_cost": {
+        "total_return": -0.37113467501276476,
+        "worst_drawdown": -0.40501770256092073,
+        "annualized_sharpe": -1.2808650091346583,
+        "observed_sessions": 454,
+        "active_fraction": 0.6189427312775331,
+        "two_sided_turnover": 562.0,
+        "passive_intraday": {
+          "total_return": 0.007011821616815794,
+          "worst_drawdown": -0.2653595334973956,
+          "annualized_sharpe": 0.14066090043571647,
+          "observed_sessions": 454
+        }
+      },
+      "double_cost": {
+        "total_return": -0.5254909883255084,
+        "worst_drawdown": -0.5458732777686954,
+        "annualized_sharpe": -2.106352544535028,
+        "observed_sessions": 454,
+        "active_fraction": 0.6189427312775331,
+        "two_sided_turnover": 562.0,
+        "passive_intraday": {
+          "total_return": -0.3606414748692476,
+          "worst_drawdown": -0.44945664071108715,
+          "annualized_sharpe": -0.845193429159637,
+          "observed_sessions": 454
+        }
+      },
+      "long_sessions": 2,
+      "short_sessions": 279,
+      "cash_sessions": 173,
+      "round_trip_trades": 281,
+      "gross_compounded_return": -0.16680177054396872,
+      "net_win_rate_on_active_sessions": 0.4199288256227758
+    },
+    "fine_tuned": {
+      "standard_cost": {
+        "total_return": -0.2497572895562179,
+        "worst_drawdown": -0.3842820020805222,
+        "annualized_sharpe": -0.5793177310711076,
+        "observed_sessions": 454,
+        "active_fraction": 0.6960352422907489,
+        "two_sided_turnover": 632.0,
+        "passive_intraday": {
+          "total_return": 0.007011821616815794,
+          "worst_drawdown": -0.2653595334973956,
+          "annualized_sharpe": 0.14066090043571647,
+          "observed_sessions": 454
+        }
+      },
+      "double_cost": {
+        "total_return": -0.45329987058537,
+        "worst_drawdown": -0.4995166128880498,
+        "annualized_sharpe": -1.3445226059279143,
+        "observed_sessions": 454,
+        "active_fraction": 0.6960352422907489,
+        "two_sided_turnover": 632.0,
+        "passive_intraday": {
+          "total_return": -0.3606414748692476,
+          "worst_drawdown": -0.44945664071108715,
+          "annualized_sharpe": -0.845193429159637,
+          "observed_sessions": 454
+        }
+      },
+      "long_sessions": 312,
+      "short_sessions": 4,
+      "cash_sessions": 138,
+      "round_trip_trades": 316,
+      "gross_compounded_return": 0.02924037866072271,
+      "net_win_rate_on_active_sessions": 0.48417721518987344
+    },
+    "class_frequency": {
+      "standard_cost": {
+        "total_return": -0.6444507475208242,
+        "worst_drawdown": -0.6661231602905158,
+        "annualized_sharpe": -2.1123695596264254,
+        "observed_sessions": 454,
+        "active_fraction": 1.0,
+        "two_sided_turnover": 908.0,
+        "passive_intraday": {
+          "total_return": 0.007011821616815794,
+          "worst_drawdown": -0.2653595334973956,
+          "annualized_sharpe": 0.14066090043571647,
+          "observed_sessions": 454
+        }
+      },
+      "double_cost": {
+        "total_return": -0.7744959122529838,
+        "worst_drawdown": -0.7854824912998296,
+        "annualized_sharpe": -3.098223889221778,
+        "observed_sessions": 454,
+        "active_fraction": 1.0,
+        "two_sided_turnover": 908.0,
+        "passive_intraday": {
+          "total_return": -0.3606414748692476,
+          "worst_drawdown": -0.44945664071108715,
+          "annualized_sharpe": -0.845193429159637,
+          "observed_sessions": 454
+        }
+      },
+      "long_sessions": 0,
+      "short_sessions": 454,
+      "cash_sessions": 0,
+      "round_trip_trades": 454,
+      "gross_compounded_return": -0.43966604361247663,
+      "net_win_rate_on_active_sessions": 0.42731277533039647
+    },
+    "numeric_logistic": {
+      "standard_cost": {
+        "total_return": -0.3830273368394437,
+        "worst_drawdown": -0.47165904391753277,
+        "annualized_sharpe": -0.9497388768890239,
+        "observed_sessions": 454,
+        "active_fraction": 0.8920704845814978,
+        "two_sided_turnover": 810.0,
+        "passive_intraday": {
+          "total_return": 0.007011821616815794,
+          "worst_drawdown": -0.2653595334973956,
+          "annualized_sharpe": 0.14066090043571647,
+          "observed_sessions": 454
+        }
+      },
+      "double_cost": {
+        "total_return": -0.5887984981596842,
+        "worst_drawdown": -0.6044342937730915,
+        "annualized_sharpe": -1.8488270863996943,
+        "observed_sessions": 454,
+        "active_fraction": 0.8920704845814978,
+        "two_sided_turnover": 810.0,
+        "passive_intraday": {
+          "total_return": -0.3606414748692476,
+          "worst_drawdown": -0.44945664071108715,
+          "annualized_sharpe": -0.845193429159637,
+          "observed_sessions": 454
+        }
+      },
+      "long_sessions": 257,
+      "short_sessions": 148,
+      "cash_sessions": 49,
+      "round_trip_trades": 405,
+      "gross_compounded_return": -0.07466125520250444,
+      "net_win_rate_on_active_sessions": 0.4765432098765432
+    }
+  }
+}

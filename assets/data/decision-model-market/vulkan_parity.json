@@ -1,0 +1,36 @@
+{
+  "checked_at_unix": 1792877946.5245445,
+  "shader_sha256": "2f0ba3c0b9ccbe21084becb816021d724a714e2dcf50cbe8ebd9d292f3319884",
+  "tests": [
+    {
+      "device": "AMD Radeon RX 560 Series (RADV POLARIS11)",
+      "batch": 19,
+      "width": 37,
+      "forward_max_abs": 1.4901161193847656e-08,
+      "gradient_max_abs": 1.4901161193847656e-08,
+      "adam_update_max_abs": 7.450580596923828e-09,
+      "weight_delta_l2": 0.006082702428102493,
+      "passed": true
+    },
+    {
+      "device": "AMD Radeon RX 560 Series (RADV POLARIS11)",
+      "batch": 257,
+      "width": 1024,
+      "forward_max_abs": 1.5497207641601562e-06,
+      "gradient_max_abs": 5.4016709327697754e-08,
+      "adam_update_max_abs": 1.4901161193847656e-08,
+      "weight_delta_l2": 0.031999558210372925,
+      "passed": true
+    },
+    {
+      "device": "AMD Radeon RX 560 Series (RADV POLARIS11)",
+      "batch": 129,
+      "width": 5120,
+      "forward_max_abs": 4.76837158203125e-06,
+      "gradient_max_abs": 4.842877388000488e-08,
+      "adam_update_max_abs": 1.4901161193847656e-08,
+      "weight_delta_l2": 0.07155337184667587,
+      "passed": true
+    }
+  ]
+}
