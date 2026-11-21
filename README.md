@@ -3,6 +3,19 @@
 Static HTML, CSS, and JavaScript, published with GitHub Pages.
 Preview locally with `python3 -m http.server 4173`.
 
+## Contact form and page views
+
+GitHub Pages serves the site. The Cloudflare Worker `portfolio-api` uses the
+`DB` binding for the `portfolio-visits` D1 database. Apply
+[`backend/schema.sql`](backend/schema.sql) to initialize the database and use
+[`backend/worker.mjs`](backend/worker.mjs) as the Worker source.
+
+Configure `SMTP_USERNAME` and `MAIL_TO` as Worker variables and
+`SMTP_PASSWORD` and `TURNSTILE_SECRET` as encrypted Worker secrets. The public
+Turnstile site key is in `assets/js/site-services.js`. The contact form is
+available on the HTTPS portfolio once both secrets are configured. Only the
+aggregate page-view total and an hourly email rate limit are stored in D1.
+
 Blog prose, captions, metadata, and accessibility labels are available in English,
 German, French, Spanish, and Dutch. Shared translations live in `assets/js/i18n.js`;
 `assets/js/blog-i18n.js` completes the article-specific copy and loads before
