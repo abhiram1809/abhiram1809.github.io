@@ -67,12 +67,33 @@
   gap: .75rem;
 }
 
-.contact-form-submit button {
-  width: fit-content;
+.contact-submit-button {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: .75rem 1.125rem;
+  border: 0;
+  border-radius: 8px;
+  background-color: var(--accent);
+  color: var(--canvas);
+  font: 700 .875rem/1.25 var(--sans);
+  text-align: center;
   cursor: pointer;
+  transition: background-color .16s ease;
 }
 
-.contact-form-submit button:disabled {
+.contact-submit-button:hover:not(:disabled) {
+  background-color: color-mix(in srgb, var(--accent) 84%, var(--ink));
+}
+
+.contact-submit-button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.contact-submit-button:disabled {
   opacity: .65;
   cursor: wait;
 }
@@ -99,6 +120,10 @@
 @media (max-width: 460px) {
   .contact-form-identity {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .contact-submit-button {
+    width: 100%;
   }
 
   .site-footer .shell {
