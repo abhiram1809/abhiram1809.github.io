@@ -227,6 +227,15 @@ html[data-language="nl"] .language-trigger{width:174px}
 .project-image img{filter:saturate(.55)}
 .project-agent a{color:var(--work-link)}
 .project-actions a:hover{border-color:var(--accent);color:var(--accent)}
+.passion-projects{margin-top:clamp(48px,8vw,88px)}
+.passion-projects>h3{margin:0 0 20px;font-size:clamp(1.5rem,3vw,2.25rem);line-height:1.1;letter-spacing:-.045em}
+.passion-project{width:min(100%,570px);padding:clamp(22px,4vw,34px);border:1px solid var(--work-card-border);border-radius:var(--radius);background:var(--agent-bg)}
+.passion-project h4{margin:0 0 8px;font-size:clamp(1.2rem,2.5vw,1.6rem);line-height:1.15}
+.passion-project p{margin:0;color:var(--work-card-text)}
+.passion-project .passion-project-controls{margin-top:8px;color:var(--work-muted);font-size:.85rem}
+.passion-project .project-actions a{display:inline-flex;align-items:center;gap:7px;color:var(--work-link);font-weight:750}
+.passion-project .project-actions .project-action-live{color:var(--project-action-live-text)}
+.passion-project .project-actions a:hover{color:var(--accent)}
 .code-statement{font-weight:600;color:var(--ink)}
 .skills-section{background:var(--accent-soft)}
 .stack-layer{box-shadow:none;background:var(--surface);border-color:var(--line)}

@@ -1,5 +1,9 @@
 window.PORTFOLIO_I18N = {
   "de": {
+    "Passion projects": "Herzensprojekte",
+    "A 3D Green Lantern story game that runs in your browser.": "Ein 3D-Storyspiel rund um Green Lantern, das im Browser läuft.",
+    "Keyboard and mouse required.": "Tastatur und Maus erforderlich.",
+    "Play Lantern Game": "Lantern Game spielen",
     "Designed and optimized custom MiniMax-M3 inference on NVIDIA RTX PRO 6000 GPUs, achieving 160 tokens/s decode throughput at batch size 1.": "Maßgeschneiderte MiniMax-M3-Inferenz auf NVIDIA RTX PRO 6000 GPUs entwickelt und optimiert; dabei einen Decodierungsdurchsatz von 160 Tokens/s bei Batchgröße 1 erreicht.",
     "Implemented and optimized an Ideogram forward pass for vLLM-Omni, reducing image generation time from roughly 2 minutes in the reference PR implementation to 24 seconds.": "Einen Ideogram-Forward-Pass für vLLM-Omni implementiert und optimiert; dadurch die Bildgenerierungszeit von rund 2 Minuten in der Referenzimplementierung eines PRs auf 24 Sekunden reduziert.",
     "Fit the full context, verify APIs and quality, measure real traffic, then change one thing and test again. The loop keeps the workload requirements fixed.": "Den vollständigen Kontext ermöglichen, APIs und Qualität prüfen, echten Datenverkehr messen und dann eine einzelne Änderung erneut testen. Die Anforderungen an die Arbeitslast bleiben im gesamten Zyklus gleich.",
@@ -453,6 +457,10 @@ window.PORTFOLIO_I18N = {
     "Pause animation": "Animation pausieren"
   },
   "fr": {
+    "Passion projects": "Projets passion",
+    "A 3D Green Lantern story game that runs in your browser.": "Un jeu narratif en 3D autour de Green Lantern, jouable dans votre navigateur.",
+    "Keyboard and mouse required.": "Clavier et souris requis.",
+    "Play Lantern Game": "Jouer à Lantern Game",
     "Designed and optimized custom MiniMax-M3 inference on NVIDIA RTX PRO 6000 GPUs, achieving 160 tokens/s decode throughput at batch size 1.": "Conçu et optimisé une inférence personnalisée pour MiniMax-M3 sur des GPU NVIDIA RTX PRO 6000, atteignant un débit de décodage de 160 tokens/s avec une taille de lot de 1.",
     "Implemented and optimized an Ideogram forward pass for vLLM-Omni, reducing image generation time from roughly 2 minutes in the reference PR implementation to 24 seconds.": "Implémenté et optimisé une passe avant d’Ideogram pour vLLM-Omni, réduisant le temps de génération d’une image d’environ 2 minutes dans l’implémentation du PR de référence à 24 secondes.",
     "Fit the full context, verify APIs and quality, measure real traffic, then change one thing and test again. The loop keeps the workload requirements fixed.": "Accueillir le contexte complet, vérifier les API et la qualité, mesurer le trafic réel, puis modifier un paramètre et tester à nouveau. Les exigences de charge restent fixes tout au long du cycle.",
@@ -906,6 +914,10 @@ window.PORTFOLIO_I18N = {
     "Pause animation": "Mettre l’animation en pause"
   },
   "es": {
+    "Passion projects": "Proyectos personales",
+    "A 3D Green Lantern story game that runs in your browser.": "Un juego narrativo en 3D de Green Lantern que se juega en el navegador.",
+    "Keyboard and mouse required.": "Requiere teclado y ratón.",
+    "Play Lantern Game": "Jugar a Lantern Game",
     "Designed and optimized custom MiniMax-M3 inference on NVIDIA RTX PRO 6000 GPUs, achieving 160 tokens/s decode throughput at batch size 1.": "Diseñó y optimizó una implementación de inferencia personalizada para MiniMax-M3 en GPU NVIDIA RTX PRO 6000, alcanzando un rendimiento de decodificación de 160 tokens/s con un tamaño de lote de 1.",
     "Implemented and optimized an Ideogram forward pass for vLLM-Omni, reducing image generation time from roughly 2 minutes in the reference PR implementation to 24 seconds.": "Implementó y optimizó un pase hacia adelante de Ideogram para vLLM-Omni, reduciendo el tiempo de generación de imágenes de aproximadamente 2 minutos en la implementación del PR de referencia a 24 segundos.",
     "Fit the full context, verify APIs and quality, measure real traffic, then change one thing and test again. The loop keeps the workload requirements fixed.": "Admitir el contexto completo, verificar APIs y calidad, medir tráfico real y después cambiar una sola cosa y volver a probar. Los requisitos de la carga permanecen fijos durante todo el ciclo.",
@@ -1359,6 +1371,10 @@ window.PORTFOLIO_I18N = {
     "Pause animation": "Pausar animación"
   },
   "nl": {
+    "Passion projects": "Passieprojecten",
+    "A 3D Green Lantern story game that runs in your browser.": "Een 3D-verhaalspel over Green Lantern dat in je browser draait.",
+    "Keyboard and mouse required.": "Toetsenbord en muis vereist.",
+    "Play Lantern Game": "Lantern Game spelen",
     "Designed and optimized custom MiniMax-M3 inference on NVIDIA RTX PRO 6000 GPUs, achieving 160 tokens/s decode throughput at batch size 1.": "Ontwierp en optimaliseerde een aangepaste inferentie-implementatie voor MiniMax-M3 op NVIDIA RTX PRO 6000 GPU’s, met een decodeerdoorvoer van 160 tokens/s bij batchgrootte 1.",
     "Implemented and optimized an Ideogram forward pass for vLLM-Omni, reducing image generation time from roughly 2 minutes in the reference PR implementation to 24 seconds.": "Implementeerde en optimaliseerde een forward pass van Ideogram voor vLLM-Omni, waardoor de tijd voor beeldgeneratie daalde van ongeveer 2 minuten in de referentie-implementatie van een PR naar 24 seconden.",
     "Fit the full context, verify APIs and quality, measure real traffic, then change one thing and test again. The loop keeps the workload requirements fixed.": "Het volledige contextvenster ondersteunen, API’s en kwaliteit controleren, echt verkeer meten en daarna één wijziging opnieuw testen. De werklastvereisten blijven tijdens de hele cyclus gelijk.",

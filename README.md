@@ -3,6 +3,13 @@
 Static HTML, CSS, and JavaScript, published with GitHub Pages.
 Preview locally with `python3 -m http.server 4173`.
 
+## Lantern Game
+
+`lantern/` contains the static build of [Lantern Game](https://github.com/abhiram1809/Lantern-Game).
+In the game checkout, run `npm ci` and `npm run build -- --base=/lantern/`. Replace the portfolio's
+`lantern/` directory with the contents of `dist/` and copy `LICENSE` and `CREDITS.md` alongside
+the game entry point as `LICENSE.txt` and `CREDITS.md`. The existing Pages deployment serves the route.
+
 ## Contact form and page views
 
 GitHub Pages serves the site. The Cloudflare Worker `portfolio-api` uses the
